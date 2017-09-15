@@ -13,5 +13,5 @@ install:
 
 script:
   - ci_env=`bash <(curl -s https://codecov.io/env)`
-#  - docker run $ci_env -v "$PWD/shared:/app/shared" -p 5000:5000 app-server sh test-cover-enviar-en-docker-appserver.sh
-#  - bash <(curl -s https://codecov.io/bash) -f shared/coverage.xml -t 9b56dd78-a3ab-4a7d-a7ea-bd326e5348ad
+  - docker run $ci_env -v "$PWD/shared:/app/shared" -p 5000:5000 app-server sh test-cover-enviar-en-docker-appserver.sh
+  - bash <(curl -s https://codecov.io/bash) -f shared/coverage.xml -t 9b56dd78-a3ab-4a7d-a7ea-bd326e5348ad
