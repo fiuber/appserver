@@ -1,24 +1,24 @@
 import logging
 from os import environ
 
-from flask import Flask
-from src import funcionesRdm
-from src.views import index
+from flask import Flask, request
+from flask_restful import Resource, Api
 from logging.config import fileConfig
 from flask_pymongo import PyMongo
 
+
+from resources.index import HelloWorld
+from resources.auth import Token
+
 app = Flask(__name__)
+api = Api(app)
 app.config['MONGO_DBNAME'] = 'fiuberappserver'
 app.config['MONGO_URI'] = 'mongodb://fiuberappserver:fiuberappserver@ds123534.mlab.com:23534/fiuberappserver'
 mongo = PyMongo(app)
 
-@app.route('/')
-def hello_world():
-    return index.mensajeCorriendo()
 
-@app.route('/bienvenido')
-def dar_bievenida():
-	return 'Bienvenido, 2 + 2 es: ' + str(funcionesRdm.sumar(2,2))
+api.add_resource(HelloWorld, '/')
+api.add_resource(Token, '/token')
 
 @app.route('/log')
 def probarLog():
@@ -41,9 +41,6 @@ def probarDB():
           mostrar += str(documento)+"<br>"
 	return mostrar
 
-@app.route('/token')
-def autenticar():
-	return "{\"token\": \"jhgdfsghdsfagHGF342fdTrftyIUU786453\" }"
 
 if __name__ == '__main__':
 	port = os.environ.get('PORT', 5000)
