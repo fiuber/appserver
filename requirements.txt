@@ -11,3 +11,4 @@ heroku==0.1.4
 coverage==4.4.1
 codecov==2.0.9
 pymongo==2.8
+pyjwt==1.4.2
