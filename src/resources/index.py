@@ -6,7 +6,8 @@ from flask import request
 from error_handler import ErrorHandler
 
 class HelloWorld(Resource):
-	
+	"""!@brief Inicializa la vista del AppServer.
+		"""
 	def get(self):
 		response = None
 		try:
