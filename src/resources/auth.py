@@ -12,12 +12,14 @@ from response_builder import ResponseBuilder
 
 class Token(Resource):
 	"""!@brief Clase para autenticacion y creacion del Token. 
-		"""
+	"""
+
 	def __init__(self):
 		app = Flask(__name__)
 		app.config['MONGO_DBNAME'] = 'fiuberappserver'
 		app.config['MONGO_URI'] = 'mongodb://fiuberappserver:fiuberappserver@ds123534.mlab.com:23534/fiuberappserver'
 		self.mongo = PyMongo(app)
+		self.CLAVE_ULTRASECRETA = "SV3v9%\"$:G0:E?."
 
 	def post(self):
 		"""!@brief Autentica al usuario una unica vez."""
@@ -25,14 +27,14 @@ class Token(Resource):
 		try:
 			valid = self._validate_request()
 			if(not valid):
-				return ErrorHandler.create_error_response(404, "Cagaste")
+				return ErrorHandler.create_error_response(404, "Request no tiene un json")
 
 			"""Si no se recibieron los datos todo mal."""
 			nombreUsuario = self._get_user_from_request()
 			contrasena = self._get_hashPassword_from_request()
 
 			if(not nombreUsuario or not contrasena):
-				return ErrorHandler.create_error_response(404, "Cagaste")
+				return ErrorHandler.create_error_response(404, "No se recibieron los campos esperados del json.")
 
 			token = self._recuperarToken(nombreUsuario);
 
@@ -44,21 +46,21 @@ class Token(Resource):
 				existe = True;
 
 				if(not existe):
-					return ErrorHandler.create_error_response(404, "Cagaste")
+					return ErrorHandler.create_error_response(404, "Usuario no registrado.")
 			
 				token = self._generarToken(nombreUsuario, contrasena)
 				if(not token):
-					return ErrorHandler.create_error_response(404, "Cagaste")
+					return ErrorHandler.create_error_response(404, "Error al generar token.")
 
 				"""Si no se puede almacenar no tiene sentido seguir aunque el token se haya generado"""
 				if(not self._almacenarToken(nombreUsuario, token)):
-					return ErrorHandler.create_error_response(404, "Cagaste")
+					return ErrorHandler.create_error_response(404, "No se pudo acceder a mongoDB o el usuario no existe")
 				return token
 			
 			"""Si es valido se le envia y sino error."""
 			autentico = self._validarToken(nombreUsuario, contrasena, token)
 			if(not autentico):
-				return ErrorHandler.create_error_response(404, "Cagaste")
+				return ErrorHandler.create_error_response(404, "Cagaste 6")
 
 			response = ResponseBuilder.build_response(token, '200')
 
@@ -76,12 +78,13 @@ class Token(Resource):
 	def _get_hashPassword_from_request(self):
 		"""!@brief Obtiene la contraseña de la request. 
 			"""
-		return request.get_json()["contrasenia"]
+		return request.get_json()["contrasena"]
 
 	def _validate_request(self):
 		"""!@brief Valida que haya una request. 
 			"""
 		datos = request.get_json(silent=True);
+
 		if(not datos):
 			return False
 		else:
@@ -119,7 +122,7 @@ class Token(Resource):
 			}
 			return jwt.encode(
 			    payload,
-			    os.urandom(24),
+			    self.CLAVE_ULTRASECRETA,
 			    algorithm = 'HS256'
 			)
 		except Exception as e:
@@ -134,12 +137,10 @@ class Token(Resource):
 		"""
 
 		usuarios = self.mongo.db.usuarios
-		usuario = usuarios.find_one({'nombreUsuario': nombreUsuario})
-		if(usuario):
-			usuarios.insert({"nombreUsuario" : nombreUsuario, "token": token})
-			return True
-		else:
-			return False
+		
+		usuarios.insert({"nombreUsuario" : nombreUsuario, "token": token})
+		return True
+	
 
 	def _validarToken(self, nombreUsuario, contrasena, token):
 		"""!@brief Desempaqueta el token y valida los campos.
@@ -151,7 +152,7 @@ class Token(Resource):
 		"""
 
 		try:
-			payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
+			payload = jwt.decode(token, CLAVE_ULTRASECRETA)
 			if(payload['nombreUsuario'] == nombreUsuario and payload['contrasena'] == contrasena):
 				return True;
 			else:

@@ -32,9 +32,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Operacion Exitosa",
+            "description": "Operacion Exitosa. Devuelve el token como texto plano.",
             "schema": {
-              "type": "string"
+              "type": "string",
+	      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmVVc3VhcmlvIjoiTWFjcm9zYUNhdCIsImlhdCI6MTUwNTg0MjE0MCwiY29udHJhc2VuYSI6IlRUUkVSV1RXVCIsImV4cCI6MTUwNTkyODU0MH0.f2tDsuCGjXvR6LY0-yRQ5ZQAqDv4IA-4BdWa9Bfn2Dg"	
             }
           },
           "400": {
