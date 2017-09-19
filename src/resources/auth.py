@@ -11,7 +11,8 @@ from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 
 class Token(Resource):
-
+	"""!@brief Clase para autenticacion y creacion del Token. 
+		"""
 	def __init__(self):
 		app = Flask(__name__)
 		app.config['MONGO_DBNAME'] = 'fiuberappserver'
@@ -68,12 +69,18 @@ class Token(Resource):
 		return response
 
 	def _get_user_from_request(self):
+		"""!@brief Obtiene el nombre de usuario de la request. 
+			"""
 		return request.get_json()["nombreUsuario"]
 	
 	def _get_hashPassword_from_request(self):
+		"""!@brief Obtiene la contraseña de la request. 
+			"""
 		return request.get_json()["contrasenia"]
 
 	def _validate_request(self):
+		"""!@brief Valida que haya una request. 
+			"""
 		datos = request.get_json(silent=True);
 		if(not datos):
 			return False
