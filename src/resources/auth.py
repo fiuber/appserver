@@ -2,6 +2,7 @@
 import jwt
 import os
 import datetime
+import json
 
 from flask_restful import Resource
 from flask import Flask, request
@@ -55,7 +56,11 @@ class Token(Resource):
 				"""Si no se puede almacenar no tiene sentido seguir aunque el token se haya generado"""
 				if(not self._almacenarToken(nombreUsuario, token)):
 					return ErrorHandler.create_error_response(404, "No se pudo acceder a mongoDB o el usuario no existe")
-				return token
+
+				jsonToken = {}
+				jsonToken['token'] = token
+
+				return json.dumps(jsonToken)
 			
 			"""Si es valido se le envia y sino error."""
 			autentico = self._validarToken(nombreUsuario, contrasena, token)
