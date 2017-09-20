@@ -28,14 +28,14 @@ class Token(Resource):
 		try:
 			valid = self._validate_request()
 			if(not valid):
-				return ErrorHandler.create_error_response(404, "Request no tiene un json")
+				return ErrorHandler.create_error_response(500, "Request no tiene un json")
 
 			"""Si no se recibieron los datos todo mal."""
 			nombreUsuario = self._get_user_from_request()
 			contrasena = self._get_hashPassword_from_request()
 
 			if(not nombreUsuario or not contrasena):
-				return ErrorHandler.create_error_response(404, "No se recibieron los campos esperados del json.")
+				return ErrorHandler.create_error_response(500, "No se recibieron los campos esperados del json.")
 
 			token = self._recuperarToken(nombreUsuario);
 
@@ -51,23 +51,25 @@ class Token(Resource):
 			
 				token = self._generarToken(nombreUsuario, contrasena)
 				if(not token):
-					return ErrorHandler.create_error_response(404, "Error al generar token.")
+					return ErrorHandler.create_error_response(500, "Error al generar token.")
 
 				"""Si no se puede almacenar no tiene sentido seguir aunque el token se haya generado"""
 				if(not self._almacenarToken(nombreUsuario, token)):
-					return ErrorHandler.create_error_response(404, "No se pudo acceder a mongoDB o el usuario no existe")
+					return ErrorHandler.create_error_response(500, "No se pudo acceder a mongoDB o el usuario no existe")
 
 				jsonToken = {}
 				jsonToken['token'] = token
 
-				return json.dumps(jsonToken)
+				return ResponseBuilder.build_response(jsonToken, '200')
 			
 			"""Si es valido se le envia y sino error."""
 			autentico = self._validarToken(nombreUsuario, contrasena, token)
 			if(not autentico):
-				return ErrorHandler.create_error_response(404, "Cagaste 6")
+				return ErrorHandler.create_error_response(404, "Token invalido.")
 
-			response = ResponseBuilder.build_response(token, '200')
+			jsonToken = {}
+			jsonToken['token'] = token
+			response = ResponseBuilder.build_response(jsonToken, '200')
 
 		except Exception as e:
 			status_code = 403
