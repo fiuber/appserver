@@ -3,13 +3,14 @@ from flask import request
 
 from os import environ
 
-
 from urllib import unquote
 from flask import json
 from flask import Flask, request
 from flask_restful import Resource, Api
 from logging.config import fileConfig
 from flask_pymongo import PyMongo
+
+from src.models.conectividad import Conectividad
 
 
 from resources.index import HelloWorld
@@ -45,6 +46,13 @@ def probarDB():
 	for documento in resultados:
           mostrar += str(documento)+"<br>"
 	return mostrar
+
+@app.route('/test')
+def test():
+	conectividad = Conectividad("http://fiuberappserver.herokuapp.com", "bjkdfsuhkdfsuhk")
+	cuerpo = {'nombreUsuario': 'Marcos', 'contrasena': 'jkbhkrghrfgjf'}
+	respuesta = conectividad.post("token", cuerpo)
+	return str(respuesta['token'])
 
 
 if __name__ == '__main__':
