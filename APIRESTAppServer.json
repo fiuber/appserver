@@ -35,7 +35,7 @@
             "description": "Operacion Exitosa. Devuelve el token como texto plano.",
             "schema": {
               "type": "string",
-	      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmVVc3VhcmlvIjoiTWFjcm9zYUNhdCIsImlhdCI6MTUwNTg0MjE0MCwiY29udHJhc2VuYSI6IlRUUkVSV1RXVCIsImV4cCI6MTUwNTkyODU0MH0.f2tDsuCGjXvR6LY0-yRQ5ZQAqDv4IA-4BdWa9Bfn2Dg"	
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmVVc3VhcmlvIjoiTWFjcm9zYUNhdCIsImlhdCI6MTUwNTg0MjE0MCwiY29udHJhc2VuYSI6IlRUUkVSV1RXVCIsImV4cCI6MTUwNTkyODU0MH0.f2tDsuCGjXvR6LY0-yRQ5ZQAqDv4IA-4BdWa9Bfn2Dg"
             }
           },
           "400": {
@@ -53,7 +53,7 @@
         ],
         "parameters": [
           {
-            "name": "NombreUsuario",
+            "name": "IDUsuario",
             "in": "query",
             "description": "Nombre del usuario a buscar",
             "required": true,
@@ -76,707 +76,728 @@
         ],
         "responses": {
           "200": {
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
+            },
             "description": "Operacion Exitosa",
             "schema": {
-              "$ref": "#/definitions/user"
+              "properties": {
+                "1": {
+                  "type": "object",
+                  "properties": {
+                    "idUsuario": {
+                      "type": "string"
+                    },
+                    "posicion": {
+                      "type": "object",
+                      "properties": {
+                        "x": {
+                          "type": "string"
+                        },
+                        "y": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "$ref": "#/definitions/driver"
+                  }
+                }
+              }
             }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      }
-    },
-    "/user": {
-      "get": {
-        "summary": "Obtener los datos de un usuario",
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "description": "ID del usuario del cual obtener sus datos",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa",
-            "schema": {
-              "$ref": "#/definitions/user"
-            }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
           }
         }
       },
-      "post": {
-        "summary": "Agregar nuevo usuario",
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Nuevo usuario a agregar",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/user"
+      "/user": {
+        "get": {
+          "summary": "Obtener los datos de un usuario",
+          "description": "",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "query",
+              "description": "ID del usuario del cual obtener sus datos",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion Exitosa",
+              "schema": {
+                "$ref": "#/definitions/user"
+              }
+            },
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
             }
           }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      },
-      "put": {
-        "summary": "Modifica los datos de un usuario",
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "description": "ID del usuario a modificar",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Nuevos datos del usuario",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/user"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Elimina un usuario",
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "description": "ID del usuario a eliminar",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      }
-    },
-    "/driver": {
-      "get": {
-        "summary": "Obtiene los autos de un usuario",
-        "description": "Si no se especifica el IdAuto entonces se devuelven todos los autos",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "idUsuario",
-            "in": "query",
-            "description": "ID del usuario al cual obtenerle los autos",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "idAuto",
-            "in": "query",
-            "description": "ID del auto el cual obtener",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa",
-            "schema": {
-              "$ref": "#/definitions/driver"
-            }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      },
-      "post": {
-        "summary": "Agrega los datos de un auto",
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "idUsuario",
-            "in": "query",
-            "description": "ID del usuario al cual agregar el auto",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Datos del auto",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/driver"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      },
-      "put": {
-        "summary": "Modifica los datos de un auto",
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "idUsuario",
-            "in": "query",
-            "description": "ID del usuario al cual modificar el auto",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "idAuto",
-            "in": "query",
-            "description": "ID del auto a modificar",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Datos del auto",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/driver"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Elimina un auto de un conductor",
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "idUsuario",
-            "in": "query",
-            "description": "ID del conductor al cual eliminar su auto",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "idAuto",
-            "in": "query",
-            "description": "ID del auto a eliminar",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      }
-    },
-    "/passenger": {
-      "get": {
-        "summary": "Obtiene los datos de facturacion del pasajero",
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "description": "ID del pasajero al cual obtenerle los datos de facturacion",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa",
-            "schema": {
-              "$ref": "#/definitions/passenger"
-            }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      },
-      "put": {
-        "summary": "Modifica los datos de facturacion del pasajero",
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "description": "ID del pasajero a asociar los datos de facturacion",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Datos de facturacion del pasajero",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/passenger"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Elimina los datos de facturacion del pasajero",
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "description": "ID del pasajero al cual eliminar sus datos de facturacion",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      }
-    },
-    "/direction": {
-      "get": {
-        "summary": "Obtiene la ruta entre dos ubicaciones",
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "origen",
-            "in": "query",
-            "description": "Direccion donde comienza el viaje",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "destino",
-            "in": "query",
-            "description": "Direccion donde termina el viaje",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa",
-            "schema": {
-              "$ref": "#/definitions/direction"
-            }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      }
-    },
-    "/transaction": {
-      "get": {
-        "summary": "Obtiene los datos de una transaccion de un usuario",
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "idTransaccion",
-            "in": "query",
-            "description": "ID de la transaccion de la cual se quieren obtener los datos",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa",
-            "schema": {
-              "$ref": "#/definitions/transaction"
-            }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      }
-    },
-    "/trip": {
-      "get": {
-        "summary": "Obtiene los datos de viajes de un usuario",
-        "description": "Si se omite el idViaje se devuelven todos los viajes de ese usuario",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "idViaje",
-            "in": "query",
-            "description": "ID del viaje a obtener sus datos",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "idUsuario",
-            "in": "query",
-            "description": "ID del usuario a obtener sus viajes",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa",
-            "schema": {
-              "$ref": "#/definitions/trip"
-            }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      },
-      "post": {
-        "summary": "Agrega un viaje",
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Datos del viaje a agregar, se ignora el ID de viaje por ser automatico",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/trip"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa"
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      },
-      "put": {
-        "summary": "Modifica un viaje",
-        "description": "Esta pensado para poder al final del viaje poner los datos de tiempo y costo",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "idViaje",
-            "in": "query",
-            "description": "ID del viaje a modificar",
-            "required": true
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Datos del viaje a modificar",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/trip"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa"
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      }
-    }
-  },
-  "definitions": {
-    "driver": {
-      "properties": {
-        "modelo": {
-          "type": "string",
-          "description": ""
         },
-        "color": {
-          "type": "string"
+        "post": {
+          "summary": "Agregar nuevo usuario",
+          "description": "",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "description": "Nuevo usuario a agregar",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/user"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion Exitosa",
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
+            }
+          }
         },
-        "patente": {
-          "type": "string"
-        },
-        "año": {
-          "type": "string"
-        },
-        "estado": {
-          "type": "string"
-        },
-        "aireAcondicionado": {
-          "type": "boolean"
-        },
-        "musica": {
-          "type": "string"
-        }
-      }
-    },
-    "passenger": {
-      "properties": {
-        "payMethod": {
-          "type": "string"
-        },
-        "number": {
-          "type": "string",
-          "required": false
-        },
-        "type": {
-          "type": "string",
-          "required": false
-        },
-        "expirationMonth": {
-          "type": "string",
-          "required": false
-        },
-        "expirationYear": {
-          "type": "string",
-          "required": false
-        },
-        "ccvv": {
-          "type": "string",
-          "required": false
-        }
-      }
-    },
-    "user": {
-      "properties": {
-        "type": {
-          "type": "string",
-          "description": "Debe ser 'passenger' o 'driver'"
-        },
-        "username": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        },
-        "fb": {
-          "type": "object",
-          "properties": {
-            "userId": {
+        "put": {
+          "summary": "Modifica los datos de un usuario",
+          "description": "",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "query",
+              "description": "ID del usuario a modificar",
+              "required": true,
               "type": "string"
             },
-            "authToken": {
+            {
+              "name": "body",
+              "in": "body",
+              "description": "Nuevos datos del usuario",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/user"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion Exitosa",
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Elimina un usuario",
+          "description": "",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "query",
+              "description": "ID del usuario a eliminar",
+              "required": true,
               "type": "string"
             }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion Exitosa",
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
+            }
+          }
+        }
+      },
+      "/driver": {
+        "get": {
+          "summary": "Obtiene los autos de un usuario",
+          "description": "Si no se especifica el IdAuto entonces se devuelven todos los autos",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "idUsuario",
+              "in": "query",
+              "description": "ID del usuario al cual obtenerle los autos",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "idAuto",
+              "in": "query",
+              "description": "ID del auto el cual obtener",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion Exitosa",
+              "schema": {
+                "$ref": "#/definitions/driver"
+              }
+            },
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
+            }
+          }
+        },
+        "post": {
+          "summary": "Agrega los datos de un auto",
+          "description": "",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "idUsuario",
+              "in": "query",
+              "description": "ID del usuario al cual agregar el auto",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "body",
+              "in": "body",
+              "description": "Datos del auto",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/driver"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion Exitosa",
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
+            }
+          }
+        },
+        "put": {
+          "summary": "Modifica los datos de un auto",
+          "description": "",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "idUsuario",
+              "in": "query",
+              "description": "ID del usuario al cual modificar el auto",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "idAuto",
+              "in": "query",
+              "description": "ID del auto a modificar",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "body",
+              "in": "body",
+              "description": "Datos del auto",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/driver"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion Exitosa",
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Elimina un auto de un conductor",
+          "description": "",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "idUsuario",
+              "in": "query",
+              "description": "ID del conductor al cual eliminar su auto",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "idAuto",
+              "in": "query",
+              "description": "ID del auto a eliminar",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion Exitosa",
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
+            }
+          }
+        }
+      },
+      "/passenger": {
+        "get": {
+          "summary": "Obtiene los datos de facturacion del pasajero",
+          "description": "",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "query",
+              "description": "ID del pasajero al cual obtenerle los datos de facturacion",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion Exitosa",
+              "schema": {
+                "$ref": "#/definitions/passenger"
+              }
+            },
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
+            }
+          }
+        },
+        "put": {
+          "summary": "Modifica los datos de facturacion del pasajero",
+          "description": "",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "query",
+              "description": "ID del pasajero a asociar los datos de facturacion",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "body",
+              "in": "body",
+              "description": "Datos de facturacion del pasajero",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/passenger"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion Exitosa",
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Elimina los datos de facturacion del pasajero",
+          "description": "",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "query",
+              "description": "ID del pasajero al cual eliminar sus datos de facturacion",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion Exitosa",
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
+            }
+          }
+        }
+      },
+      "/direction": {
+        "get": {
+          "summary": "Obtiene la ruta entre dos ubicaciones",
+          "description": "",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "origen",
+              "in": "query",
+              "description": "Direccion donde comienza el viaje",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "destino",
+              "in": "query",
+              "description": "Direccion donde termina el viaje",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion Exitosa",
+              "schema": {
+                "$ref": "#/definitions/direction"
+              }
+            },
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
+            }
+          }
+        }
+      },
+      "/transaction": {
+        "get": {
+          "summary": "Obtiene los datos de una transaccion de un usuario",
+          "description": "",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "idTransaccion",
+              "in": "query",
+              "description": "ID de la transaccion de la cual se quieren obtener los datos",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion Exitosa",
+              "schema": {
+                "$ref": "#/definitions/transaction"
+              }
+            },
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
+            }
+          }
+        }
+      },
+      "/trip": {
+        "get": {
+          "summary": "Obtiene los datos de viajes de un usuario",
+          "description": "Si se omite el idViaje se devuelven todos los viajes de ese usuario",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "idViaje",
+              "in": "query",
+              "description": "ID del viaje a obtener sus datos",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "idUsuario",
+              "in": "query",
+              "description": "ID del usuario a obtener sus viajes",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion Exitosa",
+              "schema": {
+                "$ref": "#/definitions/trip"
+              }
+            },
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
+            }
+          }
+        },
+        "post": {
+          "summary": "Agrega un viaje",
+          "description": "",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "description": "Datos del viaje a agregar, se ignora el ID de viaje por ser automatico",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/trip"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion Exitosa"
+            },
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
+            }
+          }
+        },
+        "put": {
+          "summary": "Modifica un viaje",
+          "description": "Esta pensado para poder al final del viaje poner los datos de tiempo y costo",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "idViaje",
+              "in": "query",
+              "description": "ID del viaje a modificar",
+              "required": true
+            },
+            {
+              "name": "body",
+              "in": "body",
+              "description": "Datos del viaje a modificar",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/trip"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion Exitosa"
+            },
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "driver": {
+        "properties": {
+          "modelo": {
+            "type": "string",
+            "description": ""
           },
-          "description": "Opcional"
-        },
-        "firstName": {
-          "type": "string"
-        },
-        "lastName": {
-          "type": "string"
-        },
-        "country": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "birthdate": {
-          "type": "string"
-        },
-        "image": {
-          "type": "string"
+          "color": {
+            "type": "string"
+          },
+          "patente": {
+            "type": "string"
+          },
+          "año": {
+            "type": "string"
+          },
+          "estado": {
+            "type": "string"
+          },
+          "aireAcondicionado": {
+            "type": "boolean"
+          },
+          "musica": {
+            "type": "string"
+          }
         }
-      }
-    },
-    "direction": {
-      "properties": {
-        "Informacion de google directions": {
-          "type": "string",
-          "description": "Devolvera el JSON de Google Maps Direction"
+      },
+      "passenger": {
+        "properties": {
+          "payMethod": {
+            "type": "string"
+          },
+          "number": {
+            "type": "string",
+            "required": false
+          },
+          "type": {
+            "type": "string",
+            "required": false
+          },
+          "expirationMonth": {
+            "type": "string",
+            "required": false
+          },
+          "expirationYear": {
+            "type": "string",
+            "required": false
+          },
+          "ccvv": {
+            "type": "string",
+            "required": false
+          }
         }
-      }
-    },
-    "transaction": {
-      "properties": {
-        "idTransaccion": {
-          "type": "string"
-        },
-        "idContraparte": {
-          "type": "string"
-        },
-        "idViaje": {
-          "type": "string"
-        },
-        "monto": {
-          "type": "integer",
-          "description": "Monto cobrado (valor positivo) o pagado (valor negativo)"
+      },
+      "user": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Debe ser 'passenger' o 'driver'"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "fb": {
+            "type": "object",
+            "properties": {
+              "userId": {
+                "type": "string"
+              },
+              "authToken": {
+                "type": "string"
+              }
+            },
+            "description": "Opcional"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "birthdate": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          }
         }
-      }
-    },
-    "trip": {
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "idConductor": {
-          "type": "string"
-        },
-        "idPasajero": {
-          "type": "string"
-        },
-        "origen": {
-          "type": "string",
-          "description": "Direccion de origen"
-        },
-        "destino": {
-          "type": "string",
-          "description": "Direccion de destino"
-        },
-        "tiempoTotal": {
-          "type": "integer"
-        },
-        "tiempoEspera": {
-          "type": "integer"
-        },
-        "tiempoViaje": {
-          "type": "integer"
-        },
-        "distancia": {
-          "type": "integer"
-        },
-        "ruta": {
-          "type": "string",
-          "description": "Deberia ir aca el JSON que devuelva Google Directions"
-        },
-        "costo": {
-          "type": "number"
+      },
+      "direction": {
+        "properties": {
+          "Informacion de google directions": {
+            "type": "string",
+            "description": "Devolvera el JSON de Google Maps Direction"
+          }
+        }
+      },
+      "transaction": {
+        "properties": {
+          "idTransaccion": {
+            "type": "string"
+          },
+          "idContraparte": {
+            "type": "string"
+          },
+          "idViaje": {
+            "type": "string"
+          },
+          "monto": {
+            "type": "integer",
+            "description": "Monto cobrado (valor positivo) o pagado (valor negativo)"
+          }
+        }
+      },
+      "trip": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "idConductor": {
+            "type": "string"
+          },
+          "idPasajero": {
+            "type": "string"
+          },
+          "origen": {
+            "type": "string",
+            "description": "Direccion de origen"
+          },
+          "destino": {
+            "type": "string",
+            "description": "Direccion de destino"
+          },
+          "tiempoTotal": {
+            "type": "integer"
+          },
+          "tiempoEspera": {
+            "type": "integer"
+          },
+          "tiempoViaje": {
+            "type": "integer"
+          },
+          "distancia": {
+            "type": "integer"
+          },
+          "ruta": {
+            "type": "string",
+            "description": "Deberia ir aca el JSON que devuelva Google Directions"
+          },
+          "costo": {
+            "type": "number"
+          }
         }
       }
     }
