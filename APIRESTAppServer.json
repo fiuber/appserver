@@ -99,7 +99,9 @@
                         }
                       }
                     },
-                    "$ref": "#/definitions/driver"
+                    "schema": {
+                "$ref": "#/definitions/user"
+              }
                   }
                 }
               }
