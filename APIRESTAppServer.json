@@ -99,9 +99,9 @@
                         }
                       }
                     },
-                    "schema": {
-                "$ref": "#/definitions/user"
-              }
+                    "driver": {
+                      "type": "object"
+                    }                  
                   }
                 }
               }
