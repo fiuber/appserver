@@ -15,7 +15,7 @@ from src.models.conectividad import Conectividad
 
 from resources.index import HelloWorld
 from resources.auth import Auth
-from resources.userControl import Register, Controller
+from resources.userControl import Register, UserController
 
 app = Flask(__name__)
 api = Api(app)
@@ -27,7 +27,7 @@ mongo = PyMongo(app)
 api.add_resource(HelloWorld, '/')
 api.add_resource(Token, '/token')
 api.add_resource(Register, '/users')
-api.add_resource(Controller, '/user/<userId>')
+api.add_resource(UserController, '/user/<userId>')
 
 @app.route('/log')
 def probarLog():
