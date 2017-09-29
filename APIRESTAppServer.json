@@ -110,34 +110,7 @@
         }
       }
       },
-      "/user": {
-        "get": {
-          "summary": "Obtener los datos de un usuario",
-          "description": "",
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "name": "id",
-              "in": "query",
-              "description": "ID del usuario del cual obtener sus datos",
-              "required": true,
-              "type": "string"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Operacion Exitosa",
-              "schema": {
-                "$ref": "#/definitions/user"
-              }
-            },
-            "400": {
-              "description": "Cantidad de parametros incorrectos"
-            }
-          }
-        },
+      "/users":{
         "post": {
           "summary": "Agregar nuevo usuario",
           "description": "",
@@ -160,48 +133,70 @@
               "description": "Operacion Exitosa",
               "schema": {
                 "type": "object",
-                "properties": {}
+                "properties": {
+                  "id":{
+                    "type": "string"
+                  }
+                }
               }
             },
             "400": {
               "description": "Cantidad de parametros incorrectos"
+            },
+            "409": {
+              "description": "Usuario o mail ya existentes"
+            }
+          }
+        }
+      },
+
+
+      "/user/{userId}": {
+        "get": {
+          "summary": "Obtener los datos de un usuario",
+          "description": "",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion Exitosa",
+              "schema": {
+                "$ref": "#/definitions/user"
+              }
+            },
+            "400": {
+              "description": "Cantidad de parametros incorrectos"
+            },
+            "409":{
+              "description": "No existe el id"
             }
           }
         },
+        
         "put": {
           "summary": "Modifica los datos de un usuario",
           "description": "",
           "produces": [
             "application/json"
           ],
-          "parameters": [
-            {
-              "name": "id",
-              "in": "query",
-              "description": "ID del usuario a modificar",
-              "required": true,
-              "type": "string"
-            },
-            {
-              "name": "body",
-              "in": "body",
-              "description": "Nuevos datos del usuario",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/user"
-              }
-            }
-          ],
           "responses": {
             "200": {
               "description": "Operacion Exitosa",
               "schema": {
                 "type": "object",
-                "properties": {}
+                "properties": {
+                  "id":{
+                    "type": "string"
+                  }
+                }
               }
             },
             "400": {
               "description": "Cantidad de parametros incorrectos"
+            },
+            "409":{
+              "description": "No existe el id"
             }
           }
         },
@@ -211,25 +206,23 @@
           "produces": [
             "application/json"
           ],
-          "parameters": [
-            {
-              "name": "id",
-              "in": "query",
-              "description": "ID del usuario a eliminar",
-              "required": true,
-              "type": "string"
-            }
-          ],
           "responses": {
             "200": {
               "description": "Operacion Exitosa",
               "schema": {
                 "type": "object",
-                "properties": {}
+                "properties": {
+                  "id":{
+                    "type": "string"
+                  }
+                }
               }
             },
             "400": {
               "description": "Cantidad de parametros incorrectos"
+            },
+            "409":{
+              "description": "No existe el id"
             }
           }
         }
