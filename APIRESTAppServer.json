@@ -87,34 +87,7 @@
         }
       }
     },
-    "/user": {
-      "get": {
-        "summary": "Obtener los datos de un usuario",
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "description": "ID del usuario del cual obtener sus datos",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa",
-            "schema": {
-              "$ref": "#/definitions/user"
-            }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      },
+    "/users": {
       "post": {
         "summary": "Agregar nuevo usuario",
         "description": "",
@@ -137,72 +110,11 @@
             "description": "Operacion Exitosa",
             "schema": {
               "type": "object",
-              "properties": {}
-            }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      },
-      "put": {
-        "summary": "Modifica los datos de un usuario",
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "description": "ID del usuario a modificar",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Nuevos datos del usuario",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/user"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "400": {
-            "description": "Cantidad de parametros incorrectos"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Elimina un usuario",
-        "description": "",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "description": "ID del usuario a eliminar",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operacion Exitosa",
-            "schema": {
-              "type": "object",
-              "properties": {}
+              "properties": {
+                "userId": {
+                  "type": "string"
+                }
+              }
             }
           },
           "400": {
@@ -211,6 +123,30 @@
         }
       }
     },
+    "/users/<userId>":{
+      "get": {
+        "summary": "Obtiene los datos de un usuario",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "El id del usuario que desea consultar",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            
+          }
+        }
+      }
+    },
+
     "/driver": {
       "get": {
         "summary": "Obtiene los autos de un usuario",

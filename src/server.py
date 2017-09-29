@@ -14,7 +14,7 @@ from flask_pymongo import PyMongo
 
 from resources.index import HelloWorld
 from resources.auth import Token
-from resources.registration import Register
+from resources.userControl import Register, Controller
 
 app = Flask(__name__)
 api = Api(app)
@@ -26,6 +26,7 @@ mongo = PyMongo(app)
 api.add_resource(HelloWorld, '/')
 api.add_resource(Token, '/token')
 api.add_resource(Register, '/users')
+api.add_resource(Controller, '/user/<userId>')
 
 @app.route('/log')
 def probarLog():
