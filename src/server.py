@@ -25,7 +25,7 @@ mongo = PyMongo(app)
 
 
 api.add_resource(HelloWorld, '/')
-api.add_resource(Token, '/token')
+api.add_resource(Auth, '/token')
 api.add_resource(Register, '/users')
 api.add_resource(UserController, '/user/<userId>')
 

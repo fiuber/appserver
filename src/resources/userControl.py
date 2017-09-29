@@ -12,8 +12,9 @@ class Register(Resource):
 	"""
 	
 	def post(self):
-	"""!@brief Post: agrega un usuario. 
-	"""
+		"""!@brief Post: agrega un usuario.
+		"""
+	
 		try:
 			tipo = request.get_json()["type"]
 			usr = request.get_json()["username"]
@@ -31,6 +32,7 @@ class Register(Resource):
 
 		if (user.exists_by_username()):
 			return ErrorHandler.create_error_response("409", "Usuario o mail ya existente.")
+		
 		else:
 			id = user.stored_user_in_shared_server()
 			return ResponseBuilder.build_response(id)
@@ -41,8 +43,8 @@ class UserController(Resource):
 	"""
 
 	def put(self, userId):
-	"""!@brief Put: modifica un usuario. 
-	"""
+		"""!@brief Put: modifica un usuario. 
+		"""
 		try:
 			tipo = request.get_json()["type"]
 			usr = request.get_json()["username"]
@@ -65,9 +67,8 @@ class UserController(Resource):
 			return ResponseBuilder.build_response(msg)
 
 	def get(self, userId):
-	"""!@brief Get: obtiene info de un usuario. 
-	"""
-
+		"""!@brief Get: obtiene info de un usuario.
+		"""
 		user = User(userId, None, None, None, None, None, None, None, None)
 		if not (user.exists_by_id()):
 			return ErrorHandler.create_error_response("409", "No existe el Id")
@@ -76,8 +77,8 @@ class UserController(Resource):
 
 
 	def delete(self, userId):
-	"""!@brief Delete: elimina un usuario. 
-	"""
+		"""!@brief Delete: elimina un usuario. 
+		"""
 
 		user = User(userId, None, None, None, None, None, None, None, None)
 		if not (user.exists_by_id()):
