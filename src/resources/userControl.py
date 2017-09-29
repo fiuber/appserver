@@ -12,6 +12,8 @@ class Register(Resource):
 	"""
 	
 	def post(self):
+	"""!@brief Post: agrega un usuario. 
+	"""
 		try:
 			tipo = request.get_json()["type"]
 			usr = request.get_json()["username"]
@@ -34,11 +36,13 @@ class Register(Resource):
 			return ResponseBuilder.build_response(id)
 
 
-class Controller(Resource):
-	"""!@brief Clase para registro de nuevo usuario. 
+class UserController(Resource):
+	"""!@brief Clase para modificar, eliminar y obtener un usuario. 
 	"""
 
 	def put(self, userId):
+	"""!@brief Put: modifica un usuario. 
+	"""
 		try:
 			tipo = request.get_json()["type"]
 			usr = request.get_json()["username"]
@@ -61,18 +65,22 @@ class Controller(Resource):
 			return ResponseBuilder.build_response(msg)
 
 	def get(self, userId):
+	"""!@brief Get: obtiene info de un usuario. 
+	"""
 
 		user = User(userId, None, None, None, None, None, None, None, None)
 		if not (user.exists_by_id()):
 			return ErrorHandler.create_error_response("409", "No existe el Id")
 		else:
-			return userId # debe llamar al shared y pedirle la info
+			return ResponseBuilder.build_response(userId) # debe llamar al shared y pedirle la info
 
 
 	def delete(self, userId):
+	"""!@brief Delete: elimina un usuario. 
+	"""
 
 		user = User(userId, None, None, None, None, None, None, None, None)
 		if not (user.exists_by_id()):
 			return ErrorHandler.create_error_response("409", "No existe el Id")
 		else:
-			return userId # debe llamar al shared y borrarlo
+			return ResponseBuilder.build_response(userId) # debe llamar al shared y borrarlo
