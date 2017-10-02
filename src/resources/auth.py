@@ -47,7 +47,11 @@ class Auth(Resource):
 
 			jsonToken = {}
 			jsonToken['token'] = token
-			response = ResponseBuilder.build_response(jsonToken, '200')
+			jsonToken['tipo'] = self._get_tipo(nombreUsuario)
+			if (jsonToken['tipo'] == ''):
+				response = ErrorHandler.create_error_response(404, "No existe usuario registrado con esas credenciales.")
+			else:
+				response = ResponseBuilder.build_response(jsonToken, '200')
 
 		except Exception as e:
 			status_code = 403
@@ -76,3 +80,12 @@ class Auth(Resource):
 			return True
 	def _existe_usuario_en_sharedServer(self, nombreUsuario, contrasena):
 		return True
+
+	def _get_tipo(self, nombreUsuario):
+		'''borrar, esta hecho para que franco pueda seguir'''
+		if (nombreUsuario == 'choferFranco'):
+			return 'chofer'
+		elif (nombreUsuario == 'pasajeroFranco'):
+			return 'pasajero'
+		else:
+			return ''
