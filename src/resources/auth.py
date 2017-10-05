@@ -13,8 +13,7 @@ from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 
 class Auth(Resource):
-	"""!@brief Clase para autenticacion y creacion del Token. 
-	"""
+	"""!@brief Clase para autenticacion y creacion del Token."""
 
 	autenticador = Token() 
 
@@ -48,6 +47,8 @@ class Auth(Resource):
 			jsonToken = {}
 			jsonToken['token'] = token
 			jsonToken['tipo'] = self._get_tipo(nombreUsuario)
+
+			"""REVISAR CUANDO EL SHARED SERVER ESTE OK"""
 			if (jsonToken['tipo'] == ''):
 				response = ErrorHandler.create_error_response(404, "No existe usuario registrado con esas credenciales.")
 			else:
@@ -59,28 +60,6 @@ class Auth(Resource):
 			response = ErrorHandler.create_error_response(status_code, msg)
 		return response
 
-	def _get_user_from_request(self):
-		"""!@brief Obtiene el nombre de usuario de la request. 
-			"""
-		return request.get_json()["nombreUsuario"]
-	
-	def _get_hashPassword_from_request(self):
-		"""!@brief Obtiene la contraseña de la request. 
-			"""
-		return request.get_json()["contrasena"]
-
-	def _validate_request(self):
-		"""!@brief Valida que haya una request. 
-			"""
-		datos = request.get_json(silent=True);
-
-		if(not datos):
-			return False
-		else:
-			return True
-	def _existe_usuario_en_sharedServer(self, nombreUsuario, contrasena):
-		return True
-
 	def _get_tipo(self, nombreUsuario):
 		'''borrar, esta hecho para que franco pueda seguir'''
 		if (nombreUsuario == 'choferFranco'):
@@ -89,3 +68,28 @@ class Auth(Resource):
 			return 'pasajero'
 		else:
 			return ''
+
+	def _get_user_from_request(self):
+		"""!@brief Obtiene el nombre de usuario de la request."""
+		return request.get_json()["nombreUsuario"]
+	
+	def _get_hashPassword_from_request(self):
+		"""!@brief Obtiene la contraseña de la request.	"""
+		return request.get_json()["contrasena"]
+
+	def _validate_request(self):
+		"""!@brief Valida que haya una request."""
+		datos = request.get_json(silent=True);
+
+		if(not datos):
+			return False
+		else:
+			return True
+	
+	def _existe_usuario_en_sharedServer(self, nombreUsuario, contrasena):
+		"""!@brief Valida al usuario con el shared server."""
+
+		cuerpo = {'username': nombreUsuario, 'password': contrasena}
+		respuesta = conectividad.post("users/validate", cuerpo)
+
+		return respuesta == True

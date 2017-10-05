@@ -22,7 +22,7 @@ class Conectividad(Resource):
 		self.URL = URL
 		self.appServerToken = appServerToken
 
-	def post(self, endpoint, diccionarioCuerpo, diccionarioParametros = None):
+	def post(self, endpoint, diccionarioCuerpo = {}, diccionarioParametros = {}):
 		"""!@brief Permite realizar una peticion POST y obtener el json de respuesta o false si fallo.
 
 		@param endpoint El nombre del endpoint especifico sin la URL base ni el caracter '/'. Ej: 'user'.
@@ -39,7 +39,7 @@ class Conectividad(Resource):
 			except Exception as e:
 				return False
 
-	def get(self, endpoint, diccionarioParametros):
+	def get(self, endpoint, diccionarioParametros = {}):
 		"""!@brief Permite realizar una peticion POST y obtener el json de respuesta o false si fallo.
 
 		@param endpoint El nombre del endpoint especifico sin la URL base ni el caracter '/'. Ej: 'user'.
@@ -55,7 +55,7 @@ class Conectividad(Resource):
 			except Exception as e:
 				return False
 
-	def put(self, endpoint, diccionarioCuerpo, diccionarioParametros):
+	def put(self, endpoint, diccionarioCuerpo = {}, diccionarioParametros = {}):
 		"""!@brief Permite realizar una peticion POST y obtener el json de respuesta o false si fallo.
 
 		@param endpoint El nombre del endpoint especifico sin la URL base ni el caracter '/'. Ej: 'user'.
@@ -72,7 +72,7 @@ class Conectividad(Resource):
 			except Exception as e:
 				return False
 
-	def delete(self, endpoint, diccionarioCuerpo, diccionarioParametros):
+	def delete(self, endpoint, diccionarioCuerpo = {}, diccionarioParametros = {}):
 		"""!@brief Permite realizar una peticion POST y obtener el json de respuesta o false si fallo.
 
 		@param endpoint El nombre del endpoint especifico sin la URL base ni el caracter '/'. Ej: 'user'.

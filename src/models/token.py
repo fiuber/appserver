@@ -9,8 +9,7 @@ from flask import Flask, request
 from flask_pymongo import PyMongo
 
 class Token(Resource):
-	"""!@brief Clase para autenticacion y creacion del Token. 
-	"""
+	"""!@brief Clase para autenticacion y creacion del Token."""
 
 	def __init__(self):
 		app = Flask(__name__)
@@ -33,9 +32,9 @@ class Token(Resource):
 		except Exception as e:
 			return False
 
-	def validarToken(self, token, nombreUsuario):
+	def _validarToken(self, token, nombreUsuario):
 		token = self._recuperarToken(nombreUsuario)
-		valido = self._validarToken(nombreUsuario, contrasena, token)
+		valido = self._validarTokenLogin(nombreUsuario, contrasena, token)
 		return token and valido
 
 	def _crear_token(self, nombreUsuario, contrasena):
@@ -54,14 +53,13 @@ class Token(Resource):
 		"""!@brief Recupera el token de mongoDB. 
 		Devuelve el token o false.
 		
-		@param nombreUsuario Nombre del usuario.
-		"""
+		@param nombreUsuario Nombre del usuario."""
 
 		try:
 			usuarios = self.mongo.db.usuarios
 			usuario = usuarios.find_one({'nombreUsuario': nombreUsuario})
 			if(usuario):
-				usuario['token']
+				return usuario['token']
 			else:
 				return False
 		except Exception as e:
@@ -97,23 +95,21 @@ class Token(Resource):
 		Devuelve true si se pudo guardar o false si no se pudo porque no existia el usuario
 		
 		@param nombreUsuario Nombre del usuario.
-		@param token token a guardar.
-		"""
+		@param token token a guardar."""
 
 		usuarios = self.mongo.db.usuarios
 		
-		usuarios.insert({"nombreUsuario" : nombreUsuario, "token": token})
+		usuarios.update_one({"nombreUsuario" : nombreUsuario}, {"token": token}, upsert=True)
 		return True
 	
 
-	def _validarToken(self, nombreUsuario, contrasena, token):
+	def _validarTokenLogin(self, nombreUsuario, contrasena, token):
 		"""!@brief Desempaqueta el token y valida los campos.
 		Devuelve true o false.
 		
 		@param nombreUsuario Nombre del usuario.
 		@param contrasena Contrasena del usuario hasheada.
-		@param token token a guardar.
-		"""
+		@param token token a validar."""
 
 		try:
 			payload = jwt.decode(token, CLAVE_ULTRASECRETA)
@@ -125,5 +121,16 @@ class Token(Resource):
 		except Exception as e:
 			return False
 
+	def validarToken(self, token):
+		"""!@brief Valida el token.
+		
+		@param token Token a validar."""
+
+		try:
+			payload = jwt.decode(token, CLAVE_ULTRASECRETA)
+			return True
+
+		except Exception as e:
+			return False
 
 		
