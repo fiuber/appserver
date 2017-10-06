@@ -42,49 +42,6 @@ paths:
                 example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmVVc3VhcmlvIjoiTWFjcm9zYUNhdCIsImlhdCI6MTUwNTg0MjE0MCwiY29udHJhc2VuYSI6IlRUUkVSV1RXVCIsImV4cCI6MTUwNTkyODU0MH0.f2tDsuCGjXvR6LY0-yRQ5ZQAqDv4IA-4BdWa9Bfn2Dg
         '400':
           description: Cantidad de parametros incorrectos
-  /search:
-    get:
-      summary: Buscar usuarios
-      description: Permite buscar usuarios que tengan un determinado nombre de usuario paginádos en cantidades variables por parametro.
-      produces:
-        - application/json
-      parameters:
-        - name: IDUsuario
-          in: query
-          description: Nombre del usuario a buscar
-          required: true
-          type: string
-        - name: ResultadosPorPagina
-          in: query
-          description: Cantidad de resultados que habra en cada pagina
-          required: true
-          type: integer
-        - name: NumeroPagina
-          in: query
-          description: El numero de la pagina de resultados que se desea obtener
-          required: true
-          type: integer
-      responses:
-        '200':
-          description: Operacion Exitosa
-          schema:
-            properties:
-              '1':
-                type: object
-                properties:
-                  idUsuario:
-                    type: string
-                  posicion:
-                    type: object
-                    properties:
-                      x:
-                        type: string
-                      y:
-                        type: string
-                  driver:
-                    type: object
-        '400':
-            description: Cantidad de parametros incorrectos
   /users:
     post:
       summary: Agregar nuevo usuario
@@ -177,21 +134,17 @@ paths:
           description: Cantidad de parametros incorrectos
         '409':
           description: No existe el id
-  /driver:
+
+/driver/{IDUsuario}/cars:
     get:
-      summary: Obtiene los autos de un usuario
-      description: Si no se especifica el IdAuto entonces se devuelven todos los autos
+      summary: Obtener autos.
+      description: Devuelve todos los autos de un usuario.
       produces:
         - application/json
       parameters:
-        - name: idUsuario
-          in: query
-          description: ID del usuario al cual obtenerle los autos
-          required: true
-          type: string
-        - name: idAuto
-          in: query
-          description: ID del auto el cual obtener
+        - name: IDUsuario
+          in: path
+          description: ID del usuario al cual obtenerle los autos.
           required: true
           type: string
       responses:
@@ -200,87 +153,142 @@ paths:
           schema:
             $ref: '#/definitions/driver'
         '400':
-          description: Cantidad de parametros incorrectos
+          description: Token invalido o expirado.
+    '404':
+          description: Error al comunicarse con Shared Server.
+/driver/{IDUsuario}/cars/{IDAuto}:
+    get:
+      summary: Obtener auto.
+      description: Devuelve un determinado auto de un determinado usuario.
+      produces:
+        - application/json
+      parameters:
+        - name: IDUsuario
+          in: path
+          description: ID del usuario al cual obtenerle el auto.
+          required: true
+          type: string
+        - name: IDAuto
+          in: path
+          description: ID del auto a obtener.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Operacion Exitosa
+          schema:
+            $ref: '#/definitions/driver'
+        '400':
+          description: Token invalido o expirado.
+    '404':
+          description: Error al comunicarse con Shared Server.
+
+/driver/search:
+    get:
+      summary: Obtener autos cercanos.
+      description: Devuelve los autos cercanos a un usuario.
+      produces:
+        - application/json
+      parameters:
+        - name: IDUsuario
+          in: query
+          description: ID del usuario al cual obtenerle los autos cercanos.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Operacion Exitosa
+          schema:
+            $ref: '#/definitions/driver'
+        '400':
+          description: Token invalido o expirado.
+    '404':
+          description: Error al comunicarse con Shared Server.
+
+/driver/{IDUsuario}/cars:
     post:
-      summary: Agrega los datos de un auto
-      description: ''
+      summary: Agregar auto.
+      description: Agrega un auto a un determinado usuario.
       produces:
         - application/json
       parameters:
-        - name: idUsuario
-          in: query
-          description: ID del usuario al cual agregar el auto
+        - name: IDUsuario
+          in: path
+          description: ID del usuario al cual agregarle el auto.
           required: true
           type: string
         - name: body
           in: body
-          description: Datos del auto
+          description: Datos del auto a agregar
           required: true
           schema:
             $ref: '#/definitions/driver'
       responses:
         '200':
           description: Operacion Exitosa
-          schema:
-            type: object
-            properties: {}
         '400':
-          description: Cantidad de parametros incorrectos
+          description: Token invalido o expirado.
+    '404':
+          description: Error al comunicarse con Shared Server.
+
+/driver/{IDUsuario}/cars/{IDAuto}:
     put:
-      summary: Modifica los datos de un auto
-      description: ''
+      summary: Modificar auto.
+      description: Modifica un auto de un determinado usuario.
       produces:
         - application/json
       parameters:
-        - name: idUsuario
-          in: query
-          description: ID del usuario al cual modificar el auto
+        - name: IDUsuario
+          in: path
+          description: ID del usuario al cual modificarle el auto.
           required: true
           type: string
-        - name: idAuto
-          in: query
-          description: ID del auto a modificar
+        - name: IDAuto
+          in: path
+          description: ID del auto a modificar.
           required: true
           type: string
         - name: body
           in: body
-          description: Datos del auto
+          description: Datos del auto a modificar
           required: true
           schema:
             $ref: '#/definitions/driver'
       responses:
         '200':
           description: Operacion Exitosa
-          schema:
-            type: object
-            properties: {}
         '400':
-          description: Cantidad de parametros incorrectos
+          description: Token invalido o expirado.
+    '404':
+          description: Error al comunicarse con Shared Server.
+
+/driver/{IDUsuario}/cars/{IDAuto}:
     delete:
-      summary: Elimina un auto de un conductor
-      description: ''
+      summary: Eliminar auto.
+      description: Elimina un auto de un determinado usuario.
       produces:
         - application/json
       parameters:
-        - name: idUsuario
-          in: query
-          description: ID del conductor al cual eliminar su auto
+        - name: IDUsuario
+          in: path
+          description: ID del usuario al cual eliminarle el auto.
           required: true
           type: string
-        - name: idAuto
-          in: query
-          description: ID del auto a eliminar
+        - name: IDAuto
+          in: path
+          description: ID del auto a eliminar.
           required: true
           type: string
+      
       responses:
         '200':
           description: Operacion Exitosa
-          schema:
-            type: object
-            properties: {}
         '400':
-          description: Cantidad de parametros incorrectos
-  /passenger:
+          description: Token invalido o expirado.
+    '404':
+          description: Error al comunicarse con Shared Server.
+
+/passenger:
     get:
       summary: Obtiene los datos de facturacion del pasajero
       description: ''
@@ -343,7 +351,7 @@ paths:
             properties: {}
         '400':
           description: Cantidad de parametros incorrectos
-  /direction:
+/direction:
     get:
       summary: Obtiene la ruta entre dos ubicaciones
       description: ''
@@ -367,7 +375,7 @@ paths:
             $ref: '#/definitions/direction'
         '400':
           description: Cantidad de parametros incorrectos
-  /transaction:
+/transaction:
     get:
       summary: Obtiene los datos de una transaccion de un usuario
       description: ''
@@ -386,7 +394,7 @@ paths:
             $ref: '#/definitions/transaction'
         '400':
           description: Cantidad de parametros incorrectos
-  /trip:
+/trip:
     get:
       summary: Obtiene los datos de viajes de un usuario
       description: Si se omite el idViaje se devuelven todos los viajes de ese usuario

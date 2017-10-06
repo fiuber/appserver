@@ -16,6 +16,12 @@ from src.models.conectividad import Conectividad
 from resources.index import HelloWorld
 from resources.auth import Auth
 from resources.userControl import Register, UserController
+from resources.autosPorID import AutosPorID
+from resources.autosPorUsuario import AutosPorUsuario
+from resources.autosPorPosicionCercana import AutosPorPosicionCercana
+from resources.agregarAutoUsuario import AgregarAutoUsuario
+from resources.eliminarAutoUsuario import EliminarAutoUsuario
+from resources.modificarAutoUsuario import ModificarAutoUsuario
 
 app = Flask(__name__)
 api = Api(app)
@@ -28,6 +34,13 @@ api.add_resource(HelloWorld, '/')
 api.add_resource(Auth, '/token')
 api.add_resource(Register, '/users')
 api.add_resource(UserController, '/user/<userId>')
+api.add_resource(AgregarAutoUsuario, '/driver/<IDUsuario>/cars')
+api.add_resource(ModificarAutoUsuario, '/driver/<IDUsuario>/cars/<IDAuto>')
+api.add_resource(EliminarAutoUsuario, '/driver/<IDUsuario>/cars/<IDAuto>')
+api.add_resource(AutosPorID, '/driver/<IDUsuario>/cars/<IDAuto>')
+api.add_resource(AutosPorUsuario, '/driver/<IDUsuario>/cars')
+api.add_resource(AutosPorPosicionCercana, '/driver/search')
+
 
 @app.route('/log')
 def probarLog():
