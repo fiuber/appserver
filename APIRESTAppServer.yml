@@ -154,7 +154,7 @@ paths:
             $ref: '#/definitions/driver'
         '400':
           description: Token invalido o expirado.
-    '404':
+        '404':
           description: Error al comunicarse con Shared Server.
           
     post:
@@ -179,7 +179,7 @@ paths:
           description: Operacion Exitosa
         '400':
           description: Token invalido o expirado.
-    '404':
+        '404':
           description: Error al comunicarse con Shared Server.
           
 /driver/{IDUsuario}/cars/{IDAuto}:
@@ -206,7 +206,7 @@ paths:
             $ref: '#/definitions/driver'
         '400':
           description: Token invalido o expirado.
-    '404':
+        '404':
           description: Error al comunicarse con Shared Server.
           
     put:
@@ -236,7 +236,7 @@ paths:
           description: Operacion Exitosa
         '400':
           description: Token invalido o expirado.
-    '404':
+        '404':
           description: Error al comunicarse con Shared Server.
           
     delete:
