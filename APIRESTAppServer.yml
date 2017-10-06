@@ -135,7 +135,7 @@ paths:
         '409':
           description: No existe el id
 
-/driver/{IDUsuario}/cars:
+  /driver/{IDUsuario}/cars:
     get:
       summary: Obtener autos.
       description: Devuelve todos los autos de un usuario.
@@ -182,7 +182,7 @@ paths:
         '404':
           description: Error al comunicarse con Shared Server.
           
-/driver/{IDUsuario}/cars/{IDAuto}:
+  /driver/{IDUsuario}/cars/{IDAuto}:
     get:
       summary: Obtener auto.
       description: Devuelve un determinado auto de un determinado usuario.
@@ -261,10 +261,10 @@ paths:
           description: Operacion Exitosa
         '400':
           description: Token invalido o expirado.
-    '404':
+        '404':
           description: Error al comunicarse con Shared Server.
 
-/driver/search:
+  /driver/search:
     get:
       summary: Obtener autos cercanos.
       description: Devuelve los autos cercanos a un usuario.
@@ -283,7 +283,7 @@ paths:
             $ref: '#/definitions/driver'
         '400':
           description: Token invalido o expirado.
-    '404':
+        '404':
           description: Error al comunicarse con Shared Server.
 
 /passenger:
