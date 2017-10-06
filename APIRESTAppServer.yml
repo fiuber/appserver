@@ -156,6 +156,7 @@ paths:
           description: Token invalido o expirado.
     '404':
           description: Error al comunicarse con Shared Server.
+          
 /driver/{IDUsuario}/cars/{IDAuto}:
     get:
       summary: Obtener auto.
@@ -178,6 +179,61 @@ paths:
           description: Operacion Exitosa
           schema:
             $ref: '#/definitions/driver'
+        '400':
+          description: Token invalido o expirado.
+    '404':
+          description: Error al comunicarse con Shared Server.
+          
+    put:
+      summary: Modificar auto.
+      description: Modifica un auto de un determinado usuario.
+      produces:
+        - application/json
+      parameters:
+        - name: IDUsuario
+          in: path
+          description: ID del usuario al cual modificarle el auto.
+          required: true
+          type: string
+        - name: IDAuto
+          in: path
+          description: ID del auto a modificar.
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: Datos del auto a modificar
+          required: true
+          schema:
+            $ref: '#/definitions/driver'
+      responses:
+        '200':
+          description: Operacion Exitosa
+        '400':
+          description: Token invalido o expirado.
+    '404':
+          description: Error al comunicarse con Shared Server.
+          
+    delete:
+      summary: Eliminar auto.
+      description: Elimina un auto de un determinado usuario.
+      produces:
+        - application/json
+      parameters:
+        - name: IDUsuario
+          in: path
+          description: ID del usuario al cual eliminarle el auto.
+          required: true
+          type: string
+        - name: IDAuto
+          in: path
+          description: ID del auto a eliminar.
+          required: true
+          type: string
+      
+      responses:
+        '200':
+          description: Operacion Exitosa
         '400':
           description: Token invalido o expirado.
     '404':
@@ -230,64 +286,7 @@ paths:
           description: Token invalido o expirado.
     '404':
           description: Error al comunicarse con Shared Server.
-
-/driver/{IDUsuario}/cars/{IDAuto}:
-    put:
-      summary: Modificar auto.
-      description: Modifica un auto de un determinado usuario.
-      produces:
-        - application/json
-      parameters:
-        - name: IDUsuario
-          in: path
-          description: ID del usuario al cual modificarle el auto.
-          required: true
-          type: string
-        - name: IDAuto
-          in: path
-          description: ID del auto a modificar.
-          required: true
-          type: string
-        - name: body
-          in: body
-          description: Datos del auto a modificar
-          required: true
-          schema:
-            $ref: '#/definitions/driver'
-      responses:
-        '200':
-          description: Operacion Exitosa
-        '400':
-          description: Token invalido o expirado.
-    '404':
-          description: Error al comunicarse con Shared Server.
-
-/driver/{IDUsuario}/cars/{IDAuto}:
-    delete:
-      summary: Eliminar auto.
-      description: Elimina un auto de un determinado usuario.
-      produces:
-        - application/json
-      parameters:
-        - name: IDUsuario
-          in: path
-          description: ID del usuario al cual eliminarle el auto.
-          required: true
-          type: string
-        - name: IDAuto
-          in: path
-          description: ID del auto a eliminar.
-          required: true
-          type: string
-      
-      responses:
-        '200':
-          description: Operacion Exitosa
-        '400':
-          description: Token invalido o expirado.
-    '404':
-          description: Error al comunicarse con Shared Server.
-
+          
 /passenger:
     get:
       summary: Obtiene los datos de facturacion del pasajero
