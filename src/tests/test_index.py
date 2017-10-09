@@ -1,8 +1,32 @@
-# -*- coding: utf-8 -*-
-from resources.index import HelloWorld
+from mock import patch, MagicMock
+from nose.tools import assert_is_not_none
+import unittest
+import jwt
+
+from src.models.token import Token
+
+def tirarExcepcion():
+	raise Exception("Token invalido")
 
 
-def test_HelloWorld_devuelve_msje():
-	service = HelloWorld()
-	print service.get()
-	assert service.get() == '<h1><center> Bienvenido! App Server está en ejecución!</center></h1>'
+
+class TestToken(unittest.TestCase):
+
+	@patch("src.models.token.jwt")
+	def test_validarToken_valido(self, claseMock):
+		autenticador = Token()
+		claseMock.decode.return_value = True
+		
+		self.assertTrue(autenticador.validarToken("jhsuiusdfui"))
+
+	@patch("src.models.token.jwt")
+	def test_validarToken_invalido(self, claseMock):
+		autenticador = Token()
+		claseMock.decode.side_effect = tirarExcepcion
+		
+		self.assertFalse(autenticador.validarToken("jhsuiusdfui"))
+
+
+	
+if __name__ == '__main__':
+    unittest.main()

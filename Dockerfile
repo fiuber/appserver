@@ -14,7 +14,7 @@ RUN pip install -r requirements.txt
 COPY . /app
 
 ENV HOME=/app
-
+ENV PYTHONPATH /app
 
 ENV FLASK_APP=server.py
 

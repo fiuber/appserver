@@ -127,7 +127,8 @@ class Token(Resource):
 		@param token Token a validar."""
 
 		try:
-			payload = jwt.decode(token, CLAVE_ULTRASECRETA)
+			payload = jwt.decode(token, self.CLAVE_ULTRASECRETA)
+			print payload
 			return True
 
 		except Exception as e:
