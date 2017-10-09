@@ -135,7 +135,7 @@ paths:
         '409':
           description: No existe el id
 
-/driver/{IDUsuario}/cars:
+  /driver/{IDUsuario}/cars:
     get:
       summary: Obtener autos.
       description: Devuelve todos los autos de un usuario.
@@ -154,9 +154,35 @@ paths:
             $ref: '#/definitions/driver'
         '400':
           description: Token invalido o expirado.
-    '404':
+        '404':
           description: Error al comunicarse con Shared Server.
-/driver/{IDUsuario}/cars/{IDAuto}:
+          
+    post:
+      summary: Agregar auto.
+      description: Agrega un auto a un determinado usuario.
+      produces:
+        - application/json
+      parameters:
+        - name: IDUsuario
+          in: path
+          description: ID del usuario al cual agregarle el auto.
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: Datos del auto a agregar
+          required: true
+          schema:
+            $ref: '#/definitions/driver'
+      responses:
+        '200':
+          description: Operacion Exitosa
+        '400':
+          description: Token invalido o expirado.
+        '404':
+          description: Error al comunicarse con Shared Server.
+          
+  /driver/{IDUsuario}/cars/{IDAuto}:
     get:
       summary: Obtener auto.
       description: Devuelve un determinado auto de un determinado usuario.
@@ -180,58 +206,9 @@ paths:
             $ref: '#/definitions/driver'
         '400':
           description: Token invalido o expirado.
-    '404':
+        '404':
           description: Error al comunicarse con Shared Server.
-
-/driver/search:
-    get:
-      summary: Obtener autos cercanos.
-      description: Devuelve los autos cercanos a un usuario.
-      produces:
-        - application/json
-      parameters:
-        - name: IDUsuario
-          in: query
-          description: ID del usuario al cual obtenerle los autos cercanos.
-          required: true
-          type: string
-      responses:
-        '200':
-          description: Operacion Exitosa
-          schema:
-            $ref: '#/definitions/driver'
-        '400':
-          description: Token invalido o expirado.
-    '404':
-          description: Error al comunicarse con Shared Server.
-
-/driver/{IDUsuario}/cars:
-    post:
-      summary: Agregar auto.
-      description: Agrega un auto a un determinado usuario.
-      produces:
-        - application/json
-      parameters:
-        - name: IDUsuario
-          in: path
-          description: ID del usuario al cual agregarle el auto.
-          required: true
-          type: string
-        - name: body
-          in: body
-          description: Datos del auto a agregar
-          required: true
-          schema:
-            $ref: '#/definitions/driver'
-      responses:
-        '200':
-          description: Operacion Exitosa
-        '400':
-          description: Token invalido o expirado.
-    '404':
-          description: Error al comunicarse con Shared Server.
-
-/driver/{IDUsuario}/cars/{IDAuto}:
+          
     put:
       summary: Modificar auto.
       description: Modifica un auto de un determinado usuario.
@@ -259,10 +236,9 @@ paths:
           description: Operacion Exitosa
         '400':
           description: Token invalido o expirado.
-    '404':
+        '404':
           description: Error al comunicarse con Shared Server.
-
-/driver/{IDUsuario}/cars/{IDAuto}:
+          
     delete:
       summary: Eliminar auto.
       description: Elimina un auto de un determinado usuario.
@@ -285,7 +261,29 @@ paths:
           description: Operacion Exitosa
         '400':
           description: Token invalido o expirado.
-    '404':
+        '404':
+          description: Error al comunicarse con Shared Server.
+
+  /driver/search:
+    get:
+      summary: Obtener autos cercanos.
+      description: Devuelve los autos cercanos a un usuario.
+      produces:
+        - application/json
+      parameters:
+        - name: IDUsuario
+          in: query
+          description: ID del usuario al cual obtenerle los autos cercanos.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Operacion Exitosa
+          schema:
+            $ref: '#/definitions/driver'
+        '400':
+          description: Token invalido o expirado.
+        '404':
           description: Error al comunicarse con Shared Server.
 
 /passenger:
