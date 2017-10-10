@@ -128,7 +128,6 @@ class Token(Resource):
 
 		try:
 			payload = jwt.decode(token, self.CLAVE_ULTRASECRETA)
-			print payload
 			return True
 
 		except Exception as e:

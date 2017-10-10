@@ -5,6 +5,11 @@ import jwt
 
 from src.models.token import Token
 
+from coverage import coverage
+cov = coverage(branch=True, omit=['src/tests/*', "/usr/local/lib/*"])
+cov.start()
+
+
 def tirarExcepcion():
 	raise Exception("Token invalido")
 
@@ -29,4 +34,12 @@ class TestToken(unittest.TestCase):
 
 	
 if __name__ == '__main__':
-    unittest.main()
+	try:
+		unittest.main()
+	except:
+		pass
+	cov.stop()
+	cov.save()
+	print("\n\nCoverage Report:\n")
+	cov.report()
+	cov.erase()
