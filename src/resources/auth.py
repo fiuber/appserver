@@ -18,15 +18,13 @@ class Auth(Resource):
 
 	autenticador = Token() 
 
-	def __init__(self):
-		app = Flask(__name__)
-
 	def post(self):
 		"""!@brief Autentica al usuario una unica vez."""
 		response = None
 		try:
 			valid = self._validate_request()
 			if(not valid):
+				print "1"
 				return ErrorHandler.create_error_response(500, "Request no tiene un json")
 
 			"""Si no se recibieron los datos todo mal."""
@@ -34,28 +32,35 @@ class Auth(Resource):
 			contrasena = self._get_hashPassword_from_request()
 
 			if(not nombreUsuario or not contrasena):
+				print "2"
 				return ErrorHandler.create_error_response(500, "No se recibieron los campos esperados del json.")
 
 			"""Primero verifica que exista en el shared server."""
 			if(not self._existe_usuario_en_sharedServer(nombreUsuario, contrasena)):
+				print "3"
 				return ErrorHandler.create_error_response(404, "No existe usuario registrado con esas credenciales.")
 
 			token = Auth.autenticador.obtenerToken(nombreUsuario, contrasena)
 			
 			if(not token):
+				print "4"
 				return ErrorHandler.create_error_response(500, "No se pudo generar el token.")
 
 			jsonToken = {}
 			jsonToken['token'] = token
 			jsonToken['tipo'] = self._get_tipo(nombreUsuario)
 			if (jsonToken['tipo'] == ''):
+				print "5"
 				response = ErrorHandler.create_error_response(404, "No existe usuario registrado con esas credenciales.")
 			else:
+				print "6"
 				response = ResponseBuilder.build_response(jsonToken, '200')
+				print "6"
 
 		except Exception as e:
 			status_code = 403
 			msg = str(e)
+			print msg
 			response = ErrorHandler.create_error_response(status_code, msg)
 		return response
 

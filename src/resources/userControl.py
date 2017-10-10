@@ -28,14 +28,14 @@ class Register(Resource):
 		except Exception as e:
 			return ErrorHandler.create_error_response("400", "Bad Request. Header incorrecto.")
 
-		user = User(None, tipo, usr, pwd, fb, name, lastname, email, birthdate)
+		user = User(tipo, usr, pwd, fb, name, lastname, email, birthdate)
 
 		if (user.exists_by_username()):
 			return ErrorHandler.create_error_response("409", "Usuario o mail ya existente.")
 		
 		else:
-			id = user.stored_user_in_shared_server()
-			return ResponseBuilder.build_response(id)
+			msg = user.stored_user_in_shared_server()
+			return ResponseBuilder.build_response({"msg": msg})
 
 
 class UserController(Resource):
@@ -58,19 +58,19 @@ class UserController(Resource):
 		except Exception as e:
 			return ErrorHandler.create_error_response("400", "Bad Request. Header incorrecto.")
 
-		user = User(userId, tipo, usr, pwd, fb, name, lastname, email, birthdate)
+		user = User(tipo, usr, pwd, fb, name, lastname, email, birthdate)
 
-		if not (user.exists_by_id()):
-			return ErrorHandler.create_error_response("409", "No existe el Id")
+		if not (user.exists_by_username()):
+			return ErrorHandler.create_error_response("404", "No existe el usuario")
 		else:
 			msg = user.modify_user_in_shared_server()
-			return ResponseBuilder.build_response(msg)
+			return ResponseBuilder.build_response({"msg":msg})
 
 	def get(self, userId):
 		"""!@brief Get: obtiene info de un usuario.
 		"""
-		user = User(userId, None, None, None, None, None, None, None, None)
-		if not (user.exists_by_id()):
+		user = User(None, userId, None, None, None, None, None, None)
+		if not (user.exists_by_username()):
 			return ErrorHandler.create_error_response("409", "No existe el Id")
 		else:
 			return ResponseBuilder.build_response(userId) # debe llamar al shared y pedirle la info
@@ -80,8 +80,8 @@ class UserController(Resource):
 		"""!@brief Delete: elimina un usuario. 
 		"""
 
-		user = User(userId, None, None, None, None, None, None, None, None)
-		if not (user.exists_by_id()):
+		user = User(None, userId, None, None, None, None, None, None)
+		if not (user.exists_by_username()):
 			return ErrorHandler.create_error_response("409", "No existe el Id")
 		else:
 			return ResponseBuilder.build_response(userId) # debe llamar al shared y borrarlo
