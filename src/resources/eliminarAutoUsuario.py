@@ -16,13 +16,14 @@ from response_builder import ResponseBuilder
 class EliminarAutoUsuario(Resource):
 	"""!@brief Clase para eliminar un auto de un usuario."""
 
-	URL = "http://fiuberappserver.herokuapp.com"
-	TOKEN = "uidsfdsfuidsfjkdfsjhi" 
-	autenticador = Token() 
-	conectividad = Conectividad(URL, TOKEN)	
+
 
 	def __init__(self):
 		app = Flask(__name__)
+		self.URL = "http://fiuberappserver.herokuapp.com"
+		self.TOKEN = "uidsfdsfuidsfjkdfsjhi" 
+		self.autenticador = Token() 
+		self.conectividad = Conectividad(self.URL, self.TOKEN)	
 
 	def delete(self, IDUsuario, IDAuto):
 		"""!@brief Elimina un auto de un usuario determinado."""
@@ -34,7 +35,7 @@ class EliminarAutoUsuario(Resource):
 
 			"""Le manda los datos al Shared Server."""
 			URLDestino = "users/"+IDUsuario+"/cars/"+IDAuto
-			if(not conectividad.delete(URLDestino)):
+			if(not self.conectividad.delete(URLDestino)):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 
 		except Exception as e:
@@ -48,7 +49,7 @@ class EliminarAutoUsuario(Resource):
 
 		token = request.headers.get("Authorization").split(" ")[1]
 
-		res = autenticador.validarToken(token)
+		res = self.autenticador.validarToken(token)
 		if(not res):
 			return False
 		return True

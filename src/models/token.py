@@ -20,22 +20,17 @@ class Token(Resource):
 
 	def obtenerToken(self, nombreUsuario, contrasena):
 		"""!@brief Autentica al usuario una unica vez. Si el usuario no tenia un token anterior o expiro se crea uno y se almacena, sino se devuelve el que ya tenia asignado."""
-		try:
-			token = self._recuperarToken(nombreUsuario)
-			valido = self._validarToken(nombreUsuario, contrasena, token)
-		
-			"""Si no estaba el token o no es valido se crea otro"""
-			if(not token or not valido):
-				token = self._crear_token(nombreUsuario, contrasena)
-			return token
-
-		except Exception as e:
-			return False
-
-	def _validarToken(self, token, nombreUsuario):
 		token = self._recuperarToken(nombreUsuario)
-		valido = self._validarTokenLogin(nombreUsuario, contrasena, token)
-		return token and valido
+		valido = self._validarToken(nombreUsuario, contrasena, token)
+		
+		"""Si no estaba el token o no es valido se crea otro"""
+		if(not token or not valido):
+			token = self._crear_token(nombreUsuario, contrasena)
+		return token
+
+
+	def _validarToken(self, nombreUsuario, contrasena, token):
+		return self._validarTokenLogin(nombreUsuario, contrasena, token)
 
 	def _crear_token(self, nombreUsuario, contrasena):
 		""""Se crea un nuevo token."""		
@@ -43,10 +38,9 @@ class Token(Resource):
 		if(not token):
 			return False
 
-		"""Si no se puede almacenar no tiene sentido seguir aunque el token se haya generado"""
-		if(not self._almacenarToken(nombreUsuario, token)):
-			return False
-
+		
+		self._almacenarToken(nombreUsuario, token)
+			
 		return token
 
 	def _recuperarToken(self, nombreUsuario):
@@ -82,11 +76,13 @@ class Token(Resource):
 			    'nombreUsuario': nombreUsuario,
 			    'contrasena': contrasena
 			}
-			return jwt.encode(
+			token = jwt.encode(
 			    payload,
 			    self.CLAVE_ULTRASECRETA,
-			    algorithm = 'HS256'
-			)
+			    algorithm = 'HS256')
+			
+			return token
+			
 		except Exception as e:
 			return False
 
@@ -112,11 +108,11 @@ class Token(Resource):
 		@param token token a validar."""
 
 		try:
-			payload = jwt.decode(token, CLAVE_ULTRASECRETA)
+			payload = jwt.decode(token, self.CLAVE_ULTRASECRETA)
 			if(payload['nombreUsuario'] == nombreUsuario and payload['contrasena'] == contrasena):
-				return True;
+				return True
 			else:
-				return False;
+				return False
 
 		except Exception as e:
 			return False

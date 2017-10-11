@@ -16,20 +16,20 @@ from response_builder import ResponseBuilder
 class AutosPorPosicionCercana(Resource):
 	"""!@brief Clase para la busqueda de autos de usuarios."""
 
-	URL = "http://fiuberappserver.herokuapp.com"
-	TOKEN = "uidsfdsfuidsfjkdfsjhi" 
-	autenticador = Token() 
-	conectividad = Conectividad(URL, TOKEN)	
-
 	def __init__(self):
 		app = Flask(__name__)
+		self.URL = "http://fiuberappserver.herokuapp.com"
+		self.TOKEN = "uidsfdsfuidsfjkdfsjhi" 
+		self.autenticador = Token() 
+		self.conectividad = Conectividad(self.URL, self.TOKEN)	
 
 	def get(self):
 		"""!@brief Obtiene los conductores cercanos a un determinado usuario."""
 		response = ResponseBuilder.build_response({}, '200')
 		try:
 			"""Valida que este el parametro IDUsuario."""
-			if(not self._validate_get_request):
+			IDUsuario = self._validate_get_request()
+			if(IDUsuario == False):
 				return ErrorHandler.create_error_response(404, "Falta el parametro IDUsuario.")
 
 			"""Valida el token."""
@@ -37,13 +37,13 @@ class AutosPorPosicionCercana(Resource):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 
 			"""Le pide los datos al Shared Server."""
-			URLDestino = "users/"+IDUsuario+"/cars"
-			datos = conectividad.get(URLDestino)
+			URLDestino = "users/"+IDUsuario+"/search"
+			datos = self.conectividad.get(URLDestino)
 			if(not datos):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 
 			"""Devuelve el JSON acondicionado.""" 
-			datos = _acondicionarJSON(datos)
+			datos = self._acondicionarJSON(datos)
 			response = ResponseBuilder.build_response(datos, '200')
 
 		except Exception as e:
@@ -60,19 +60,19 @@ class AutosPorPosicionCercana(Resource):
 
 	def _validate_get_request(self):
 		"""!@brief Tiene que estar el ID del usuario que realiza la busqueda."""
-		datos = _get_param_from_request(self, "IDUsuario")
+		datos = self._get_param_from_request("IDUsuario")
 
 		if(not datos):
 			return False
 		else:
-			return True
+			return datos
 
 	def _validar_token(self):
 		"""!@brief Valida al usuario."""
 
 		token = request.headers.get("Authorization").split(" ")[1]
 
-		res = autenticador.validarToken(token)
+		res = self.autenticador.validarToken(token)
 		if(not res):
 			return False
 		return True
@@ -100,7 +100,7 @@ class AutosPorPosicionCercana(Resource):
 		i=0
 
 		for auto in datos["cars"]:
-			json[i] = _acondicionarAutoJSON(auto)
+			json[i] = self._acondicionarAutoJSON(datos["cars"][auto])
 			i += 1
 
 		return json

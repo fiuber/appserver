@@ -16,13 +16,13 @@ from response_builder import ResponseBuilder
 class AutosPorUsuario(Resource):
 	"""!@brief Clase para la busqueda de autos de un usuario."""
 
-	URL = "http://fiuberappserver.herokuapp.com"
-	TOKEN = "uidsfdsfuidsfjkdfsjhi" 
-	autenticador = Token() 
-	conectividad = Conectividad(URL, TOKEN)	
 
 	def __init__(self):
 		app = Flask(__name__)
+		self.URL = "http://fiuberappserver.herokuapp.com"
+		self.TOKEN = "uidsfdsfuidsfjkdfsjhi" 
+		self.autenticador = Token() 
+		self.conectividad = Conectividad(self.URL, self.TOKEN)	
 
 	def get(self, IDUsuario):
 		"""!@brief Obtiene los autos de un determinado conductor."""
@@ -34,12 +34,12 @@ class AutosPorUsuario(Resource):
 
 			"""Le pide los datos al Shared Server."""
 			URLDestino = "users/"+IDUsuario+"/cars"
-			datos = conectividad.get(URLDestino)
+			datos = self.conectividad.get(URLDestino)
 			if(not datos):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 
 			"""Devuelve el JSON acondicionado.""" 
-			datos = _acondicionarJSON(datos)
+			datos = self._acondicionarJSON(datos)
 			response = ResponseBuilder.build_response(datos, '200')
 
 		except Exception as e:
@@ -54,7 +54,7 @@ class AutosPorUsuario(Resource):
 
 		token = request.headers.get("Authorization").split(" ")[1]
 
-		res = autenticador.validarToken(token)
+		res = self.autenticador.validarToken(token)
 		if(not res):
 			return False
 		return True
@@ -81,7 +81,7 @@ class AutosPorUsuario(Resource):
 		i=0
 
 		for auto in datos["cars"]:
-			json[i] = _acondicionarAutoJSON(auto)
+			json[i] = self._acondicionarAutoJSON(datos["cars"][auto])
 			i += 1
 
 		return json

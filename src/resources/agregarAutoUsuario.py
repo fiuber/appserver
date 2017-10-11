@@ -16,13 +16,13 @@ from response_builder import ResponseBuilder
 class AgregarAutoUsuario(Resource):
 	"""!@brief Clase para agregar un auto a un usuario."""
 
-	URL = "http://fiuberappserver.herokuapp.com"
-	TOKEN = "uidsfdsfuidsfjkdfsjhi" 
-	autenticador = Token() 
-	conectividad = Conectividad(URL, TOKEN)	
 
 	def __init__(self):
 		app = Flask(__name__)
+		self.URL = "http://fiuberappserver.herokuapp.com"
+		self.TOKEN = "uidsfdsfuidsfjkdfsjhi" 
+		self.autenticador = Token() 
+		self.conectividad = Conectividad(self.URL, self.TOKEN)	
 
 	def post(self, IDUsuario):
 		"""!@brief Asocia informacion de un nuevo auto a un usuario."""
@@ -38,7 +38,7 @@ class AgregarAutoUsuario(Resource):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 
 			"""Le manda los datos al Shared Server."""
-			if(not conectividad.post("users/"+IDUsuario+"/cars", self._obtenerJSONPropiedadesAuto())):
+			if(not self.conectividad.post("users/"+IDUsuario+"/cars", self._obtenerJSONPropiedadesAuto())):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 
 		except Exception as e:
@@ -48,14 +48,17 @@ class AgregarAutoUsuario(Resource):
 		return response
 
 	def _get_data_from_request(self, nombrePropiedad):
-		"""!@brief Obtiene la propiedad del json contenido de la request. 
-			"""
-		return request.get_json()["nombrePropiedad"]
+		"""!@brief Obtiene la propiedad del json contenido de la request."""
+		
+		try:
+			return request.get_json()[nombrePropiedad]
+		except Exception as e:
+			return False
 
 	def _validate_request(self):
-		"""!@brief Valida que haya una request completa."""
+		"""!@brief Valida que haya una request completa (se fija solo algun parametro)."""
 
-		res = res and self._get_data_from_request("modelo")
+		res = self._get_data_from_request("modelo")
 
 		if(not res):
 			return False
@@ -67,7 +70,7 @@ class AgregarAutoUsuario(Resource):
 
 		token = request.headers.get("Authorization").split(" ")[1]
 
-		res = autenticador.validarToken(token)
+		res = self.autenticador.validarToken(token)
 		if(not res):
 			return False
 		return True

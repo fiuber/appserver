@@ -8,6 +8,7 @@ from flask_restful import Resource
 from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
+from src.models.conectividad import Conectividad
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
@@ -15,73 +16,66 @@ from response_builder import ResponseBuilder
 class Auth(Resource):
 	"""!@brief Clase para autenticacion y creacion del Token."""
 
-	autenticador = Token() 
-
 	def __init__(self):
 		app = Flask(__name__)
+		self.conectividad = Conectividad("http://www.jkdsfjbkdsgfye.com", "jbdgjhvfghvjfgv3yut5")
+		self.autenticador = Token() 
 
 	def post(self):
 		"""!@brief Autentica al usuario una unica vez."""
 		response = None
-		try:
-			valid = self._validate_request()
-			if(not valid):
-				return ErrorHandler.create_error_response(500, "Request no tiene un json")
+		
+		valid = self._validate_request()
+		if(not valid):
+			return ErrorHandler.create_error_response(500, "Request no tiene un json")
 
-			"""Si no se recibieron los datos todo mal."""
-			nombreUsuario = self._get_user_from_request()
-			contrasena = self._get_hashPassword_from_request()
+		"""Si no se recibieron los datos todo mal."""
+		nombreUsuario = self._get_user_from_request()
+		contrasena = self._get_hashPassword_from_request()
 
-			if(not nombreUsuario or not contrasena):
-				return ErrorHandler.create_error_response(500, "No se recibieron los campos esperados del json.")
+		if(not nombreUsuario or not contrasena):
+			return ErrorHandler.create_error_response(500, "No se recibieron los campos esperados del json.")
 
-			"""Primero verifica que exista en el shared server."""
-			if(not self._existe_usuario_en_sharedServer(nombreUsuario, contrasena)):
-				return ErrorHandler.create_error_response(404, "No existe usuario registrado con esas credenciales.")
+		"""Primero verifica que exista en el shared server."""
+		if(not self._existe_usuario_en_sharedServer(nombreUsuario, contrasena)):
+			return ErrorHandler.create_error_response(404, "No existe usuario registrado con esas credenciales.")
 
-			token = Auth.autenticador.obtenerToken(nombreUsuario, contrasena)
-			
-			if(not token):
-				return ErrorHandler.create_error_response(500, "No se pudo generar el token.")
+		token = self.autenticador.obtenerToken(nombreUsuario, contrasena)
+		
+		if(not token):
+			return ErrorHandler.create_error_response(500, "No se pudo generar el token.")
 
-			jsonToken = {}
-			jsonToken['token'] = token
-			jsonToken['tipo'] = self._get_tipo(nombreUsuario)
+		jsonToken = {}
+		jsonToken['token'] = token
 
-			"""REVISAR CUANDO EL SHARED SERVER ESTE OK"""
-			if (jsonToken['tipo'] == ''):
-				response = ErrorHandler.create_error_response(404, "No existe usuario registrado con esas credenciales.")
-			else:
-				response = ResponseBuilder.build_response(jsonToken, '200')
+		response = ResponseBuilder.build_response(jsonToken, '200')
 
-		except Exception as e:
-			status_code = 403
-			msg = str(e)
-			response = ErrorHandler.create_error_response(status_code, msg)
+		
 		return response
-
-	def _get_tipo(self, nombreUsuario):
-		'''borrar, esta hecho para que franco pueda seguir'''
-		if (nombreUsuario == 'choferFranco'):
-			return 'chofer'
-		elif (nombreUsuario == 'pasajeroFranco'):
-			return 'pasajero'
-		else:
-			return ''
 
 	def _get_user_from_request(self):
 		"""!@brief Obtiene el nombre de usuario de la request."""
-		return request.get_json()["nombreUsuario"]
+		datos = None;
+		try:
+			datos = request.get_json()["nombreUsuario"]
+		except Exception as e:
+			datos = False
+		return datos
 	
 	def _get_hashPassword_from_request(self):
-		"""!@brief Obtiene la contraseña de la request.	"""
-		return request.get_json()["contrasena"]
+		"""!@brief Obtiene la contraseña de la request.	""" 
+		datos = None;
+		try:
+			datos = request.get_json()["contrasena"]
+		except Exception as e:
+			datos = False
+		return datos
 
 	def _validate_request(self):
 		"""!@brief Valida que haya una request."""
-		datos = request.get_json(silent=True);
 
-		if(not datos):
+		
+		if(request.get_json() == None):
 			return False
 		else:
 			return True
@@ -90,6 +84,7 @@ class Auth(Resource):
 		"""!@brief Valida al usuario con el shared server."""
 
 		cuerpo = {'username': nombreUsuario, 'password': contrasena}
-		respuesta = conectividad.post("users/validate", cuerpo)
+		
+		respuesta = self.conectividad.post("users/validate", cuerpo)
 
 		return respuesta == True

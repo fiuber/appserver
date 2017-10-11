@@ -16,13 +16,14 @@ from response_builder import ResponseBuilder
 class ModificarAutoUsuario(Resource):
 	"""!@brief Clase para modificar un auto de un usuario."""
 
-	URL = "http://fiuberappserver.herokuapp.com"
-	TOKEN = "uidsfdsfuidsfjkdfsjhi" 
-	autenticador = Token() 
-	conectividad = Conectividad(URL, TOKEN)	
 
 	def __init__(self):
 		app = Flask(__name__)
+		self.URL = "http://fiuberappserver.herokuapp.com"
+		self.TOKEN = "uidsfdsfuidsfjkdfsjhi" 
+		self.autenticador = Token() 
+		self.conectividad = Conectividad(self.URL, self.TOKEN)	
+
 
 	def put(self, IDUsuario, IDAuto):
 		"""!@brief Modifica los datos de un auto de un determinado usuario."""
@@ -39,7 +40,7 @@ class ModificarAutoUsuario(Resource):
 
 			"""Le manda los datos al Shared Server."""
 			URLDestino = "users/"+IDUsuario+"/cars/"+IDAuto
-			if(not conectividad.post(URLDestino, self.obtenerJSON())):
+			if(not self.conectividad.put(URLDestino, self._obtenerJSON(IDUsuario, IDAuto))):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 
 		except Exception as e:
@@ -49,15 +50,17 @@ class ModificarAutoUsuario(Resource):
 		return response
 
 	def _get_data_from_request(self, nombrePropiedad):
-		"""!@brief Obtiene la propiedad del json contenido de la request. 
-			"""
-		return request.get_json()["nombrePropiedad"]
+		"""!@brief Obtiene la propiedad del json contenido de la request."""
 
+		try:
+			return request.get_json()[nombrePropiedad]
+		except Exception as e:
+			return False
 
 	def _validate_request(self):
 		"""!@brief Valida que haya una request completa."""
 
-		res = res and self._get_data_from_request("modelo")
+		res = self._get_data_from_request("modelo")
 
 		if(not res):
 			return False
@@ -69,7 +72,7 @@ class ModificarAutoUsuario(Resource):
 
 		token = request.headers.get("Authorization").split(" ")[1]
 
-		res = autenticador.validarToken(token)
+		res = self.autenticador.validarToken(token)
 		if(not res):
 			return False
 		return True
@@ -83,10 +86,10 @@ class ModificarAutoUsuario(Resource):
 			"aireAcondicionado": self._get_data_from_request("aireAcondicionado"),
 			"musica": self._get_data_from_request("musica")}
 
-	def _obtenerJSON(self):
-		return {"id": self._get_param_from_request("idAuto"),
+	def _obtenerJSON(self, IDUsuario, IDAuto):
+		return {"id": IDAuto,
 			"_ref": "dsfjkfgjf",
-			"owner": self._get_param_from_request("idUsuario"),
+			"owner": IDUsuario,
 			"properties": self._obtenerJSONPropiedadesAuto()}
 
 		

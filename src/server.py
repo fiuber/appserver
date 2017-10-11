@@ -16,7 +16,7 @@ from src.models.conectividad import Conectividad
 from resources.index import HelloWorld
 from resources.auth import Auth
 from resources.userControl import Register, UserController
-from resources.autosPorID import AutosPorID
+from resources.autoPorID import AutoPorID
 from resources.autosPorUsuario import AutosPorUsuario
 from resources.autosPorPosicionCercana import AutosPorPosicionCercana
 from resources.agregarAutoUsuario import AgregarAutoUsuario
@@ -34,7 +34,7 @@ api.add_resource(UserController, '/user/<userId>')
 api.add_resource(AgregarAutoUsuario, '/driver/<IDUsuario>/cars')
 api.add_resource(ModificarAutoUsuario, '/driver/<IDUsuario>/cars/<IDAuto>')
 api.add_resource(EliminarAutoUsuario, '/driver/<IDUsuario>/cars/<IDAuto>')
-api.add_resource(AutosPorID, '/driver/<IDUsuario>/cars/<IDAuto>')
+api.add_resource(AutoPorID, '/driver/<IDUsuario>/cars/<IDAuto>')
 api.add_resource(AutosPorUsuario, '/driver/<IDUsuario>/cars')
 api.add_resource(AutosPorPosicionCercana, '/driver/search')
 
