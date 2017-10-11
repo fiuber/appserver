@@ -22,18 +22,10 @@ class Conectividad(Resource):
 		self.URL = URL
 		headers = {"Content-Type": "application/json"}
 		body = {"username": "admin","password": "admin"}
-		print body
 		firstEndPoint = 'token'
-		r = requests.post(self.URL+'/'+firstEndPoint, data = body, headers = headers)
-		#r = requests.get('https://fiuber-shared.herokuapp.com/')
-		print r.headers
-		
-		print '##################'
-		print r.text
-		#res=json.loads(r.text)
-		#print res
-		#adminToken = res["token"]["token"]
-		#print adminToken
+		r = requests.post(self.URL+'/'+firstEndPoint, data = json.dumps(body), headers = headers)
+		res=json.loads(r.text)
+		adminToken = res["token"]["token"]
 
 		
 
