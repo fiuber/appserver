@@ -30,13 +30,13 @@ paths:
                 type: string
               contraseña:
                 type: string
+              tokenFacebook:
+                type: string
       responses:
         '200':
           description: Operacion Exitosa. Devuelve el token como texto plano.
           schema:
             properties:
-              tipo:
-                type: string
               token:
                 type: string
                 example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmVVc3VhcmlvIjoiTWFjcm9zYUNhdCIsImlhdCI6MTUwNTg0MjE0MCwiY29udHJhc2VuYSI6IlRUUkVSV1RXVCIsImV4cCI6MTUwNTkyODU0MH0.f2tDsuCGjXvR6LY0-yRQ5ZQAqDv4IA-4BdWa9Bfn2Dg
@@ -151,7 +151,13 @@ paths:
         '200':
           description: Operacion Exitosa
           schema:
-            $ref: '#/definitions/driver'
+            properties:
+              1:
+                $ref: '#/definitions/driver'
+              2:
+                $ref: '#/definitions/driver'
+              3:
+                $ref: '#/definitions/driver'
         '400':
           description: Token invalido o expirado.
         '404':
@@ -286,7 +292,7 @@ paths:
         '404':
           description: Error al comunicarse con Shared Server.
 
-/passenger:
+  /passenger:
     get:
       summary: Obtiene los datos de facturacion del pasajero
       description: ''
@@ -349,7 +355,7 @@ paths:
             properties: {}
         '400':
           description: Cantidad de parametros incorrectos
-/direction:
+  /direction:
     get:
       summary: Obtiene la ruta entre dos ubicaciones
       description: ''
@@ -373,7 +379,7 @@ paths:
             $ref: '#/definitions/direction'
         '400':
           description: Cantidad de parametros incorrectos
-/transaction:
+  /transaction:
     get:
       summary: Obtiene los datos de una transaccion de un usuario
       description: ''
@@ -392,7 +398,7 @@ paths:
             $ref: '#/definitions/transaction'
         '400':
           description: Cantidad de parametros incorrectos
-/trip:
+  /trip:
     get:
       summary: Obtiene los datos de viajes de un usuario
       description: Si se omite el idViaje se devuelven todos los viajes de ese usuario
