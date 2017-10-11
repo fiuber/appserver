@@ -6,15 +6,22 @@ from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 
 from src.models.user import User
+from src.models.conectividad import Conectividad
+
+def conectarEj():
+	conect = Conectividad("https://fiuber-shared.herokuapp.com")
+
 
 class Register(Resource):
 	"""!@brief Clase para registro de nuevo usuario. 
 	"""
+	def get(self):
+		conectarEj()
 	
 	def post(self):
 		"""!@brief Post: agrega un usuario.
 		"""
-	
+		conectarEj()
 		try:
 			tipo = request.get_json()["type"]
 			usr = request.get_json()["username"]
@@ -69,6 +76,7 @@ class UserController(Resource):
 	def get(self, userId):
 		"""!@brief Get: obtiene info de un usuario.
 		"""
+		conectarEj()
 		user = User(userId, None, None, None, None, None, None, None, None)
 		if not (user.exists_by_id()):
 			return ErrorHandler.create_error_response("409", "No existe el Id")
