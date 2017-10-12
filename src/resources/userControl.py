@@ -6,36 +6,43 @@ from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 
 from src.models.user import User
+from src.models.conectividad import Conectividad
+
 
 class Register(Resource):
 	"""!@brief Clase para registro de nuevo usuario. 
 	"""
+	def get(self):
+		connect = Conectividad("https://fiuber-shared.herokuapp.com")
+		res = connect.get("users", {})
+		return ResponseBuilder.build_response(res, 200)
+
 	
 	def post(self):
 		"""!@brief Post: agrega un usuario.
 		"""
-	
+		connect = Conectividad("https://fiuber-shared.herokuapp.com")
 		try:
-			tipo = request.get_json()["type"]
-			usr = request.get_json()["username"]
-			pwd = request.get_json()["password"]
-			fb = request.get_json()["fb"]
-			name = request.get_json()["firstName"]
-			lastname = request.get_json()["lastName"]
-			email = request.get_json()["email"]
-			birthdate = request.get_json()["birthdate"]
+			body = {
+				"_ref": "649.7872072956419", #mal
+				"type": request.get_json()["type"],
+				"username": request.get_json()["username"],
+				"password": request.get_json()["password"],
+				"firstName": request.get_json()["firstName"],
+				"lastName": request.get_json()["lastName"],
+				"country": request.get_json()["country"],
+				"email": request.get_json()["email"],
+				"birthdate": request.get_json()["birthdate"],
+				"images": ["1.png","2.png","3.png"]
+			}
+			
 			
 		except Exception as e:
 			return ErrorHandler.create_error_response("400", "Bad Request. Header incorrecto.")
 
-		user = User(None, tipo, usr, pwd, fb, name, lastname, email, birthdate)
+		res = connect.post("users", body, {})
 
-		if (user.exists_by_username()):
-			return ErrorHandler.create_error_response("409", "Usuario o mail ya existente.")
-		
-		else:
-			id = user.stored_user_in_shared_server()
-			return ResponseBuilder.build_response(id)
+		return ResponseBuilder.build_response(res, 201)
 
 
 class UserController(Resource):
@@ -45,43 +52,44 @@ class UserController(Resource):
 	def put(self, userId):
 		"""!@brief Put: modifica un usuario. 
 		"""
+		connect = Conectividad("https://fiuber-shared.herokuapp.com")
+		userId = "6" # el del ref harcodeado de abajo
 		try:
-			tipo = request.get_json()["type"]
-			usr = request.get_json()["username"]
-			pwd = request.get_json()["password"]
-			fb = request.get_json()["fb"]
-			name = request.get_json()["firstName"]
-			lastname = request.get_json()["lastName"]
-			email = request.get_json()["email"]
-			birthdate = request.get_json()["birthdate"]
+			body = {
+				"_ref": "279.7715224711099",  # donde lo deberia tomar?????
+				"type": request.get_json()["type"],
+				"username": request.get_json()["username"],
+				"password": request.get_json()["password"],
+				"firstName": request.get_json()["firstName"],
+				"lastName": request.get_json()["lastName"],
+				"country": request.get_json()["country"],
+				"email": request.get_json()["email"],
+				"birthdate": request.get_json()["birthdate"],
+				"images": ["1.png","2.png","3.png"]
+			}
 
 		except Exception as e:
 			return ErrorHandler.create_error_response("400", "Bad Request. Header incorrecto.")
 
-		user = User(userId, tipo, usr, pwd, fb, name, lastname, email, birthdate)
+		res = connect.put("users/"+userId, body, {})
 
-		if not (user.exists_by_id()):
-			return ErrorHandler.create_error_response("409", "No existe el Id")
-		else:
-			msg = user.modify_user_in_shared_server()
-			return ResponseBuilder.build_response(msg)
+		return ResponseBuilder.build_response(res, 200)
 
 	def get(self, userId):
 		"""!@brief Get: obtiene info de un usuario.
 		"""
-		user = User(userId, None, None, None, None, None, None, None, None)
-		if not (user.exists_by_id()):
-			return ErrorHandler.create_error_response("409", "No existe el Id")
-		else:
-			return ResponseBuilder.build_response(userId) # debe llamar al shared y pedirle la info
+		connect = Conectividad("https://fiuber-shared.herokuapp.com")
+
+		res = connect.get("users/"+userId, {})
+		
+		return ResponseBuilder.build_response(res, 200)
 
 
 	def delete(self, userId):
 		"""!@brief Delete: elimina un usuario. 
 		"""
+		connect = Conectividad("https://fiuber-shared.herokuapp.com")
 
-		user = User(userId, None, None, None, None, None, None, None, None)
-		if not (user.exists_by_id()):
-			return ErrorHandler.create_error_response("409", "No existe el Id")
-		else:
-			return ResponseBuilder.build_response(userId) # debe llamar al shared y borrarlo
+		res = connect.delete("users/"+userId, {}, {})
+
+		return ResponseBuilder.build_response(res, 204)
