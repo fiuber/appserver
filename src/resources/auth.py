@@ -17,7 +17,6 @@ class Auth(Resource):
 	"""!@brief Clase para autenticacion y creacion del Token."""
 
 	def __init__(self):
-		app = Flask(__name__)
 		self.conectividad = Conectividad("http://fiuber-shared.herokuapp.com", "MjI2Ljg0NzU2MzkzMTIwMDY1")
 		self.autenticador = Token() 
 
@@ -87,4 +86,4 @@ class Auth(Resource):
 		
 		respuesta = self.conectividad.post("users/validate", cuerpo)
 
-		return respuesta == True
+		return respuesta != False

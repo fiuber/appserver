@@ -12,13 +12,13 @@ from src.models.conectividad import Conectividad
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
+from src import app
 
 class AgregarAutoUsuario(Resource):
 	"""!@brief Clase para agregar un auto a un usuario."""
 
 
 	def __init__(self):
-		app = Flask(__name__)
 		self.URL = "http://fiuberappserver.herokuapp.com"
 		self.TOKEN = "uidsfdsfuidsfjkdfsjhi" 
 		self.autenticador = Token() 

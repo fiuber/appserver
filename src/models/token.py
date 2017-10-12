@@ -7,15 +7,12 @@ import json
 from flask_restful import Resource
 from flask import Flask, request
 from flask_pymongo import PyMongo
+from src import mongo
 
 class Token(Resource):
 	"""!@brief Clase para autenticacion y creacion del Token."""
 
 	def __init__(self):
-		app = Flask(__name__)
-		app.config['MONGO_DBNAME'] = 'fiuberappserver'
-		app.config['MONGO_URI'] = 'mongodb://fiuberappserver:fiuberappserver@ds123534.mlab.com:23534/fiuberappserver'
-		self.mongo = PyMongo(app)
 		self.CLAVE_ULTRASECRETA = "SV3v9%\"$:G0:E?."
 
 	def obtenerToken(self, nombreUsuario, contrasena):
@@ -26,6 +23,7 @@ class Token(Resource):
 		"""Si no estaba el token o no es valido se crea otro"""
 		if(not token or not valido):
 			token = self._crear_token(nombreUsuario, contrasena)
+
 		return token
 
 
@@ -39,7 +37,8 @@ class Token(Resource):
 			return False
 
 		
-		self._almacenarToken(nombreUsuario, token)
+		if(self._almacenarToken(nombreUsuario, token) == False):
+			return False
 			
 		return token
 
@@ -50,13 +49,14 @@ class Token(Resource):
 		@param nombreUsuario Nombre del usuario."""
 
 		try:
-			usuarios = self.mongo.db.usuarios
+			usuarios = mongo.db.usuarios
 			usuario = usuarios.find_one({'nombreUsuario': nombreUsuario})
 			if(usuario):
 				return usuario['token']
 			else:
 				return False
 		except Exception as e:
+			print "No se recupero" + str(e)
 			return False
 			
 
@@ -93,9 +93,13 @@ class Token(Resource):
 		@param nombreUsuario Nombre del usuario.
 		@param token token a guardar."""
 
-		usuarios = self.mongo.db.usuarios
-		
-		usuarios.update_one({"nombreUsuario" : nombreUsuario}, {"token": token}, upsert=True)
+		try:
+			usuarios = mongo.db.usuarios
+			usuarios.update({"nombreUsuario" : nombreUsuario}, {"nombreUsuario" : nombreUsuario, "token": token}, upsert=True)
+		except Exception as e:
+			print "No se almaceno" + str(e)
+			return False
+
 		return True
 	
 

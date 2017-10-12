@@ -11,6 +11,7 @@ from logging.config import fileConfig
 from flask_pymongo import PyMongo
 
 from src.models.conectividad import Conectividad
+from src import api, app
 
 
 from resources.index import HelloWorld
@@ -23,14 +24,12 @@ from resources.agregarAutoUsuario import AgregarAutoUsuario
 from resources.eliminarAutoUsuario import EliminarAutoUsuario
 from resources.modificarAutoUsuario import ModificarAutoUsuario
 
-app = Flask(__name__)
-api = Api(app)
 
 
 api.add_resource(HelloWorld, '/')
 api.add_resource(Auth, '/token')
 api.add_resource(Register, '/users')
-api.add_resource(UserController, '/user/<userId>')
++api.add_resource(UserController, '/users/<userId>')
 api.add_resource(AgregarAutoUsuario, '/driver/<IDUsuario>/cars')
 api.add_resource(ModificarAutoUsuario, '/driver/<IDUsuario>/cars/<IDAuto>')
 api.add_resource(EliminarAutoUsuario, '/driver/<IDUsuario>/cars/<IDAuto>')
