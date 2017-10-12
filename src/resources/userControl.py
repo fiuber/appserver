@@ -8,6 +8,8 @@ from response_builder import ResponseBuilder
 from src.models.user import User
 from src.models.conectividad import Conectividad
 
+import json
+
 
 class Register(Resource):
 	"""!@brief Clase para registro de nuevo usuario. 
@@ -53,10 +55,13 @@ class UserController(Resource):
 		"""!@brief Put: modifica un usuario. 
 		"""
 		connect = Conectividad("https://fiuber-shared.herokuapp.com")
-		userId = "6" # el del ref harcodeado de abajo
+		
+		interResp = self.get(userId)
+		_ref = json.loads(interResp.get_data())["_ref"]
+
 		try:
 			body = {
-				"_ref": "610.6623890863641",  # donde lo deberia tomar?????
+				"_ref": _ref,  # donde lo deberia tomar?????
 				"type": request.get_json()["type"],
 				"username": request.get_json()["username"],
 				"password": request.get_json()["password"],
@@ -83,6 +88,7 @@ class UserController(Resource):
 		res = connect.get("users/"+userId, {})
 
 		responseJson = {
+			"_ref": res["user"]["_ref"],
 			"name": res["user"]["name"],
 			"surname": res["user"]["surname"],
 			"email": res["user"]["email"],
