@@ -65,7 +65,7 @@ class Conectividad(Resource):
 
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.post(self.URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
-		if(r.status_code != 201):
+		if(r.status_code > 210):
 			return r.reason
 		else:
 			try:

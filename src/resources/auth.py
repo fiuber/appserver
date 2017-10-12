@@ -46,6 +46,7 @@ class Auth(Resource):
 
 		jsonToken = {}
 		jsonToken['token'] = token
+		jsonToken["id"] = self.id
 
 		response = ResponseBuilder.build_response(jsonToken, '200')
 
@@ -83,7 +84,9 @@ class Auth(Resource):
 		"""!@brief Valida al usuario con el shared server."""
 
 		cuerpo = {'username': nombreUsuario, 'password': contrasena}
-		
+
 		respuesta = self.conectividad.post("users/validate", cuerpo)
+
+		self.id = respuesta["user"]["id"]
 
 		return respuesta != False
