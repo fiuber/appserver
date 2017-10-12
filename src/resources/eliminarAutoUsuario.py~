@@ -14,38 +14,34 @@ from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 from src import app
 
-class AutoPorID(Resource):
-	"""!@brief Clase para la busqueda de un auto de un conductor."""
+class EliminarAutoUsuario(Resource):
+	"""!@brief Clase para eliminar un auto de un usuario."""
+
+
 
 	def __init__(self):
 		self.URL = "http://fiuber-shared.herokuapp.com"
 		self.autenticador = Token() 
 		self.conectividad = Conectividad(self.URL)	
 
-	def get(self, IDUsuario, IDAuto):
-		"""!@brief Obtiene los datos de un auto de un conductor."""
+	def delete(self, IDUsuario, IDAuto):
+		"""!@brief Elimina un auto de un usuario determinado."""
 		response = ResponseBuilder.build_response({}, '200')
 		try:
 			"""Primero valida el token."""
 			if(not self._validar_token()):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 
-			"""Le pide los datos al Shared Server."""
+			"""Le manda los datos al Shared Server."""
 			URLDestino = "users/"+IDUsuario+"/cars/"+IDAuto
-			datos = self.conectividad.get(URLDestino)
-			if(not datos):
+			if(not self.conectividad.delete(URLDestino)):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
-
-			"""Devuelve el JSON acondicionado.""" 
-			datos = self._acondicionarJSON(datos)
-			response = ResponseBuilder.build_response(datos, '200')
 
 		except Exception as e:
 			status_code = 403
 			msg = str(e)
 			response = ErrorHandler.create_error_response(status_code, msg)
 		return response
-
 
 	def _validar_token(self):
 		"""!@brief Valida al usuario."""
@@ -57,19 +53,3 @@ class AutoPorID(Resource):
 			return False
 		return True
 
-	def _acondicionarJSON(self, datos):
-		"""!@brief Acondiciona un solo auto pasado.
-
-		@param datos Es el auto a acondicionar."""
-
-		json = {}
-
-		dato = datos["car"]["properties"]
-		json["_ref"] = datos["car"]["_ref"]
-		json["id"] = datos["car"]["id"]
-
-		for prop in dato:
-			json[prop["name"]] =prop["value"] 
-		
-
-		return json

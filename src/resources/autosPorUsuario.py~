@@ -14,16 +14,17 @@ from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 from src import app
 
-class AutoPorID(Resource):
-	"""!@brief Clase para la busqueda de un auto de un conductor."""
+class AutosPorUsuario(Resource):
+	"""!@brief Clase para la busqueda de autos de un usuario."""
+
 
 	def __init__(self):
 		self.URL = "http://fiuber-shared.herokuapp.com"
 		self.autenticador = Token() 
 		self.conectividad = Conectividad(self.URL)	
 
-	def get(self, IDUsuario, IDAuto):
-		"""!@brief Obtiene los datos de un auto de un conductor."""
+	def get(self, IDUsuario):
+		"""!@brief Obtiene los autos de un determinado conductor."""
 		response = ResponseBuilder.build_response({}, '200')
 		try:
 			"""Primero valida el token."""
@@ -31,7 +32,7 @@ class AutoPorID(Resource):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 
 			"""Le pide los datos al Shared Server."""
-			URLDestino = "users/"+IDUsuario+"/cars/"+IDAuto
+			URLDestino = "users/"+IDUsuario+"/cars"
 			datos = self.conectividad.get(URLDestino)
 			if(not datos):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
@@ -57,19 +58,31 @@ class AutoPorID(Resource):
 			return False
 		return True
 
-	def _acondicionarJSON(self, datos):
+	def _acondicionarAutoJSON(self, datos):
 		"""!@brief Acondiciona un solo auto pasado.
 
 		@param datos Es el auto a acondicionar."""
 
 		json = {}
 
-		dato = datos["car"]["properties"]
-		json["_ref"] = datos["car"]["_ref"]
-		json["id"] = datos["car"]["id"]
-
-		for prop in dato:
-			json[prop["name"]] =prop["value"] 
+		for prop in datos:
+			json[prop["name"]] = prop["value"] 
 		
+
+		return json
+
+	def _acondicionarJSON(self, datos):
+		"""!@brief Itera en los autos y arma el JSON.
+
+		@param datos La response que se obtuvo del Shared Server."""
+
+		json = {}
+		i=0
+
+		
+		for auto in datos["cars"]:
+			json[auto["id"]] = self._acondicionarAutoJSON(auto["properties"])
+			json[i]["_ref"] = auto["_ref"]
+			i += 1
 
 		return json

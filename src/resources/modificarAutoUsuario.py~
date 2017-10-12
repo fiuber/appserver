@@ -40,10 +40,9 @@ class ModificarAutoUsuario(Resource):
 			"""Le manda los datos al Shared Server."""
 			URLDestino = "users/"+IDUsuario+"/cars/"+IDAuto
 			res = self.conectividad.put(URLDestino, self._obtenerJSON(IDUsuario, IDAuto))
-			
+			response = ResponseBuilder.build_response({"_ref": res["car"]["_ref"]}, '200')
 			if(not res):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
-			response = ResponseBuilder.build_response({"_ref": res["car"]["_ref"]}, '200')
 
 		except Exception as e:
 			status_code = 403

@@ -13,18 +13,12 @@ def jsonIguales(j1, j2):
 
 	res = True
 
-	try:
-
-		res = res and (j1['modelo'] == j2['modelo'])
-		res = res and (j1["color"] == j2["color"])
-		res = res and (j1["patente"] == j2["patente"])
-		res = res and (j1["anio"] == j2["anio"])
-		res = res and (j1["aireAcondicionado"] == j2["aireAcondicionado"])
-		res = res and (j1["musica"] == j2["musica"])
-
-	except Exception as e:
-		pass
-
+	res = res and (j1['modelo'] == j2['modelo'])
+	res = res and (j1["color"] == j2["color"])
+	res = res and (j1["patente"] == j2["patente"])
+	res = res and (j1["anio"] == j2["anio"])
+	res = res and (j1["aireAcondicionado"] == j2["aireAcondicionado"])
+	res = res and (j1["musica"] == j2["musica"])
 	return res
 
 class TestEndpointAutoPorID(unittest.TestCase):

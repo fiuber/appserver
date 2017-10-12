@@ -75,7 +75,7 @@ class TestEndpointToken(unittest.TestCase):
 				  data = json.dumps(JSON),
 				  content_type = "application/json")
 
-		self.assertNotEqual(rv.status_code,200)
+		self.assertNotEqual(rv.status_code, 200)
 
 	@patch("src.resources.auth.Conectividad")
 	@patch("src.resources.auth.Token")

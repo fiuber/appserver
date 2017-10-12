@@ -63,13 +63,13 @@ class AutosPorUsuario(Resource):
 
 		@param datos Es el auto a acondicionar."""
 
-		return {"modelo": datos["modelo"],
-			"color": datos["color"],
-			"patente": datos["patente"],
-			"anio": datos["anio"],
-			"estado": datos["estado"],
-			"aireAcondicionado": datos["aireAcondicionado"],
-			"musica": datos["musica"]}
+		json = {}
+
+		for prop in datos:
+			json[prop["name"]] = prop["value"] 
+		
+
+		return json
 
 	def _acondicionarJSON(self, datos):
 		"""!@brief Itera en los autos y arma el JSON.
@@ -81,7 +81,9 @@ class AutosPorUsuario(Resource):
 
 		
 		for auto in datos["cars"]:
-			json[i] = self._acondicionarAutoJSON(datos["cars"][auto])
+			json[i] = self._acondicionarAutoJSON(auto["properties"])
+			json[i]["_ref"] = auto["_ref"]
+			json[i]["id"] = auto["id"]
 			i += 1
 
 		return json

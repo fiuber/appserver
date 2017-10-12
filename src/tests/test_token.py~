@@ -135,4 +135,4 @@ class TestToken(unittest.TestCase):
 		p = PropertyMock(return_value = mockFind)
 		type(mockPyMongo.db).usuarios = p  	
 		
-		self.assertEqual(autenticador.obtenerToken("Mario", "1234"),False)
+		self.assertNotEqual(autenticador.obtenerToken("Mario", "1234"),False)
