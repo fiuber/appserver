@@ -23,12 +23,8 @@ class Conectividad(Resource):
 	def __init__(self, URL):
 		"""!@brief Constructor
 
-<<<<<<< HEAD
-		@param URL URL base de todas las peticiones"""
-=======
 		@param URL URL base de todas las peticiones
 		@param appServerToken El token de autenticacion del appServer"""
->>>>>>> b0b83bab8003d11c43dc40e10153cfb3d36f5dea
 		if (self.__initialized): return
 
 		app = Flask(__name__)
@@ -69,13 +65,8 @@ class Conectividad(Resource):
 
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.post(self.URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
-<<<<<<< HEAD
-		if(r.status_code < 200 or r.status_code > 210):
-			return False
-=======
-		if(r.status_code != 201):
+		if(r.status_code > 210):
 			return r.reason
->>>>>>> b0b83bab8003d11c43dc40e10153cfb3d36f5dea
 		else:
 			try:
 				return json.loads(r.text)
@@ -90,13 +81,8 @@ class Conectividad(Resource):
 
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.get(self.URL+'/'+endpoint, headers=headers, params = diccionarioParametros)
-<<<<<<< HEAD
-		if(r.status_code < 200 or r.status_code > 210):
-			return False
-=======
 		if(r.status_code != 200):
 			return r.reason
->>>>>>> b0b83bab8003d11c43dc40e10153cfb3d36f5dea
 		else:
 			try:
 				return json.loads(r.text)
@@ -112,13 +98,8 @@ class Conectividad(Resource):
 
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.put(self.URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
-<<<<<<< HEAD
-		if(r.status_code < 200 or r.status_code > 210):
-			return False
-=======
 		if(r.status_code != 200):
 			return r.text
->>>>>>> b0b83bab8003d11c43dc40e10153cfb3d36f5dea
 		else:
 			try:
 				return json.loads(r.text)
@@ -134,13 +115,8 @@ class Conectividad(Resource):
 
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.delete(self.URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
-<<<<<<< HEAD
-		if(r.status_code < 200 or r.status_code > 210):
-			return False
-=======
 		if(r.status_code != 204):
 			return r.reason
->>>>>>> b0b83bab8003d11c43dc40e10153cfb3d36f5dea
 		else:
 			try:
 				return json.loads(r.text)

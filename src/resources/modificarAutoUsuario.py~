@@ -19,6 +19,7 @@ class ModificarAutoUsuario(Resource):
 
 
 	def __init__(self):
+		app = Flask(__name__)
 		self.URL = "http://fiuber-shared.herokuapp.com"
 		self.autenticador = Token() 
 		self.conectividad = Conectividad(self.URL)	

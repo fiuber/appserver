@@ -66,7 +66,7 @@ class Conectividad(Resource):
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.post(self.URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
 		if(r.status_code > 210):
-			return r.reason
+			return False
 		else:
 			try:
 				return json.loads(r.text)
@@ -82,7 +82,7 @@ class Conectividad(Resource):
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.get(self.URL+'/'+endpoint, headers=headers, params = diccionarioParametros)
 		if(r.status_code != 200):
-			return r.reason
+			return False
 		else:
 			try:
 				return json.loads(r.text)
@@ -99,7 +99,7 @@ class Conectividad(Resource):
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.put(self.URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
 		if(r.status_code != 200):
-			return r.text
+			return False
 		else:
 			try:
 				return json.loads(r.text)
@@ -116,7 +116,7 @@ class Conectividad(Resource):
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.delete(self.URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
 		if(r.status_code != 204):
-			return r.reason
+			return False
 		else:
 			try:
 				return json.loads(r.text)

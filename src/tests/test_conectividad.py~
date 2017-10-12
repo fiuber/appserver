@@ -106,7 +106,7 @@ class TestConectividad(unittest.TestCase):
 		conectividad = Conectividad("www.llallala.com")
 
 		MockAux = MagicMock()
-		p = PropertyMock(return_value = 204)
+		p = PropertyMock(return_value = 200)
 		type(MockAux).status_code = p  
 
 		mockRequest.put.return_value = MockAux

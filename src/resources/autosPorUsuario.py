@@ -12,17 +12,16 @@ from src.models.conectividad import Conectividad
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
+from src import app
 
 class AutosPorUsuario(Resource):
 	"""!@brief Clase para la busqueda de autos de un usuario."""
 
 
 	def __init__(self):
-		app = Flask(__name__)
-		self.URL = "http://fiuberappserver.herokuapp.com"
-		self.TOKEN = "uidsfdsfuidsfjkdfsjhi" 
+		self.URL = "http://fiuber-shared.herokuapp.com"
 		self.autenticador = Token() 
-		self.conectividad = Conectividad(self.URL, self.TOKEN)	
+		self.conectividad = Conectividad(self.URL)	
 
 	def get(self, IDUsuario):
 		"""!@brief Obtiene los autos de un determinado conductor."""
@@ -80,6 +79,7 @@ class AutosPorUsuario(Resource):
 		json = {}
 		i=0
 
+		
 		for auto in datos["cars"]:
 			json[i] = self._acondicionarAutoJSON(datos["cars"][auto])
 			i += 1

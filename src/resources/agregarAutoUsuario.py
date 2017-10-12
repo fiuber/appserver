@@ -19,10 +19,9 @@ class AgregarAutoUsuario(Resource):
 
 
 	def __init__(self):
-		self.URL = "http://fiuberappserver.herokuapp.com"
-		self.TOKEN = "uidsfdsfuidsfjkdfsjhi" 
+		self.URL = "http://fiuber-shared.herokuapp.com"
 		self.autenticador = Token() 
-		self.conectividad = Conectividad(self.URL, self.TOKEN)	
+		self.conectividad = Conectividad(self.URL)	
 
 	def post(self, IDUsuario):
 		"""!@brief Asocia informacion de un nuevo auto a un usuario."""
@@ -76,11 +75,15 @@ class AgregarAutoUsuario(Resource):
 		return True
 
 	def _obtenerJSONPropiedadesAuto(self):
-		return {"modelo": self._get_data_from_request("modelo"),
-			"color": self._get_data_from_request("color"),
-			"patente": self._get_data_from_request("patente"),
-			"anio": self._get_data_from_request("anio"),
-			"estado": self._get_data_from_request("estado"),
-			"aireAcondicionado": self._get_data_from_request("aireAcondicionado"),
-			"musica": self._get_data_from_request("musica")}
+		return {"id": "null", "_ref": "null", "owner": "null", 
+			"properties":  
+				[{"name" : "modelo", "value" : self._get_data_from_request("modelo")},
+				{"name" : "color", "value" : self._get_data_from_request("color")},
+				{"name" : "patente", "value" : self._get_data_from_request("patente")},
+				{"name" : "anio", "value" : self._get_data_from_request("anio")},
+				{"name" : "estado", "value" : self._get_data_from_request("estado")},
+				{"name" : "aireAcondicionado", "value" : self._get_data_from_request("aireAcondicionado")},
+				{"name" : "musica", "value" : self._get_data_from_request("musica")}]
+					
+			}
 

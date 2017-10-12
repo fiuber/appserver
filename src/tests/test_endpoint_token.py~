@@ -22,7 +22,7 @@ class TestEndpointToken(unittest.TestCase):
 	@patch("src.resources.auth.Token")
 	def test_camino_feliz(self, mockToken, mockConectividad):
 
-		mockConectividad.return_value.post.return_value = {"user":{"id": "1", "type": "passenger"}}
+		mockConectividad.return_value.post.return_value = True
 		mockToken.return_value.obtenerToken.return_value = "jhefwjdsfkdsf"
 
 		JSON = {"nombreUsuario": "Marcos", "contrasena": "tool"}
@@ -37,7 +37,7 @@ class TestEndpointToken(unittest.TestCase):
 	@patch("src.resources.auth.Token")
 	def test_sin_json(self, mockToken, mockConectividad):
 
-		mockConectividad.return_value.post.return_value = {"user":{"id": "1", "type": "passenger"}}
+		mockConectividad.return_value.post.return_value = True
 		mockToken.return_value.obtenerToken.return_value = "jhefwjdsfkdsf"
 
 		JSON = {"nombreUsuario": "Marcos", "contrasena": "tool"}
@@ -51,7 +51,7 @@ class TestEndpointToken(unittest.TestCase):
 	@patch("src.resources.auth.Token")
 	def test_fallo_token(self, mockToken, mockConectividad):
 
-		mockConectividad.return_value.post.return_value = {"user":{"id": "1", "type": "passenger"}}
+		mockConectividad.return_value.post.return_value = True
 		mockToken.return_value.obtenerToken.return_value = False
 
 		JSON = {"nombreUsuario": "Marcos", "contrasena": "tool"}
