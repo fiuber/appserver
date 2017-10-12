@@ -9,23 +9,50 @@ from flask_restful import Resource
 from flask import Flask, request
 
 class Conectividad(Resource):
-	"""!@brief Clase para el manejo de las peticiones HTTP. 
+	"""!@brief Clase para el manejo de las peticiones HTTP. Singleton. 
 	"""
+	__instance = None
+
+	def __new__(cls, URL):
+		if cls.__instance is None:
+			cls.__instance= super(Conectividad,cls).__new__(cls, URL)
+			cls.__instance.__initialized = False
+		return cls.__instance
+
 
 	def __init__(self, URL):
 		"""!@brief Constructor
 
 		@param URL URL base de todas las peticiones
 		@param appServerToken El token de autenticacion del appServer"""
+		if (self.__initialized): return
 
 		app = Flask(__name__)
 		self.URL = URL
+
+		firstEndPoint = 'token'
 		headers = {"Content-Type": "application/json"}
 		body = {"username": "admin","password": "admin"}
-		firstEndPoint = 'token'
 		r = requests.post(self.URL+'/'+firstEndPoint, data = json.dumps(body), headers = headers)
 		res=json.loads(r.text)
 		adminToken = res["token"]["token"]
+
+
+		secondEndPoint = 'servers'
+		headers = {"Authorization": "api-key "+adminToken, "Content-Type": "application/json"}
+		body = {
+		  "id": "string",
+		  "_ref": "string",
+		  "createdBy": "Agustincito",
+		  "createdTime": 201710101041,
+		  "name": "BestServerEver",
+		  "lastConnection": 0
+		}
+		r = requests.post(self.URL+'/'+secondEndPoint, data = json.dumps(body), headers = headers)
+		res=json.loads(r.text)
+		self.appServerToken = res["server"]["token"]["token"]
+
+		self.__initialized = True
 
 		
 
@@ -38,8 +65,8 @@ class Conectividad(Resource):
 
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.post(self.URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
-		if(r.status_code != 200):
-			return False
+		if(r.status_code != 201):
+			return r.reason
 		else:
 			try:
 				return json.loads(r.text)
@@ -55,7 +82,7 @@ class Conectividad(Resource):
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.get(self.URL+'/'+endpoint, headers=headers, params = diccionarioParametros)
 		if(r.status_code != 200):
-			return False
+			return r.reason
 		else:
 			try:
 				return json.loads(r.text)
@@ -72,7 +99,7 @@ class Conectividad(Resource):
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.put(self.URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
 		if(r.status_code != 200):
-			return False
+			return r.text
 		else:
 			try:
 				return json.loads(r.text)
@@ -88,8 +115,8 @@ class Conectividad(Resource):
 
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.delete(self.URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
-		if(r.status_code != 200):
-			return False
+		if(r.status_code != 204):
+			return r.reason
 		else:
 			try:
 				return json.loads(r.text)
