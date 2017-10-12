@@ -47,6 +47,7 @@ class Auth(Resource):
 		jsonToken = {}
 		jsonToken['token'] = token
 		jsonToken["id"] = self.id
+		jsonToken["tipo"] = self.tipo
 
 		response = ResponseBuilder.build_response(jsonToken, '200')
 
@@ -88,5 +89,6 @@ class Auth(Resource):
 		respuesta = self.conectividad.post("users/validate", cuerpo)
 
 		self.id = respuesta["user"]["id"]
+		self.tipo = respuesta["user"]["type"]
 
 		return respuesta != False
