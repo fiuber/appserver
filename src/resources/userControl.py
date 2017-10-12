@@ -24,7 +24,7 @@ class Register(Resource):
 		connect = Conectividad("https://fiuber-shared.herokuapp.com")
 		try:
 			body = {
-				"_ref": "649.7872072956419", #mal
+				"_ref": "907.0558422010005", #mal
 				"type": request.get_json()["type"],
 				"username": request.get_json()["username"],
 				"password": request.get_json()["password"],
@@ -56,7 +56,7 @@ class UserController(Resource):
 		userId = "6" # el del ref harcodeado de abajo
 		try:
 			body = {
-				"_ref": "279.7715224711099",  # donde lo deberia tomar?????
+				"_ref": "610.6623890863641",  # donde lo deberia tomar?????
 				"type": request.get_json()["type"],
 				"username": request.get_json()["username"],
 				"password": request.get_json()["password"],
@@ -81,8 +81,18 @@ class UserController(Resource):
 		connect = Conectividad("https://fiuber-shared.herokuapp.com")
 
 		res = connect.get("users/"+userId, {})
+
+		responseJson = {
+			"name": res["user"]["name"],
+			"surname": res["user"]["surname"],
+			"email": res["user"]["email"],
+			"birthdate": res["user"]["birthdate"],
+			"cars": res["user"]["cars"],
+			"country": res["user"]["country"],
+			"username": res["user"]["username"]
+		}
 		
-		return ResponseBuilder.build_response(res, 200)
+		return ResponseBuilder.build_response(responseJson, 200)
 
 
 	def delete(self, userId):
