@@ -16,14 +16,14 @@ class Token(Resource):
 	def __init__(self):
 		self.CLAVE_ULTRASECRETA = "SV3v9%\"$:G0:E?."
 
-	def obtenerToken(self, nombreUsuario, contrasena):
+	def obtenerToken(self, IDUsuario, tipoUsuario, nombreUsuario, contrasena):
 		"""!@brief Autentica al usuario una unica vez. Si el usuario no tenia un token anterior o expiro se crea uno y se almacena, sino se devuelve el que ya tenia asignado."""
 		token = self._recuperarToken(nombreUsuario)
 		valido = self._validarToken(nombreUsuario, contrasena, token)
 		
 		"""Si no estaba el token o no es valido se crea otro"""
 		if(not token or not valido):
-			token = self._crear_token(nombreUsuario, contrasena)
+			token = self._crear_token(IDUsuario, tipoUsuario, nombreUsuario, contrasena)
 
 		return token
 
@@ -31,14 +31,14 @@ class Token(Resource):
 	def _validarToken(self, nombreUsuario, contrasena, token):
 		return self._validarTokenLogin(nombreUsuario, contrasena, token)
 
-	def _crear_token(self, nombreUsuario, contrasena):
+	def _crear_token(self, IDUsuario, tipoUsuario, nombreUsuario, contrasena):
 		""""Se crea un nuevo token."""		
 		token = self._generarToken(nombreUsuario, contrasena)
 		if(not token):
 			return False
 
 		
-		if(self._almacenarToken(nombreUsuario, token) == False):
+		if(self._almacenarToken(IDUsuario, tipoUsuario, nombreUsuario, token) == False):
 			return False
 			
 		return token
@@ -54,8 +54,13 @@ class Token(Resource):
 			usuario = usuarios.find_one({'nombreUsuario': nombreUsuario})
 			if(usuario):
 				return usuario['token']
-			else:
-				return False
+
+			conductores = mongo.db.conductores
+			conductor = conductores.find_one({'nombreUsuario': nombreUsuario})
+			if(conductor):
+				return conductor['token']
+			
+			return False
 		except Exception as e:
 			return False
 			
@@ -86,7 +91,7 @@ class Token(Resource):
 		except Exception as e:
 			return False
 
-	def _almacenarToken(self, nombreUsuario, token):
+	def _almacenarToken(self, IDUsuario, tipoUsuario, nombreUsuario, token):
 		"""!@brief Guarda el token en mongoDB para accederlo de una. 
 		Devuelve true si se pudo guardar o false si no se pudo porque no existia el usuario
 		
@@ -94,8 +99,14 @@ class Token(Resource):
 		@param token token a guardar."""
 
 		try:
-			usuarios = mongo.db.usuarios
-			usuarios.update({"nombreUsuario" : nombreUsuario}, {"nombreUsuario" : nombreUsuario, "token": token}, upsert=True)
+			if(tipoUsuario == "passenger"):
+				base = mongo.db.usuarios
+			else:
+				base = mongo.db.conductores
+
+			base.update({"id" : IDUsuario}, {"id": IDUsuario,"nombreUsuario" : nombreUsuario, "token": token}, upsert=True)
+
+
 		except Exception as e:
 			return False
 

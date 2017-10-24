@@ -13,6 +13,7 @@ from src.models.conectividad import Conectividad
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 from src import app
+from src import mongo
 
 class AutosPorPosicionCercana(Resource):
 	"""!@brief Clase para la busqueda de autos de usuarios."""
@@ -21,25 +22,25 @@ class AutosPorPosicionCercana(Resource):
 		self.URL = "http://fiuber-shared.herokuapp.com"
 		self.autenticador = Token() 
 		self.conectividad = Conectividad(self.URL)	
+		self.distanciaMaxima = 50000
 
 	def get(self):
 		"""!@brief Obtiene los conductores cercanos a un determinado usuario."""
 		response = ResponseBuilder.build_response({}, '200')
 		try:
-			"""Valida que este el parametro IDUsuario."""
+			"""Valida que este el parametro IDUsuario, POSX y POSY."""
 			IDUsuario = self._validate_get_request()
 			if(IDUsuario == False):
-				return ErrorHandler.create_error_response(404, "Falta el parametro IDUsuario.")
+				return ErrorHandler.create_error_response(404, "Falta algun parametro.")
 
 			"""Valida el token."""
 			if(not self._validar_token()):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 
 			"""Busca en mongo los autos cercanos"""
-			URLDestino = "users/"+IDUsuario+"/search"
-			datos = self.conectividad.get(URLDestino)
+			datos = self._obtener_autos_cercanos(self._get_param_from_request("POSX"), self._get_param_from_request("POSY"))
 			if(not datos):
-				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
+				return ErrorHandler.create_error_response(404, "Imposible comunicarse con mongoDB")
 
 			"""Devuelve el JSON acondicionado.""" 
 			datos = self._acondicionarJSON(datos)
@@ -58,8 +59,8 @@ class AutosPorPosicionCercana(Resource):
 
 
 	def _validate_get_request(self):
-		"""!@brief Tiene que estar el ID del usuario que realiza la busqueda."""
-		datos = self._get_param_from_request("IDUsuario")
+		"""!@brief Tiene que estar la posicion del usuario que realiza la busqueda."""
+		datos = self._get_param_from_request("POSX") and self._get_param_from_request("POSY")
 
 		if(not datos):
 			return False
@@ -76,18 +77,24 @@ class AutosPorPosicionCercana(Resource):
 			return False
 		return True
 
+	def _obtener_autos_cercanos(self, x, y):
+		"""!@brief Obtiene los autos cercanos que tenga registrados en mongoDB."""
+
+		conductores = mongo.db.conductores
+		query = "if(this.posicion){if((Math.pow(this.posicion.x-"+str(x)+",2)+Math.pow(this.posicion.y-"+str(y)+",2)) <= "+str(self.distanciaMaxima)+") return this}"
+		return conductores.find({"$where": query})
+			
+
 	def _acondicionarAutoJSON(self, datos):
 		"""!@brief Acondiciona un solo auto pasado.
 
 		@param datos Es el auto a acondicionar."""
 
-		return {"modelo": datos["modelo"],
-			"color": datos["color"],
-			"patente": datos["patente"],
-			"anio": datos["anio"],
-			"estado": datos["estado"],
-			"aireAcondicionado": datos["aireAcondicionado"],
-			"musica": datos["musica"]}
+		return {"id": datos["id"],
+			"posicion": {
+				     "x": datos["posicion"]["x"],
+				     "y": datos["posicion"]["y"]
+				     }}
 
 	def _acondicionarJSON(self, datos):
 		"""!@brief Itera en los autos y arma el JSON.
@@ -98,8 +105,8 @@ class AutosPorPosicionCercana(Resource):
 		json = {}
 		i=0
 
-		for auto in datos["cars"]:
-			json[i] = self._acondicionarAutoJSON(datos["cars"][auto])
+		for conductor in datos:
+			json[i] = self._acondicionarAutoJSON(conductor)
 			i += 1
 
 		return json

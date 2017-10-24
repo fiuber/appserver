@@ -159,12 +159,11 @@
 <p id="n88" class="pln"><a href="#n88">88</a></p>
 <p id="n89" class="stm run hide_run"><a href="#n89">89</a></p>
 <p id="n90" class="pln"><a href="#n90">90</a></p>
-<p id="n91" class="pln"><a href="#n91">91</a></p>
+<p id="n91" class="stm run hide_run"><a href="#n91">91</a></p>
 <p id="n92" class="stm run hide_run"><a href="#n92">92</a></p>
 <p id="n93" class="stm run hide_run"><a href="#n93">93</a></p>
-<p id="n94" class="stm run hide_run"><a href="#n94">94</a></p>
-<p id="n95" class="pln"><a href="#n95">95</a></p>
-<p id="n96" class="stm run hide_run"><a href="#n96">96</a></p>
+<p id="n94" class="pln"><a href="#n94">94</a></p>
+<p id="n95" class="stm run hide_run"><a href="#n95">95</a></p>
 
             </td>
             <td class="text">
@@ -209,7 +208,7 @@
 <p id="t39" class="stm run hide_run">                <span class="key">if</span><span class="op">(</span><span class="key">not</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_existe_usuario_en_sharedServer</span><span class="op">(</span><span class="nam">nombreUsuario</span><span class="op">,</span> <span class="nam">contrasena</span><span class="op">)</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t40" class="stm run hide_run">                        <span class="key">return</span> <span class="nam">ErrorHandler</span><span class="op">.</span><span class="nam">create_error_response</span><span class="op">(</span><span class="num">404</span><span class="op">,</span> <span class="str">"No existe usuario registrado con esas credenciales."</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t41" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t42" class="stm run hide_run">                <span class="nam">token</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">autenticador</span><span class="op">.</span><span class="nam">obtenerToken</span><span class="op">(</span><span class="nam">nombreUsuario</span><span class="op">,</span> <span class="nam">contrasena</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t42" class="stm run hide_run">                <span class="nam">token</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">autenticador</span><span class="op">.</span><span class="nam">obtenerToken</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">id</span><span class="op">,</span> <span class="nam">self</span><span class="op">.</span><span class="nam">tipo</span><span class="op">,</span> <span class="nam">nombreUsuario</span><span class="op">,</span> <span class="nam">contrasena</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t43" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t44" class="stm run hide_run">                <span class="key">if</span><span class="op">(</span><span class="key">not</span> <span class="nam">token</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t45" class="stm run hide_run">                        <span class="key">return</span> <span class="nam">ErrorHandler</span><span class="op">.</span><span class="nam">create_error_response</span><span class="op">(</span><span class="num">500</span><span class="op">,</span> <span class="str">"No se pudo generar el token."</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -258,12 +257,11 @@
 <p id="t88" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t89" class="stm run hide_run">                <span class="nam">respuesta</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">conectividad</span><span class="op">.</span><span class="nam">post</span><span class="op">(</span><span class="str">"users/validate"</span><span class="op">,</span> <span class="nam">cuerpo</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t90" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t91" class="pln">                <span class="str">"""Borrar"""</span><span class="strut">&nbsp;</span></p>
-<p id="t92" class="stm run hide_run">                <span class="key">if</span><span class="op">(</span><span class="nam">respuesta</span> <span class="op">!=</span> <span class="nam">False</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t93" class="stm run hide_run">                        <span class="nam">self</span><span class="op">.</span><span class="nam">id</span> <span class="op">=</span> <span class="nam">respuesta</span><span class="op">[</span><span class="str">"user"</span><span class="op">]</span><span class="op">[</span><span class="str">"id"</span><span class="op">]</span><span class="strut">&nbsp;</span></p>
-<p id="t94" class="stm run hide_run">                        <span class="nam">self</span><span class="op">.</span><span class="nam">tipo</span> <span class="op">=</span> <span class="nam">respuesta</span><span class="op">[</span><span class="str">"user"</span><span class="op">]</span><span class="op">[</span><span class="str">"type"</span><span class="op">]</span><span class="strut">&nbsp;</span></p>
-<p id="t95" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t96" class="stm run hide_run">                <span class="key">return</span> <span class="nam">respuesta</span> <span class="op">!=</span> <span class="nam">False</span><span class="strut">&nbsp;</span></p>
+<p id="t91" class="stm run hide_run">                <span class="key">if</span><span class="op">(</span><span class="nam">respuesta</span> <span class="op">!=</span> <span class="nam">False</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t92" class="stm run hide_run">                        <span class="nam">self</span><span class="op">.</span><span class="nam">id</span> <span class="op">=</span> <span class="nam">respuesta</span><span class="op">[</span><span class="str">"user"</span><span class="op">]</span><span class="op">[</span><span class="str">"id"</span><span class="op">]</span><span class="strut">&nbsp;</span></p>
+<p id="t93" class="stm run hide_run">                        <span class="nam">self</span><span class="op">.</span><span class="nam">tipo</span> <span class="op">=</span> <span class="nam">respuesta</span><span class="op">[</span><span class="str">"user"</span><span class="op">]</span><span class="op">[</span><span class="str">"type"</span><span class="op">]</span><span class="strut">&nbsp;</span></p>
+<p id="t94" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t95" class="stm run hide_run">                <span class="key">return</span> <span class="nam">respuesta</span> <span class="op">!=</span> <span class="nam">False</span><span class="strut">&nbsp;</span></p>
 
             </td>
         </tr>
@@ -274,7 +272,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.4.1</a>,
-            created at 2017-10-12 18:23
+            created at 2017-10-24 03:07
         </p>
     </div>
 </div>

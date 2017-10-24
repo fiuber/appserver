@@ -39,7 +39,7 @@ class Auth(Resource):
 		if(not self._existe_usuario_en_sharedServer(nombreUsuario, contrasena)):
 			return ErrorHandler.create_error_response(404, "No existe usuario registrado con esas credenciales.")
 
-		token = self.autenticador.obtenerToken(nombreUsuario, contrasena)
+		token = self.autenticador.obtenerToken(self.id, self.tipo, nombreUsuario, contrasena)
 		
 		if(not token):
 			return ErrorHandler.create_error_response(500, "No se pudo generar el token.")
@@ -88,7 +88,6 @@ class Auth(Resource):
 
 		respuesta = self.conectividad.post("users/validate", cuerpo)
 
-		"""Borrar"""
 		if(respuesta != False):
 			self.id = respuesta["user"]["id"]
 			self.tipo = respuesta["user"]["type"]

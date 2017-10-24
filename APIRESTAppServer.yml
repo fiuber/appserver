@@ -277,16 +277,55 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: IDUsuario
+        - name: POSX
           in: query
-          description: ID del usuario al cual obtenerle los autos cercanos.
+          description: Posicion X del usuario al cual obtenerle los autos cercanos.
+          required: true
+          type: string
+          
+        - name: POSY
+          in: query
+          description: Posicion Y del usuario al cual obtenerle los autos cercanos.
           required: true
           type: string
       responses:
         '200':
           description: Operacion Exitosa
           schema:
-            $ref: '#/definitions/driver'
+            properties:
+              1:
+                properties:
+                  perfil:
+                    $ref: '#/definitions/driver'
+                  posicion:
+                    type: object
+                    properties:
+                      x:
+                        type: string
+                      y: 
+                        type: string
+              2:
+                properties:
+                  perfil:
+                    $ref: '#/definitions/driver'
+                  posicion:
+                    type: object
+                    properties:
+                      x:
+                        type: string
+                      y: 
+                        type: string
+              3:
+                properties:
+                  perfil:
+                    $ref: '#/definitions/driver'
+                  posicion:
+                    type: object
+                    properties:
+                      x:
+                        type: string
+                      y: 
+                        type: string
         '400':
           description: Token invalido o expirado.
         '404':
