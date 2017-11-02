@@ -24,7 +24,7 @@ from resources.agregarAutoUsuario import AgregarAutoUsuario
 from resources.eliminarAutoUsuario import EliminarAutoUsuario
 from resources.modificarAutoUsuario import ModificarAutoUsuario
 from resources.driverModificarPosicion import DriverModificarPosicion
-
+from resources.rutaEntrePuntos import RutaEntrePuntos
 
 
 api.add_resource(HelloWorld, '/')
@@ -38,7 +38,7 @@ api.add_resource(AutoPorID, '/driver/<IDUsuario>/cars/<IDAuto>')
 api.add_resource(AutosPorUsuario, '/driver/<IDUsuario>/cars')
 api.add_resource(DriverModificarPosicion, '/driver/<IDUsuario>/position')
 api.add_resource(AutosPorPosicionCercana, '/driver/search')
-
+api.add_resource(RutaEntrePuntos, '/direction')
 
 if __name__ == '__main__':
 	port = os.environ.get('PORT', 5000)

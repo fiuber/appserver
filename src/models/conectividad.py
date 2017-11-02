@@ -8,6 +8,8 @@ import requests
 from flask_restful import Resource
 from flask import Flask, request
 
+from src import URLSharedServer
+
 class Conectividad(Resource):
 	"""!@brief Clase para el manejo de las peticiones HTTP. Singleton. 
 	"""
@@ -33,7 +35,7 @@ class Conectividad(Resource):
 		firstEndPoint = 'token'
 		headers = {"Content-Type": "application/json"}
 		body = {"username": "admin","password": "admin"}
-		r = requests.post(self.URL+'/'+firstEndPoint, data = json.dumps(body), headers = headers)
+		r = requests.post(URLSharedServer+'/'+firstEndPoint, data = json.dumps(body), headers = headers)
 		res=json.loads(r.text)
 		adminToken = res["token"]["token"]
 
@@ -48,7 +50,7 @@ class Conectividad(Resource):
 		  "name": "BestServerEver",
 		  "lastConnection": 0
 		}
-		r = requests.post(self.URL+'/'+secondEndPoint, data = json.dumps(body), headers = headers)
+		r = requests.post(URLSharedServer+'/'+secondEndPoint, data = json.dumps(body), headers = headers)
 		res=json.loads(r.text)
 		self.appServerToken = res["server"]["token"]["token"]
 
