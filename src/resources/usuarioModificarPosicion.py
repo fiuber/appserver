@@ -15,16 +15,17 @@ from response_builder import ResponseBuilder
 from src import app
 from src import mongo
 
-class ConductorModificarPosicion(Resource):
-	"""!@brief Clase para actualizar la posicion de un conductor."""
+class UsuarioModificarPosicion(Resource):
+	"""!@brief Clase para actualizar la posicion de un usuario."""
 
 
 	def __init__(self, conductor):
 		self.autenticador = Token() 
+		self.conductor = conductor
 
 
 	def put(self, IDUsuario):
-		"""!@brief Actualiza los datos de posicion de un conductor."""
+		"""!@brief Actualiza los datos de posicion de un usuario."""
 		response = ResponseBuilder.build_response({}, '200')
 		try:
 			"""Valida que este el JSON con los datos de la posicion."""
@@ -39,10 +40,9 @@ class ConductorModificarPosicion(Resource):
 			"""Actualiza la posicion."""
 			pos = self._get_data_from_request("posicion")
 
-			
-			if(not self._actualizar_posicion_conductor(IDUsuario, pos["x"], pos["y"])):
+		
+			if(not self._actualizar_posicion_usuario(IDUsuario, pos["x"], pos["y"])):
 				return ErrorHandler.create_error_response(500, "No se pudo actualizar la posicion.")
-
 
 		except Exception as e:
 			status_code = 403
@@ -78,6 +78,7 @@ class ConductorModificarPosicion(Resource):
 			return False
 		return True
 
-	def _actualizar_posicion_conductor(self, IDUsuario, x, y):
-		conductores = mongo.db.conductores
-		return conductores.update({"id" : IDUsuario}, {"$set": {"posicion" : {"x": x, "y": y}}}, upsert=True)
+	def _actualizar_posicion_usuario(self, IDUsuario, x, y):
+		usuarios = mongo.db.usuarios
+		return usuarios.update({"id" : IDUsuario}, {"$set": {"posicion" : {"x": x, "y": y}}}, upsert=True)
+		

@@ -23,9 +23,10 @@ from resources.autosPorPosicionCercana import AutosPorPosicionCercana
 from resources.agregarAutoUsuario import AgregarAutoUsuario
 from resources.eliminarAutoUsuario import EliminarAutoUsuario
 from resources.modificarAutoUsuario import ModificarAutoUsuario
-from resources.driverModificarPosicion import DriverModificarPosicion
+from resources.usuarioModificarPosicion import UsuarioModificarPosicion
+from resources.driverModificarPosicion import ConductorModificarPosicion
 from resources.rutaEntrePuntos import RutaEntrePuntos
-
+from resources.agregarPosibleViaje import AgregarPosibleViaje
 
 api.add_resource(HelloWorld, '/')
 api.add_resource(Auth, '/token')
@@ -36,8 +37,14 @@ api.add_resource(ModificarAutoUsuario, '/driver/<IDUsuario>/cars/<IDAuto>')
 api.add_resource(EliminarAutoUsuario, '/driver/<IDUsuario>/cars/<IDAuto>')
 api.add_resource(AutoPorID, '/driver/<IDUsuario>/cars/<IDAuto>')
 api.add_resource(AutosPorUsuario, '/driver/<IDUsuario>/cars')
-api.add_resource(DriverModificarPosicion, '/driver/<IDUsuario>/position')
+api.add_resource(ConductorModificarPosicion, '/driver/<IDUsuario>/position')
+api.add_resource(UsuarioModificarPosicion, '/user/<IDUsuario>/position')
 api.add_resource(AutosPorPosicionCercana, '/driver/search')
+
+api.add_resource(AgregarPosibleViaje, '/driver/<IDUsuario>/trip')
+"""api.add_resource(ObtenerPosiblesViajes, '/driver/<IDUsuario>/trip')
+api.add_resource(AceptarViaje, '/driver/<IDUsuario>/trip/<IDViaje>')"""
+
 api.add_resource(RutaEntrePuntos, '/direction')
 
 if __name__ == '__main__':

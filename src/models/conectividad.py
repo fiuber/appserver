@@ -75,6 +75,9 @@ class Conectividad(Resource):
 			except Exception as e:
 				return False
 
+	def setURL(self, URL):
+		self.URL = URL
+
 	def get(self, endpoint, diccionarioParametros = {}):
 		"""!@brief Permite realizar una peticion POST y obtener el json de respuesta o false si fallo.
 

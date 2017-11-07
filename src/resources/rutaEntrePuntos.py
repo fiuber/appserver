@@ -36,13 +36,7 @@ class RutaEntrePuntos(Resource):
 			if(not self._validar_token()):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 
-			"""Pide el servicio a Google Directions."""
-			datos = self._obtener_ruta(self._get_param_from_request("origen"), self._get_param_from_request("destino"))
-			if(not datos):
-				return ErrorHandler.create_error_response(404, "Imposible obtener ruta.")
-
-			"""Devuelve el JSON acondicionado.""" 
-			datos = self._acondicionarJSON(datos)
+			datos = self._calcular_ruta(self._get_param_from_request("origen"), self._get_param_from_request("destino"))
 			response = ResponseBuilder.build_response(datos, '200')
 
 		except Exception as e:
@@ -94,13 +88,27 @@ class RutaEntrePuntos(Resource):
 
 		return {"ruta": json}
 
-	def _obtener_ruta(self, origen, destino):
+	def _obtener_ruta_directions(self, origen, destino):
 		"""!@brief Realiza la peticion a Google Directions."""
+
 
 		parametros = {"origin": origen,
 			      "destination": destino,
 			      "key": directionsAPIKey};
 
 		return self.conectividad.get("json", parametros)
+
+	def _calcular_ruta(self, origen, destino):
+		"""!@Brief Pide el servicio a Google Directions."""
+
+		datos = self._obtener_ruta_directions(origen, destino)
+		if(not datos):
+			return ErrorHandler.create_error_response(404, "Imposible obtener ruta.")
+
+		"""Devuelve el JSON acondicionado.""" 
+		datos = self._acondicionarJSON(datos)
+
+		return datos
+		
 
 		

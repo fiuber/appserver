@@ -64,7 +64,7 @@ class Auth(Resource):
 		return datos
 	
 	def _get_hashPassword_from_request(self):
-		"""!@brief Obtiene la contraseña de la request.	""" 
+		"""!@brief Obtiene la contrasena de la request.	""" 
 		datos = None;
 		try:
 			datos = request.get_json()["contrasena"]
