@@ -523,69 +523,6 @@ paths:
         '400':
           description: Cantidad de parametros incorrectos
 
-  /trip:
-    get:
-      summary: Obtiene los datos de viajes de un usuario
-      description: Si se omite el idViaje se devuelven todos los viajes de ese usuario
-      produces:
-        - application/json
-      parameters:
-        - name: idViaje
-          in: query
-          description: ID del viaje a obtener sus datos
-          required: true
-          type: string
-        - name: idUsuario
-          in: query
-          description: ID del usuario a obtener sus viajes
-          required: true
-          type: string
-      responses:
-        '200':
-          description: Operacion Exitosa
-          schema:
-            $ref: '#/definitions/trip'
-        '400':
-          description: Cantidad de parametros incorrectos
-    post:
-      summary: Agrega un viaje
-      description: ''
-      produces:
-        - application/json
-      parameters:
-        - name: body
-          in: body
-          description: 'Datos del viaje a agregar, se ignora el ID de viaje por ser automatico'
-          required: true
-          schema:
-            $ref: '#/definitions/trip'
-      responses:
-        '200':
-          description: Operacion Exitosa
-        '400':
-          description: Cantidad de parametros incorrectos
-    put:
-      summary: Modifica un viaje
-      description: Esta pensado para poder al final del viaje poner los datos de tiempo y costo
-      produces:
-        - application/json
-      parameters:
-        - name: idViaje
-          in: query
-          type: integer
-          description: ID del viaje a modificar
-          required: true
-        - name: body
-          in: body
-          description: Datos del viaje a modificar
-          required: true
-          schema:
-            $ref: '#/definitions/trip'
-      responses:
-        '200':
-          description: Operacion Exitosa
-        '400':
-          description: Cantidad de parametros incorrectos
 definitions:
   driver:
     properties:
