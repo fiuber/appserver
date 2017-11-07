@@ -215,33 +215,66 @@ paths:
           description: Operacion Exitosa
           schema:
             properties:
-              idViaje:
-                type: string
-              ruta:
-                $ref: '#/definitions/direction'
-              datosPasajero:
+              1:
                 type: object
                 properties:
-                  nombreUsuario:
+                  idViaje:
                     type: string
-                  apellido:
+                  ruta:
+                    $ref: '#/definitions/direction'
+                  datosPasajero:
+                    type: object
+                    properties:
+                      nombreUsuario:
+                        type: string
+                      apellido:
+                        type: string
+                      idPasajero:
+                        type: string
+                      pais:
+                        type: string
+                      nombre:
+                        type: string
+                      imagenes:
+                        type: array
+                        items:
+                          type: string
+                      email:
+                        type: string
+                      fechaNacimiento:
+                        type: string
+                  costo:
                     type: string
-                  idPasajero:
+              2:
+                type: object
+                properties:
+                  idViaje:
                     type: string
-                  pais:
+                  ruta:
+                    $ref: '#/definitions/direction'
+                  datosPasajero:
+                    type: object
+                    properties:
+                      nombreUsuario:
+                        type: string
+                      apellido:
+                        type: string
+                      idPasajero:
+                        type: string
+                      pais:
+                        type: string
+                      nombre:
+                        type: string
+                      imagenes:
+                        type: array
+                        items:
+                          type: string
+                      email:
+                        type: string
+                      fechaNacimiento:
+                        type: string
+                  costo:
                     type: string
-                  nombre:
-                    type: string
-                  imagenes:
-                    type: array
-                    items:
-                      type: string
-                  email:
-                    type: string
-                  fechaNacimiento:
-                    type: string
-              costo:
-                type: string
         '400':
           description: Token expirado o invalido.
           
