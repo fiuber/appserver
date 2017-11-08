@@ -92,8 +92,8 @@ class AutosPorPosicionCercana(Resource):
 
 		return {"id": datos["id"],
 			"posicion": {
-				     "x": datos["posicion"]["lng"],
-				     "y": datos["posicion"]["lat"]
+				     "lng": datos["posicion"]["lng"],
+				     "lat": datos["posicion"]["lat"]
 				     }}
 
 	def _acondicionarJSON(self, datos):
@@ -106,7 +106,7 @@ class AutosPorPosicionCercana(Resource):
 		i=0
 
 		for conductor in datos:
-			json[i] = self._acondicionarAutoJSON(conductor)
+			json[str(i)] = self._acondicionarAutoJSON(conductor)
 			i += 1
 
 		return json

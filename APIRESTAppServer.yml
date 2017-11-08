@@ -318,8 +318,8 @@ paths:
           
   /driver/{IDUsuario}/position:
     put:
-      summary: Modificar la posicion de un conductor. Si el estado del conductor es que no esta libre tambien este endpoint se encarga de ir actualizando los datos del viaje. Esta aclaracion es anecdotica y no modifica el uso que se le da al endpoint. 
-      description: ''
+      summary: 'Modificar la posicion de un conductor'
+      description: 'Si el estado del conductor es que no esta libre tambien este endpoint se encarga de ir actualizando los datos del viaje. Esta aclaracion es anecdotica y no modifica el uso que se le da al endpoint. '
       security: 
         - Token: []
       parameters:
@@ -337,9 +337,9 @@ paths:
               posicion:
                 type: object
                 properties:
-                  x:
+                  lng:
                     type: string
-                  y:
+                  lat:
                     type: string
                 
       responses:
@@ -513,9 +513,9 @@ paths:
                   posicion:
                     type: object
                     properties:
-                      x:
+                      lng:
                         type: string
-                      y: 
+                      lat: 
                         type: string
               2:
                 properties:
@@ -524,9 +524,9 @@ paths:
                   posicion:
                     type: object
                     properties:
-                      x:
+                      lng:
                         type: string
-                      y: 
+                      lat: 
                         type: string
               3:
                 properties:
@@ -535,9 +535,9 @@ paths:
                   posicion:
                     type: object
                     properties:
-                      x:
+                      lng:
                         type: string
-                      y: 
+                      lat: 
                         type: string
         '400':
           description: Token invalido o expirado.
