@@ -510,6 +510,8 @@ paths:
                 properties:
                   perfil:
                     $ref: '#/definitions/driver'
+                  id:
+                    type: string
                   posicion:
                     type: object
                     properties:
