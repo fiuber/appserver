@@ -490,15 +490,15 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: POSX
+        - name: lng
           in: query
-          description: Posicion X del usuario al cual obtenerle los autos cercanos.
+          description: Longitud del usuario al cual obtenerle los autos cercanos.
           required: true
           type: string
           
-        - name: POSY
+        - name: lat
           in: query
-          description: Posicion Y del usuario al cual obtenerle los autos cercanos.
+          description: Latitud del usuario al cual obtenerle los autos cercanos.
           required: true
           type: string
       responses:
