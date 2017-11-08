@@ -580,12 +580,12 @@ definitions:
         type: string
       patente:
         type: string
-      año:
+      anio:
         type: string
       estado:
         type: string
       aireAcondicionado:
-        type: boolean
+        type: string
       musica:
         type: string
   passenger:
