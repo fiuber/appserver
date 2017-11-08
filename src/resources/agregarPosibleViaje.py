@@ -30,7 +30,7 @@ class AgregarPosibleViaje(Resource):
 		"""!@brief Agrega la informacion del viaje posible."""
 		response = ResponseBuilder.build_response({}, '200')
 		try:
-			"""Valida que este el JSON con los datos del auto."""
+			"""Valida que este el JSON con los datos del viaje."""
 			valid = self._validate_request()
 			if(not valid):
 				return ErrorHandler.create_error_response(500, "Faltan parametros.")
@@ -79,6 +79,37 @@ class AgregarPosibleViaje(Resource):
 			return False
 		return True
 
+	def _obtener_costo_viaje(self, IDUsuario, IDPasajero, ruta):
+		"""!@brief le pide al shared server la cotizacion del viaje."""
+
+		self.conectividad.setURL(self.URL)
+
+		JSON = {"driver": IDUsuario,
+			"passenger": IDPasajero,
+			"start":{
+				"address":{
+					"location":{
+						"lat": ruta["origen"]["lat"],
+						"lon": ruta["origen"]["lng"]
+					}
+				}
+			},
+			"end":{
+				"address":{
+					"location":{
+						"lat": ruta["destino"]["lat"],
+						"lon": ruta["destino"]["lng"]
+					}
+				}
+			},
+			"distance": ruta["distancia"]
+		}
+
+		valor = self.conectividad.post("trips/estimate",JSON)
+		if(not valor):
+			raise Exception("Error en el Shared Server.")
+		return valor["trip"]["cost"]["value"]
+
 	def _obtenerJSONViaje(self):
 		"""!@brief Obtiene toda la informacion y crea el JSON de datos del viaje."""
 
@@ -87,19 +118,25 @@ class AgregarPosibleViaje(Resource):
 		if(not datosUsuario):
 			return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 		
-		"""Pide la cotizacion del viaje al Shared Server."""
-		datosCotizacion = "13"
-		if(not datosCotizacion):
-			return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
+		ruta = self._calcular_ruta(self._get_data_from_request("origen"), self._get_data_from_request("destino"))
 
-		"""Obtiene el ID de viaje a insertar"""
+		"""Pide la cotizacion del viaje al Shared Server."""
+		cotizacion = 0
+		try:
+			cotizacion = self._obtener_costo_viaje(self.IDUsuario, self._get_data_from_request("IDPasajero"), ruta)
+		except Exception as e:
+			return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 		
+		"""Obtiene el ID de viaje a insertar"""		
 		IDViaje = self._obtener_ID_viaje(self.IDUsuario)
 
-		JSON = {"idViaje": IDViaje,
+		JSON = {"idViaje": str(IDViaje),
 			"datosPasajero": self._acondicionarJSONUsuario(datosUsuario), 
-			"ruta": self._calcular_ruta(self._get_data_from_request("origen"), self._get_data_from_request("destino")),
-			"costo": datosCotizacion}
+			"ruta": ruta["ruta"],
+			"origen": ruta["origen"],
+			"destino": ruta["destino"],
+			"costo": str(cotizacion)}
+
 
 		return JSON
 
@@ -128,10 +165,14 @@ class AgregarPosibleViaje(Resource):
 
 	def _guardar_viaje_mongo(self, datos):
 		conductores = mongo.db.conductores
+		usuarios = mongo.db.usuarios
 		res = None
 		
 		try:
-			res = conductores.update({"id" : self.IDUsuario}, {"$push": {"viajes" : datos}}, upsert=True)
+			res = conductores.update({"id" : self.IDUsuario, "estado": "libre"}, {"$push": {"viajes" : datos}})
+			if(res["nModified"] == 0):
+				return False
+
 		except Exception as e:
 			return False
 		return True
@@ -152,7 +193,12 @@ class AgregarPosibleViaje(Resource):
 			i = i + 1
 		
 
-		return {"ruta": json}
+		JSON = {"ruta": {"ruta": json, "distancia": datos["routes"][0]["legs"][0]["distance"]["value"]},
+			"distancia": datos["routes"][0]["legs"][0]["distance"]["value"],
+			"origen": datos["routes"][0]["legs"][0]["start_location"],
+			"destino": datos["routes"][0]["legs"][0]["end_location"]}
+
+		return JSON
 
 	def _obtener_ruta_directions(self, origen, destino):
 		"""!@brief Realiza la peticion a Google Directions."""

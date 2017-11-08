@@ -27,6 +27,8 @@ from resources.usuarioModificarPosicion import UsuarioModificarPosicion
 from resources.driverModificarPosicion import ConductorModificarPosicion
 from resources.rutaEntrePuntos import RutaEntrePuntos
 from resources.agregarPosibleViaje import AgregarPosibleViaje
+from resources.obtenerPosiblesViajes import ObtenerPosiblesViajes
+from resources.aceptarViaje import AceptarViaje
 
 api.add_resource(HelloWorld, '/')
 api.add_resource(Auth, '/token')
@@ -42,8 +44,8 @@ api.add_resource(UsuarioModificarPosicion, '/user/<IDUsuario>/position')
 api.add_resource(AutosPorPosicionCercana, '/driver/search')
 
 api.add_resource(AgregarPosibleViaje, '/driver/<IDUsuario>/trip')
-"""api.add_resource(ObtenerPosiblesViajes, '/driver/<IDUsuario>/trip')
-api.add_resource(AceptarViaje, '/driver/<IDUsuario>/trip/<IDViaje>')"""
+api.add_resource(ObtenerPosiblesViajes, '/driver/<IDUsuario>/trip')
+api.add_resource(AceptarViaje, '/driver/<IDUsuario>/trip/<IDViaje>')
 
 api.add_resource(RutaEntrePuntos, '/direction')
 

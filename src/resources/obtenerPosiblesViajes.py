@@ -15,34 +15,30 @@ from response_builder import ResponseBuilder
 from src import app
 from src import mongo
 
-class UsuarioModificarPosicion(Resource):
-	"""!@brief Clase para actualizar la posicion de un usuario."""
+class ObtenerPosiblesViajes(Resource):
+	"""!@brief Clase para obtener la lista de posibles viajes de un chofer."""
 
 
-	def __init__(self, conductor):
+	def __init__(self):
+		self.URL = "http://fiuber-shared.herokuapp.com"
 		self.autenticador = Token() 
-		self.conductor = conductor
+		self.conectividad = Conectividad(self.URL)
 
-
-	def put(self, IDUsuario):
-		"""!@brief Actualiza los datos de posicion de un usuario."""
+	def get(self, IDUsuario):
+		"""!@brief Obtiene la informacion de todos los viajes posibles."""
 		response = ResponseBuilder.build_response({}, '200')
 		try:
-			"""Valida que este el JSON con los datos de la posicion."""
-			valid = self._validate_request()
-			if(not valid):
-				return ErrorHandler.create_error_response(500, "Faltan parametros.")
 
 			"""Primero valida el token."""
 			if(not self._validar_token()):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 
-			"""Actualiza la posicion."""
-			pos = self._get_data_from_request("posicion")
-
-		
-			if(not self._actualizar_posicion_usuario(IDUsuario, pos["x"], pos["y"])):
-				return ErrorHandler.create_error_response(500, "No se pudo actualizar la posicion.")
+			"""Devuelve los posibles viajes."""
+			datos = self._obtenerJSONViajes(IDUsuario)
+			if(datos):
+  				response = ResponseBuilder.build_response(datos, '200')
+			else:
+				response = rrorHandler.create_error_response(400, "No existe el conductor.")
 
 		except Exception as e:
 			status_code = 403
@@ -52,21 +48,11 @@ class UsuarioModificarPosicion(Resource):
 
 	def _get_data_from_request(self, nombrePropiedad):
 		"""!@brief Obtiene la propiedad del json contenido de la request."""
-
+		
 		try:
 			return request.get_json()[nombrePropiedad]
 		except Exception as e:
 			return False
-
-	def _validate_request(self):
-		"""!@brief Valida que haya una request completa."""
-
-		res = self._get_data_from_request("posicion")
-
-		if(not res):
-			return False
-		else:
-			return True
 
 	def _validar_token(self):
 		"""!@brief Valida al usuario."""
@@ -78,7 +64,22 @@ class UsuarioModificarPosicion(Resource):
 			return False
 		return True
 
-	def _actualizar_posicion_usuario(self, IDUsuario, x, y):
-		usuarios = mongo.db.usuarios
-		return usuarios.update({"id" : IDUsuario}, {"$set": {"posicion" : {"lng": x, "lat": y}}}, upsert=True)
+	def _obtenerJSONViajes(self, IDUsuario):
+		"""!@brief Obtiene toda la informacion y crea el JSON de datos del viajes."""
 		
+		conductores = mongo.db.conductores
+		conductor = conductores.find_one({"id": IDUsuario})
+		
+		if(not conductor):
+			return False
+
+		JSON = {}
+
+		i = 0
+
+		for prop in conductor["viajes"]:
+			JSON[str(i)] = prop
+			i = i + 1
+		
+		return JSON
+

@@ -81,7 +81,7 @@ class AutosPorPosicionCercana(Resource):
 		"""!@brief Obtiene los autos cercanos que tenga registrados en mongoDB."""
 
 		conductores = mongo.db.conductores
-		query = "if(this.posicion){if((Math.pow(this.posicion.x-"+str(x)+",2)+Math.pow(this.posicion.y-"+str(y)+",2)) <= "+str(self.distanciaMaxima)+") return this}"
+		query = "if(this.posicion){if((Math.pow(this.posicion.lng-"+str(x)+",2)+Math.pow(this.posicion.lat-"+str(y)+",2)) <= "+str(self.distanciaMaxima)+") return this}"
 		return conductores.find({"$where": query})
 			
 
@@ -92,8 +92,8 @@ class AutosPorPosicionCercana(Resource):
 
 		return {"id": datos["id"],
 			"posicion": {
-				     "x": datos["posicion"]["x"],
-				     "y": datos["posicion"]["y"]
+				     "x": datos["posicion"]["lng"],
+				     "y": datos["posicion"]["lat"]
 				     }}
 
 	def _acondicionarJSON(self, datos):
