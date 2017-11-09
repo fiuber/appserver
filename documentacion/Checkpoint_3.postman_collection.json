@@ -1,0 +1,129 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Checkpoint_3",
+		"_postman_id": "6789867d-5883-a9ba-085b-40935e1f33bb",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "https://fiuberappserver.herokuapp.com/driver/4/trip",
+			"request": {
+				"url": "https://fiuberappserver.herokuapp.com/driver/4/trip",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmVVc3VhcmlvIjoiTWFyY29zRHJpdmVyIiwiaWF0IjoxNTEwMTkxOTM3LCJjb250cmFzZW5hIjoiUGVybmljYSIsImV4cCI6MTUxMDI3ODMzN30.zw8O1cKUBLmKO4_3rSnT336kOcBgjEf6K5NUg8eY3Io",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"IDPasajero\": \"3\",\n\t\"origen\": \"Boston,MA\",\n\t\"destino\": \"Concord,MA\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "https://fiuberappserver.herokuapp.com/driver/4/trip/4",
+			"request": {
+				"url": "https://fiuberappserver.herokuapp.com/driver/4/trip/4",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmVVc3VhcmlvIjoiTWFyY29zRHJpdmVyIiwiaWF0IjoxNTEwMTkxOTM3LCJjb250cmFzZW5hIjoiUGVybmljYSIsImV4cCI6MTUxMDI3ODMzN30.zw8O1cKUBLmKO4_3rSnT336kOcBgjEf6K5NUg8eY3Io",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"IDPasajero\": \"3\",\n\t\"origen\": \"Boston,MA\",\n\t\"destino\": \"Concord,MA\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "https://fiuberappserver.herokuapp.com/direction?origen=Boston&destino=Concord,MA",
+			"request": {
+				"url": {
+					"raw": "https://fiuberappserver.herokuapp.com/direction?origen=Boston&destino=Concord,MA",
+					"protocol": "https",
+					"host": [
+						"fiuberappserver",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"direction"
+					],
+					"query": [
+						{
+							"key": "origen",
+							"value": "Boston",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "destino",
+							"value": "Concord,MA",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmVVc3VhcmlvIjoiTWFyY29zRHJpdmVyIiwiaWF0IjoxNTEwMTkxOTM3LCJjb250cmFzZW5hIjoiUGVybmljYSIsImV4cCI6MTUxMDI3ODMzN30.zw8O1cKUBLmKO4_3rSnT336kOcBgjEf6K5NUg8eY3Io",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "https://fiuberappserver.herokuapp.com/driver/4/trip",
+			"request": {
+				"url": "https://fiuberappserver.herokuapp.com/driver/4/trip",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmVVc3VhcmlvIjoiTWFyY29zRHJpdmVyIiwiaWF0IjoxNTEwMTkxOTM3LCJjb250cmFzZW5hIjoiUGVybmljYSIsImV4cCI6MTUxMDI3ODMzN30.zw8O1cKUBLmKO4_3rSnT336kOcBgjEf6K5NUg8eY3Io",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"IDPasajero\": \"3\",\n\t\"origen\": \"Boston,MA\",\n\t\"destino\": \"Concord,MA\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

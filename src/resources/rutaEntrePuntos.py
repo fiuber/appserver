@@ -40,8 +40,10 @@ class RutaEntrePuntos(Resource):
 			response = ResponseBuilder.build_response(datos, '200')
 
 		except Exception as e:
+			log = mongo.db.log
 			status_code = 403
 			msg = str(e)
+			log.insert({"Tipo": "Error", "Mensaje": msg})
 			response = ErrorHandler.create_error_response(status_code, msg)
 		return response
 
