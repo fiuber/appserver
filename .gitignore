@@ -106,8 +106,3 @@ ENV/
 
 # Python Compiled files
 *.pyc
-
-# documentacion
-**/documentacion/latex
-**/documentacion/html
-
