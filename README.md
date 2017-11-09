@@ -19,3 +19,7 @@ Se incluye un archivo de configuracion por defecto pero el servidor puede ser co
 - "directionsAPIKey": Es la clave del API de google Directions a utilizar en las request de rutas.
 - "URLSharedServer": Direcction URL en la cual esta el Shared Server.
 
+## Modelo de datos
+En el siguiente enlace puede verse una descripcion del modelo de datos usado para almacenar la informacion en mongoDB:
+
+https://github.com/fiuber/appserver/blob/master/documentacion/modelo%20de%20datos%20.pdf
