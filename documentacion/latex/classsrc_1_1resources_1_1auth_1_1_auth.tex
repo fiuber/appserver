@@ -1,0 +1,118 @@
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth}{\section{Referencia de la Clase src.\-resources.\-auth.\-Auth}
+\label{classsrc_1_1resources_1_1auth_1_1_auth}\index{src.\-resources.\-auth.\-Auth@{src.\-resources.\-auth.\-Auth}}
+}
+
+
+Clase para autenticacion y creacion del Token.  
+
+
+Diagrama de herencias de src.\-resources.\-auth.\-Auth\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classsrc_1_1resources_1_1auth_1_1_auth}
+\end{center}
+\end{figure}
+\subsection*{Métodos públicos}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_a2d64661c266e0acecb9f982c74c255bf}{def {\bfseries \-\_\-\-\_\-init\-\_\-\-\_\-}}\label{classsrc_1_1resources_1_1auth_1_1_auth_a2d64661c266e0acecb9f982c74c255bf}
+
+\item 
+def \hyperlink{classsrc_1_1resources_1_1auth_1_1_auth_a1dc17d25fd4327120f782367cad81b39}{post}
+\begin{DoxyCompactList}\small\item\em Autentica al usuario una unica vez. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Atributos públicos}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_ab31b5b7d3f7117c7030fb0bb13ec3d4e}{{\bfseries conectividad}}\label{classsrc_1_1resources_1_1auth_1_1_auth_ab31b5b7d3f7117c7030fb0bb13ec3d4e}
+
+\item 
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_a6f941c20282acda0048ff950c20b6020}{{\bfseries autenticador}}\label{classsrc_1_1resources_1_1auth_1_1_auth_a6f941c20282acda0048ff950c20b6020}
+
+\item 
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_a454d6c5e4da3b215b9067a01b4b653ea}{{\bfseries id}}\label{classsrc_1_1resources_1_1auth_1_1_auth_a454d6c5e4da3b215b9067a01b4b653ea}
+
+\item 
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_a494e703175798885c56a25e8a203bba9}{{\bfseries tipo}}\label{classsrc_1_1resources_1_1auth_1_1_auth_a494e703175798885c56a25e8a203bba9}
+
+\end{DoxyCompactItemize}
+\subsection*{Métodos privados}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{classsrc_1_1resources_1_1auth_1_1_auth_ad45756ae9f2bf3840d6fe69fc305f86d}{\-\_\-get\-\_\-user\-\_\-from\-\_\-request}
+\begin{DoxyCompactList}\small\item\em Obtiene el nombre de usuario de la request. \end{DoxyCompactList}\item 
+def \hyperlink{classsrc_1_1resources_1_1auth_1_1_auth_a85f8056c2198f62284ada1f9f40a72f2}{\-\_\-get\-\_\-hash\-Password\-\_\-from\-\_\-request}
+\begin{DoxyCompactList}\small\item\em Obtiene la contrasena de la request. \end{DoxyCompactList}\item 
+def \hyperlink{classsrc_1_1resources_1_1auth_1_1_auth_acd72657f2bddc8a60a3103f418460d57}{\-\_\-validate\-\_\-request}
+\begin{DoxyCompactList}\small\item\em Valida que haya una request. \end{DoxyCompactList}\item 
+def \hyperlink{classsrc_1_1resources_1_1auth_1_1_auth_ab140f80e50617f4d4f4a58b40391710f}{\-\_\-existe\-\_\-usuario\-\_\-en\-\_\-shared\-Server}
+\begin{DoxyCompactList}\small\item\em Valida al usuario con el shared server. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Descripción detallada}
+Clase para autenticacion y creacion del Token. 
+
+
+
+\subsection{Documentación de las funciones miembro}
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_ab140f80e50617f4d4f4a58b40391710f}{\index{src\-::resources\-::auth\-::\-Auth@{src\-::resources\-::auth\-::\-Auth}!\-\_\-existe\-\_\-usuario\-\_\-en\-\_\-shared\-Server@{\-\_\-existe\-\_\-usuario\-\_\-en\-\_\-shared\-Server}}
+\index{\-\_\-existe\-\_\-usuario\-\_\-en\-\_\-shared\-Server@{\-\_\-existe\-\_\-usuario\-\_\-en\-\_\-shared\-Server}!src::resources::auth::Auth@{src\-::resources\-::auth\-::\-Auth}}
+\subsubsection[{\-\_\-existe\-\_\-usuario\-\_\-en\-\_\-shared\-Server}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-resources.\-auth.\-Auth.\-\_\-existe\-\_\-usuario\-\_\-en\-\_\-shared\-Server (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{nombre\-Usuario, }
+\item[{}]{contrasena}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}}\label{classsrc_1_1resources_1_1auth_1_1_auth_ab140f80e50617f4d4f4a58b40391710f}
+
+
+Valida al usuario con el shared server. 
+
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_a85f8056c2198f62284ada1f9f40a72f2}{\index{src\-::resources\-::auth\-::\-Auth@{src\-::resources\-::auth\-::\-Auth}!\-\_\-get\-\_\-hash\-Password\-\_\-from\-\_\-request@{\-\_\-get\-\_\-hash\-Password\-\_\-from\-\_\-request}}
+\index{\-\_\-get\-\_\-hash\-Password\-\_\-from\-\_\-request@{\-\_\-get\-\_\-hash\-Password\-\_\-from\-\_\-request}!src::resources::auth::Auth@{src\-::resources\-::auth\-::\-Auth}}
+\subsubsection[{\-\_\-get\-\_\-hash\-Password\-\_\-from\-\_\-request}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-resources.\-auth.\-Auth.\-\_\-get\-\_\-hash\-Password\-\_\-from\-\_\-request (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}}\label{classsrc_1_1resources_1_1auth_1_1_auth_a85f8056c2198f62284ada1f9f40a72f2}
+
+
+Obtiene la contrasena de la request. 
+
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_ad45756ae9f2bf3840d6fe69fc305f86d}{\index{src\-::resources\-::auth\-::\-Auth@{src\-::resources\-::auth\-::\-Auth}!\-\_\-get\-\_\-user\-\_\-from\-\_\-request@{\-\_\-get\-\_\-user\-\_\-from\-\_\-request}}
+\index{\-\_\-get\-\_\-user\-\_\-from\-\_\-request@{\-\_\-get\-\_\-user\-\_\-from\-\_\-request}!src::resources::auth::Auth@{src\-::resources\-::auth\-::\-Auth}}
+\subsubsection[{\-\_\-get\-\_\-user\-\_\-from\-\_\-request}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-resources.\-auth.\-Auth.\-\_\-get\-\_\-user\-\_\-from\-\_\-request (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}}\label{classsrc_1_1resources_1_1auth_1_1_auth_ad45756ae9f2bf3840d6fe69fc305f86d}
+
+
+Obtiene el nombre de usuario de la request. 
+
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_acd72657f2bddc8a60a3103f418460d57}{\index{src\-::resources\-::auth\-::\-Auth@{src\-::resources\-::auth\-::\-Auth}!\-\_\-validate\-\_\-request@{\-\_\-validate\-\_\-request}}
+\index{\-\_\-validate\-\_\-request@{\-\_\-validate\-\_\-request}!src::resources::auth::Auth@{src\-::resources\-::auth\-::\-Auth}}
+\subsubsection[{\-\_\-validate\-\_\-request}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-resources.\-auth.\-Auth.\-\_\-validate\-\_\-request (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}}\label{classsrc_1_1resources_1_1auth_1_1_auth_acd72657f2bddc8a60a3103f418460d57}
+
+
+Valida que haya una request. 
+
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_a1dc17d25fd4327120f782367cad81b39}{\index{src\-::resources\-::auth\-::\-Auth@{src\-::resources\-::auth\-::\-Auth}!post@{post}}
+\index{post@{post}!src::resources::auth::Auth@{src\-::resources\-::auth\-::\-Auth}}
+\subsubsection[{post}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-resources.\-auth.\-Auth.\-post (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classsrc_1_1resources_1_1auth_1_1_auth_a1dc17d25fd4327120f782367cad81b39}
+
+
+Autentica al usuario una unica vez. 
+
+
+
+La documentación para esta clase fue generada a partir del siguiente fichero\-:\begin{DoxyCompactItemize}
+\item 
+src/resources/auth.\-py\end{DoxyCompactItemize}

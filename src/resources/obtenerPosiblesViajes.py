@@ -27,32 +27,20 @@ class ObtenerPosiblesViajes(Resource):
 	def get(self, IDUsuario):
 		"""!@brief Obtiene la informacion de todos los viajes posibles."""
 		response = ResponseBuilder.build_response({}, '200')
+	
+
+		"""Primero valida el token."""
+		if(not self._validar_token()):
+			return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
+
+		"""Devuelve los posibles viajes."""
 		try:
-
-			"""Primero valida el token."""
-			if(not self._validar_token()):
-				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
-
-			"""Devuelve los posibles viajes."""
 			datos = self._obtenerJSONViajes(IDUsuario)
-			if(datos):
-  				response = ResponseBuilder.build_response(datos, '200')
-			else:
-				response = rrorHandler.create_error_response(400, "No existe el conductor.")
-
+			response = ResponseBuilder.build_response(datos, '200')
 		except Exception as e:
-			status_code = 403
-			msg = str(e)
-			response = ErrorHandler.create_error_response(status_code, msg)
+			response = ErrorHandler.create_error_response(400, "No existe el conductor.")
+
 		return response
-
-	def _get_data_from_request(self, nombrePropiedad):
-		"""!@brief Obtiene la propiedad del json contenido de la request."""
-		
-		try:
-			return request.get_json()[nombrePropiedad]
-		except Exception as e:
-			return False
 
 	def _validar_token(self):
 		"""!@brief Valida al usuario."""
@@ -71,7 +59,7 @@ class ObtenerPosiblesViajes(Resource):
 		conductor = conductores.find_one({"id": IDUsuario})
 		
 		if(not conductor):
-			return False
+			raise Exception("No existe el conductor.")
 
 		JSON = {}
 

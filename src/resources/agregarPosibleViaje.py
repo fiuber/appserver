@@ -2,6 +2,7 @@
 import jwt
 import os
 import datetime
+import time
 import json
 
 from flask_restful import Resource
@@ -42,6 +43,9 @@ class AgregarPosibleViaje(Resource):
 
 			"""Guarda el posible viaje en mongoDB."""
 			datos = self._obtenerJSONViaje()
+			if(not datos):
+				return ErrorHandler.create_error_response(404, "Imposible obtener ruta.")
+
 			if(not self._guardar_viaje_mongo(datos)):
 				return ErrorHandler.create_error_response(404, "Imposible guardar datos de viaje.")
 
@@ -89,23 +93,24 @@ class AgregarPosibleViaje(Resource):
 			"start":{
 				"address":{
 					"location":{
-						"lat": ruta["origen"]["lat"],
-						"lon": ruta["origen"]["lng"]
+						"lat": float(ruta["origen"]["lat"]),
+						"lon": float(ruta["origen"]["lng"])
 					}
-				}
+				},
+				"timestamp": time.time()
 			},
 			"end":{
 				"address":{
 					"location":{
-						"lat": ruta["destino"]["lat"],
-						"lon": ruta["destino"]["lng"]
+						"lat": float(ruta["destino"]["lat"]),
+						"lon": float(ruta["destino"]["lng"])
 					}
 				}
 			},
-			"distance": ruta["distancia"]
+			"distance": float(ruta["distancia"])
 		}
-
 		valor = self.conectividad.post("trips/estimate",JSON)
+		
 		if(not valor):
 			raise Exception("Error en el Shared Server.")
 		return valor["trip"]["cost"]["value"]
@@ -119,6 +124,8 @@ class AgregarPosibleViaje(Resource):
 			return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 		
 		ruta = self._calcular_ruta(self._get_data_from_request("origen"), self._get_data_from_request("destino"))
+		if(not ruta):
+			return False
 
 		"""Pide la cotizacion del viaje al Shared Server."""
 		cotizacion = 0
@@ -126,6 +133,7 @@ class AgregarPosibleViaje(Resource):
 			cotizacion = self._obtener_costo_viaje(self.IDUsuario, self._get_data_from_request("IDPasajero"), ruta)
 		except Exception as e:
 			return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
+
 		
 		"""Obtiene el ID de viaje a insertar"""		
 		IDViaje = self._obtener_ID_viaje(self.IDUsuario)
@@ -216,7 +224,7 @@ class AgregarPosibleViaje(Resource):
 
 		datos = self._obtener_ruta_directions(origen, destino)
 		if(not datos):
-			return ErrorHandler.create_error_response(404, "Imposible obtener ruta.")
+			return False
 
 		"""Devuelve el JSON acondicionado.""" 
 		datos = self._acondicionarJSONRuta(datos)

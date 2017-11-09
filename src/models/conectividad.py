@@ -77,6 +77,7 @@ class Conectividad(Resource):
 
 	def setURL(self, URL):
 		self.URL = URL
+		return True
 
 	def get(self, endpoint, diccionarioParametros = {}):
 		"""!@brief Permite realizar una peticion POST y obtener el json de respuesta o false si fallo.

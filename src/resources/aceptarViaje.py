@@ -47,14 +47,6 @@ class AceptarViaje(Resource):
 			response = ErrorHandler.create_error_response(status_code, msg)
 		return response
 
-	def _get_data_from_request(self, nombrePropiedad):
-		"""!@brief Obtiene la propiedad del json contenido de la request."""
-		
-		try:
-			return request.get_json()[nombrePropiedad]
-		except Exception as e:
-			return False
-
 	def _validar_token(self):
 		"""!@brief Valida al usuario."""
 
@@ -119,10 +111,9 @@ class AceptarViaje(Resource):
 
 		"""Finalmente borra todos los viajes disponibles del chofer (No puede tomar mas)."""
 		res = True
-		try:
-			conductores.update({"id": IDUsuario},{"$set": {"viajes": []}})		
-		except Exception as e:
-			res = False
+		
+		conductores.update({"id": IDUsuario},{"$set": {"viajes": []}})		
+
 		return res
 		
 

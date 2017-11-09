@@ -28,9 +28,9 @@ class AutosPorPosicionCercana(Resource):
 		"""!@brief Obtiene los conductores cercanos a un determinado usuario."""
 		response = ResponseBuilder.build_response({}, '200')
 		try:
-			"""Valida que este el parametro IDUsuario, POSX y POSY."""
-			IDUsuario = self._validate_get_request()
-			if(IDUsuario == False):
+			"""Valida que este el parametro lng y lat."""
+			res = self._validate_get_request()
+			if(res == False):
 				return ErrorHandler.create_error_response(404, "Falta algun parametro.")
 
 			"""Valida el token."""
@@ -38,9 +38,7 @@ class AutosPorPosicionCercana(Resource):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 
 			"""Busca en mongo los autos cercanos"""
-			datos = self._obtener_autos_cercanos(self._get_param_from_request("POSX"), self._get_param_from_request("POSY"))
-			if(not datos):
-				return ErrorHandler.create_error_response(404, "Imposible comunicarse con mongoDB")
+			datos = self._obtener_autos_cercanos(self._get_param_from_request("lng"), self._get_param_from_request("lat"))
 
 			"""Devuelve el JSON acondicionado.""" 
 			datos = self._acondicionarJSON(datos)
@@ -60,12 +58,12 @@ class AutosPorPosicionCercana(Resource):
 
 	def _validate_get_request(self):
 		"""!@brief Tiene que estar la posicion del usuario que realiza la busqueda."""
-		datos = self._get_param_from_request("POSX") and self._get_param_from_request("POSY")
+		datos = self._get_param_from_request("lng") and self._get_param_from_request("lat")
 
 		if(not datos):
 			return False
 		else:
-			return datos
+			return True
 
 	def _validar_token(self):
 		"""!@brief Valida al usuario."""
@@ -80,9 +78,10 @@ class AutosPorPosicionCercana(Resource):
 	def _obtener_autos_cercanos(self, x, y):
 		"""!@brief Obtiene los autos cercanos que tenga registrados en mongoDB."""
 
+		
 		conductores = mongo.db.conductores
 		query = "if(this.posicion){if((Math.pow(this.posicion.lng-"+str(x)+",2)+Math.pow(this.posicion.lat-"+str(y)+",2)) <= "+str(self.distanciaMaxima)+") return this}"
-		return conductores.find({"$where": query})
+		return conductores.find({"$where": query})	
 			
 
 	def _acondicionarAutoJSON(self, datos):
@@ -99,8 +98,7 @@ class AutosPorPosicionCercana(Resource):
 	def _acondicionarJSON(self, datos):
 		"""!@brief Itera en los autos y arma el JSON.
 
-		@param datos La response que se obtuvo del Shared Server."""
-
+		@param datos La response que se obtuvo de mongoDB."""
 
 		json = {}
 		i=0

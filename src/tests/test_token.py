@@ -30,7 +30,7 @@ class TestToken(unittest.TestCase):
 	def test_obtenerToken_tokenValido(self, mockPyMongo, mockJWT):
 		autenticador = Token()
 
-		mockJWT.decode.return_value = {"nombreUsuario": "Mario", "contrasena": "1234"}
+		mockJWT.decode.return_value = {"nombreUsuario": "Mario", "contrasena": "Mario1234"}
 		mockJWT.encode.return_value = "jkbdsgafgklfgk"
 
 		mockFind = MagicMock()
@@ -39,7 +39,7 @@ class TestToken(unittest.TestCase):
 		p = PropertyMock(return_value = mockFind)
 		type(mockPyMongo.db).usuarios = p  	
 		
-		self.assertNotEqual(autenticador.obtenerToken("Mario", "1234"),False)
+		self.assertNotEqual(autenticador.obtenerToken(123, "driver","Mario","Mario1234"),False)
 	
 	@patch("src.models.token.jwt")
 	@patch("src.models.token.mongo")
@@ -55,7 +55,7 @@ class TestToken(unittest.TestCase):
 		p = PropertyMock(return_value = mockFind)
 		type(mockPyMongo.db).usuarios = p  	
 		
-		self.assertNotEqual(autenticador.obtenerToken("Mario", "1234"),False)
+		self.assertNotEqual(autenticador.obtenerToken(123, "driver","Mario","Mario1234"),False)
 
 	@patch("src.models.token.jwt")
 	@patch("src.models.token.mongo")
@@ -71,7 +71,7 @@ class TestToken(unittest.TestCase):
 		p = PropertyMock(return_value = mockFind)
 		type(mockPyMongo.db).usuarios = p  	
 		
-		self.assertNotEqual(autenticador.obtenerToken("Mario", "1234"),False)
+		self.assertNotEqual(autenticador.obtenerToken(123, "driver","Mario","Mario1234"),False)
 
 	@patch("src.models.token.jwt")
 	@patch("src.models.token.mongo")
@@ -87,7 +87,7 @@ class TestToken(unittest.TestCase):
 		p = PropertyMock(return_value = mockFind)
 		type(mockPyMongo.db).usuarios = p  	
 		
-		self.assertEqual(autenticador.obtenerToken("Mario", "1234"),False)
+		self.assertEqual(autenticador.obtenerToken(123, "driver","Mario","Mario1234"),False)
 
 	@patch("src.models.token.jwt")
 	@patch("src.models.token.mongo")
@@ -103,7 +103,7 @@ class TestToken(unittest.TestCase):
 		p = PropertyMock(return_value = mockFind)
 		type(mockPyMongo.db).usuarios = p  	
 		
-		self.assertNotEqual(autenticador.obtenerToken("Mario", "1234"),False)
+		self.assertNotEqual(autenticador.obtenerToken(123, "driver","Mario","Mario1234"),False)
 
 	@patch("src.models.token.jwt")
 	@patch("src.models.token.mongo")
@@ -119,7 +119,26 @@ class TestToken(unittest.TestCase):
 		p = PropertyMock(return_value = mockFind)
 		type(mockPyMongo.db).usuarios = p  	
 		
-		self.assertNotEqual(autenticador.obtenerToken("Mario", "1234"),False)
+		self.assertNotEqual(autenticador.obtenerToken(123, "passenger","Mario","Mario1234"),False)
+
+	@patch("src.models.token.jwt")
+	@patch("src.models.token.mongo")
+	def test_obtenerToken_tokenDriverNoSePuedeRecuperarDeMongo(self, mockPyMongo, mockJWT):
+		autenticador = Token()
+
+		mockJWT.decode.side_effect = tirarExcepcion
+		mockJWT.encode.side_effect = "jkbdfjkdfjkbdfsjkdjkgg"
+
+		mockFind = MagicMock()
+		mockFind.find_one.return_value = {}
+
+		p = PropertyMock(return_value = mockFind)
+		type(mockPyMongo.db).usuarios = p  	
+		
+		p = PropertyMock(return_value = mockFind)
+		type(mockPyMongo.db).conductores = p 
+
+		self.assertNotEqual(autenticador.obtenerToken(123, "driver","Mario","Mario1234"),False)
 
 	@patch("src.models.token.jwt")
 	@patch("src.models.token.mongo")
@@ -135,4 +154,20 @@ class TestToken(unittest.TestCase):
 		p = PropertyMock(return_value = mockFind)
 		type(mockPyMongo.db).usuarios = p  	
 		
-		self.assertEqual(autenticador.obtenerToken("Mario", "1234"),False)
+		self.assertEqual(autenticador.obtenerToken(123, "driver","Mario","Mario1234"),False)
+
+	@patch("src.models.token.jwt")
+	@patch("src.models.token.mongo")
+	def test_obtenerToken_tokenNoSePuedeAlmacenarDeMongo(self, mockPyMongo, mockJWT):
+		autenticador = Token()
+
+		mockJWT.decode.return_value = True
+		mockJWT.encode.return_value = "jkbdfjkdfjkbdfsjkdjkgg"
+
+		mockFind = MagicMock()
+		mockFind.update.side_effect = tirarExcepcion
+
+		p = PropertyMock(return_value = mockFind)
+		type(mockPyMongo.db).usuarios = p  	
+		
+		self.assertEqual(autenticador.obtenerToken(123, "passenger","Mario","Mario1234"),False)

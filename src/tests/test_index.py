@@ -18,6 +18,9 @@ from src.tests.test_endpoint_eliminarAutoUsuario import TestEndpointEliminarAuto
 from src.tests.test_endpoint_autoPorID import TestEndpointAutoPorID
 from src.tests.test_endpoint_autosPorUsuario import TestEndpointAutosPorUsuario
 from src.tests.test_endpoint_autosPorPosicionCercana import TestEndpointAutosPorPosicionCercana
+from src.tests.test_endpoint_aceptarViaje import TestEndpointAceptarViaje
+from src.tests.test_endpoint_agregarPosibleViaje import TestEndpointAgregarPosibleViaje
+from src.tests.test_endpoint_obtenerPosiblesViajes import TestEndpointObtenerPosiblesViajes
 
 if __name__ == '__main__':
 	try:

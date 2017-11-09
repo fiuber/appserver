@@ -11,13 +11,9 @@ def tirarExcepcion():
 
 def matchean(aux1, aux2):
 	res = True
-	res = res and (aux1["modelo"] == aux2["modelo"])
-	res = res and (aux1["color"] == aux2["color"])
-	res = res and (aux1["patente"] == aux2["patente"])
-	res = res and (aux1["anio"] == aux2["anio"])
-	res = res and (aux1["aireAcondicionado"] == aux2["aireAcondicionado"])
-	res = res and (aux1["musica"] == aux2["musica"])
-
+	res = res and (aux1["id"] == aux2["id"])
+	res = res and (aux1["posicion"]["lng"] == aux2["posicion"]["lng"])
+	res = res and (aux1["posicion"]["lat"] == aux2["posicion"]["lat"])
 	return res
 
 def matcheaAlguno(aux1, aux2):
@@ -41,53 +37,53 @@ class TestEndpointAutosPorPosicionCercana(unittest.TestCase):
 		self.app = src.server.app.test_client()
 
 
-
-	@patch("src.resources.autosPorPosicionCercana.Conectividad")
+	@patch("src.resources.autosPorPosicionCercana.mongo")
 	@patch("src.resources.autosPorPosicionCercana.Token")
-	def test_camino_feliz(self, mockToken, mockConectividad):
+	def test_camino_feliz(self, mockToken, mockPyMongo):
 
 
-		datosAuto1 = {  "modelo": "2001",
-		        	"color": "Azul",
-				"patente": "ABC-001",
-				"anio": "2001",
-				"estado": "hecho mierda",
-				"aireAcondicionado": "ni en pedo",
-				"musica": "cumbia villera"}
+		datosAuto1 = {"id": "4",
+			      "posicion":{"lng": "45.876",
+					  "lat": "50.6578"}
+			     }
 
-		datosAuto2 = {  "modelo": "2002",
-		        	"color": "Verde",
-				"patente": "DEF-358",
-				"anio": "4820",
-				"estado": "tuneado con aleron (?)",
-				"aireAcondicionado": "seeeee",
-				"musica": "sountrack de rapido y furioso"}
+		datosAuto2 = {"id": "5",
+			      "posicion":{"lng": "78.7876",
+					  "lat": "32.6578"}
+			     }
 
-		datosAutos = {"1": datosAuto1, "2": datosAuto2}
-		metadata = {"count ": 2, "total": 2, "next": "sddsf", "prev": "jkdsfgf", "first": "jhdgdgs", "last": "fdsdf", "version": 1.0}
-		datosServer = {"cars": datosAutos, "metadata": metadata }
+		datosAutos = [datosAuto1, datosAuto2]
+		jsonDatosAutos = {"1": datosAutos[0], "2": datosAutos[1]}
 
+		mockFind = MagicMock()
+		mockFind.find.return_value = datosAutos
 
+		p = PropertyMock(return_value = mockFind)
+		type(mockPyMongo.db).conductores = p  	
 
-		mockConectividad.return_value.get.return_value = json.loads(json.dumps(datosServer))
 		mockToken.return_value.validarToken.return_value = True
 
 		
 		rv = self.app.get('/driver/search',
-				  query_string = {"IDUsuario": "3"},
+				  query_string = {"lng": "3", "lat": "3"},
 				  headers = {"Authorization": "Bearer jhvbdsfbhjbjfgjbeg43gbfbgfgfb"})
 
 		jsonRV = json.loads(rv.data)
 		
-		self.assertTrue(jsonIguales(jsonRV, datosAutos))
+		self.assertTrue(jsonIguales(jsonRV, jsonDatosAutos))
 
-	@patch("src.resources.autosPorPosicionCercana.Conectividad")
+	@patch("src.resources.autosPorPosicionCercana.mongo")
 	@patch("src.resources.autosPorPosicionCercana.Token")
-	def test_sin_IDUsuario(self, mockToken, mockConectividad):
+	def test_sin_lat_y_lng(self, mockToken, mockPyMongo):
 
 
-		mockConectividad.return_value.get.return_value = True
 		mockToken.return_value.validarToken.return_value = True
+
+		mockFind = MagicMock()
+		mockFind.find.return_value = False
+
+		p = PropertyMock(return_value = mockFind)
+		type(mockPyMongo.db).conductores = p  	
 
 		
 		rv = self.app.get('/driver/search',
@@ -96,44 +92,57 @@ class TestEndpointAutosPorPosicionCercana(unittest.TestCase):
 		
 		self.assertEqual(rv.status_code, 404)
 
-	@patch("src.resources.autosPorPosicionCercana.Conectividad")
+	@patch("src.resources.autosPorPosicionCercana.mongo")
 	@patch("src.resources.autosPorPosicionCercana.Token")
-	def test_sin_token(self, mockToken, mockConectividad):
+	def test_sin_token(self, mockToken, mockPyMongo):
 
 		
-		mockConectividad.return_value.get.return_value = False
-		mockToken.return_value.validarToken.return_value = True
+		mockToken.return_value.validarToken.return_value = False
 
+		mockFind = MagicMock()
+		mockFind.find.return_value = False
+
+		p = PropertyMock(return_value = mockFind)
+		type(mockPyMongo.db).conductores = p  	
 		
 		rv = self.app.get('/driver/search',
-				  query_string = {"IDUsuario": "2"})
+				  query_string = {"lng": "3", "lat": "3"})
 		
 		self.assertEqual(rv.status_code, 403)
 
 	
-	@patch("src.resources.autosPorPosicionCercana.Conectividad")
+	@patch("src.resources.autosPorPosicionCercana.mongo")
 	@patch("src.resources.autosPorPosicionCercana.Token")
-	def test_token_invalido(self, mockToken, mockConectividad):
+	def test_token_invalido(self, mockToken, mockPyMongo):
 
-		mockConectividad.return_value.get.return_value = True
 		mockToken.return_value.validarToken.return_value = False
 
+		mockFind = MagicMock()
+		mockFind.find.return_value = False
+
+		p = PropertyMock(return_value = mockFind)
+		type(mockPyMongo.db).conductores = p  	
+
 		rv = self.app.get('/driver/search',
-				  query_string = {"IDUsuario": "2"},
+				  query_string = {"lng": "3", "lat": "3"},
 				  headers = {"Authorization": "Bearer jhvbdsfbhjbjfgjbeg43gbfbgfgfb"})
 
 		self.assertEqual(rv.status_code, 400)
 
-	@patch("src.resources.autosPorPosicionCercana.Conectividad")
+	@patch("src.resources.autosPorPosicionCercana.mongo")
 	@patch("src.resources.autosPorPosicionCercana.Token")
-	def test_conexion_fallida(self, mockToken, mockConectividad):
+	def test_conexion_fallida(self, mockToken, mockPyMongo):
 
-		mockConectividad.return_value.get.return_value = False
 		mockToken.return_value.validarToken.return_value = True
 
+		mockFind = MagicMock()
+		mockFind.find.return_value = tirarExcepcion
+
+		p = PropertyMock(return_value = mockFind)
+		type(mockPyMongo.db).conductores = p  	
 		
 		rv = self.app.get('/driver/search',
-		                  query_string = {"IDUsuario": "2"},
+		                  query_string = {"lng": "3", "lat": "3"},
 				  headers = {"Authorization": "Bearer jhvbdsfbhjbjfgjbeg43gbfbgfgfb"})
 
-		self.assertEqual(rv.status_code, 404)
+		self.assertEqual(rv.status_code, 403)

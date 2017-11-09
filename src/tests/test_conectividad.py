@@ -184,3 +184,17 @@ class TestConectividad(unittest.TestCase):
 		
 		self.assertFalse(conectividad.delete("users", {"Hola": "Chau"}, {"Hola": "Chau"}))
 
+	@patch("src.models.conectividad.requests")
+	@patch("src.models.conectividad.json")
+	def test_setURL(self, mockJson, mockRequest):
+		conectividad = Conectividad("www.llallala.com")
+
+		MockAux = MagicMock()
+		p = PropertyMock(return_value = 400)
+		type(MockAux).status_code = p  
+
+		mockRequest.delete.return_value = MockAux
+		mockJson.loads.return_value = {"OKOKOO"}
+		
+		self.assertTrue(conectividad.setURL("www.llallala.com.ar"))
+

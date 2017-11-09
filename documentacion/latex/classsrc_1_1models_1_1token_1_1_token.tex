@@ -1,0 +1,191 @@
+\hypertarget{classsrc_1_1models_1_1token_1_1_token}{\section{Referencia de la Clase src.\-models.\-token.\-Token}
+\label{classsrc_1_1models_1_1token_1_1_token}\index{src.\-models.\-token.\-Token@{src.\-models.\-token.\-Token}}
+}
+
+
+Clase para autenticacion y creacion del \hyperlink{classsrc_1_1models_1_1token_1_1_token}{Token}.  
+
+
+Diagrama de herencias de src.\-models.\-token.\-Token\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classsrc_1_1models_1_1token_1_1_token}
+\end{center}
+\end{figure}
+\subsection*{Métodos públicos}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classsrc_1_1models_1_1token_1_1_token_a673568b00450f5644e8408eff2388cbe}{def {\bfseries \-\_\-\-\_\-init\-\_\-\-\_\-}}\label{classsrc_1_1models_1_1token_1_1_token_a673568b00450f5644e8408eff2388cbe}
+
+\item 
+def \hyperlink{classsrc_1_1models_1_1token_1_1_token_a6efab07d00f27b0a50478b27ba1fa920}{obtener\-Token}
+\begin{DoxyCompactList}\small\item\em Autentica al usuario una unica vez. \end{DoxyCompactList}\item 
+def \hyperlink{classsrc_1_1models_1_1token_1_1_token_aa38dc82b2a162d45ce1f4d492e8bf99c}{validar\-Token}
+\begin{DoxyCompactList}\small\item\em Valida el token. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Atributos públicos}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classsrc_1_1models_1_1token_1_1_token_af98d64a3e07c1a7104e801cf9ad40172}{{\bfseries C\-L\-A\-V\-E\-\_\-\-U\-L\-T\-R\-A\-S\-E\-C\-R\-E\-T\-A}}\label{classsrc_1_1models_1_1token_1_1_token_af98d64a3e07c1a7104e801cf9ad40172}
+
+\end{DoxyCompactItemize}
+\subsection*{Métodos privados}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classsrc_1_1models_1_1token_1_1_token_a3ecc3ba1983a70ec195612df45d4ad3f}{def {\bfseries \-\_\-validar\-Token}}\label{classsrc_1_1models_1_1token_1_1_token_a3ecc3ba1983a70ec195612df45d4ad3f}
+
+\item 
+def \hyperlink{classsrc_1_1models_1_1token_1_1_token_a6dae16035576f9945a55ff47f09a56e7}{\-\_\-crear\-\_\-token}
+\item 
+def \hyperlink{classsrc_1_1models_1_1token_1_1_token_a2bd63e97694f42d32303c6d563d8c65e}{\-\_\-recuperar\-Token}
+\begin{DoxyCompactList}\small\item\em Recupera el token de mongo\-D\-B. \end{DoxyCompactList}\item 
+def \hyperlink{classsrc_1_1models_1_1token_1_1_token_a90daa7df2e19d41481bb3570a77de2f7}{\-\_\-generar\-Token}
+\begin{DoxyCompactList}\small\item\em Genera y devuelve el token de autenticacion del usuario con el appserver. \end{DoxyCompactList}\item 
+def \hyperlink{classsrc_1_1models_1_1token_1_1_token_a90eaf9eddea9e6f6b04c7a4b8542b71f}{\-\_\-almacenar\-Token}
+\begin{DoxyCompactList}\small\item\em Guarda el token en mongo\-D\-B para accederlo de una. \end{DoxyCompactList}\item 
+def \hyperlink{classsrc_1_1models_1_1token_1_1_token_a4f267817c4ea319c779cbbd77783c08d}{\-\_\-validar\-Token\-Login}
+\begin{DoxyCompactList}\small\item\em Desempaqueta el token y valida los campos. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Descripción detallada}
+Clase para autenticacion y creacion del \hyperlink{classsrc_1_1models_1_1token_1_1_token}{Token}. 
+
+
+
+\subsection{Documentación de las funciones miembro}
+\hypertarget{classsrc_1_1models_1_1token_1_1_token_a90eaf9eddea9e6f6b04c7a4b8542b71f}{\index{src\-::models\-::token\-::\-Token@{src\-::models\-::token\-::\-Token}!\-\_\-almacenar\-Token@{\-\_\-almacenar\-Token}}
+\index{\-\_\-almacenar\-Token@{\-\_\-almacenar\-Token}!src::models::token::Token@{src\-::models\-::token\-::\-Token}}
+\subsubsection[{\-\_\-almacenar\-Token}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-models.\-token.\-Token.\-\_\-almacenar\-Token (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{I\-D\-Usuario, }
+\item[{}]{tipo\-Usuario, }
+\item[{}]{nombre\-Usuario, }
+\item[{}]{token}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}}\label{classsrc_1_1models_1_1token_1_1_token_a90eaf9eddea9e6f6b04c7a4b8542b71f}
+
+
+Guarda el token en mongo\-D\-B para accederlo de una. 
+
+Devuelve true si se pudo guardar o false si no se pudo porque no existia el usuario
+
+
+\begin{DoxyParams}{Parámetros}
+{\em nombre\-Usuario} & Nombre del usuario. \\
+\hline
+{\em token} & token a guardar. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classsrc_1_1models_1_1token_1_1_token_a6dae16035576f9945a55ff47f09a56e7}{\index{src\-::models\-::token\-::\-Token@{src\-::models\-::token\-::\-Token}!\-\_\-crear\-\_\-token@{\-\_\-crear\-\_\-token}}
+\index{\-\_\-crear\-\_\-token@{\-\_\-crear\-\_\-token}!src::models::token::Token@{src\-::models\-::token\-::\-Token}}
+\subsubsection[{\-\_\-crear\-\_\-token}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-models.\-token.\-Token.\-\_\-crear\-\_\-token (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{I\-D\-Usuario, }
+\item[{}]{tipo\-Usuario, }
+\item[{}]{nombre\-Usuario, }
+\item[{}]{contrasena}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}}\label{classsrc_1_1models_1_1token_1_1_token_a6dae16035576f9945a55ff47f09a56e7}
+\begin{DoxyVerb}"Se crea un nuevo token.\end{DoxyVerb}
+ \hypertarget{classsrc_1_1models_1_1token_1_1_token_a90daa7df2e19d41481bb3570a77de2f7}{\index{src\-::models\-::token\-::\-Token@{src\-::models\-::token\-::\-Token}!\-\_\-generar\-Token@{\-\_\-generar\-Token}}
+\index{\-\_\-generar\-Token@{\-\_\-generar\-Token}!src::models::token::Token@{src\-::models\-::token\-::\-Token}}
+\subsubsection[{\-\_\-generar\-Token}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-models.\-token.\-Token.\-\_\-generar\-Token (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{nombre\-Usuario, }
+\item[{}]{contrasena}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}}\label{classsrc_1_1models_1_1token_1_1_token_a90daa7df2e19d41481bb3570a77de2f7}
+
+
+Genera y devuelve el token de autenticacion del usuario con el appserver. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em nombre\-Usuario} & Nombre del usuario. \\
+\hline
+{\em contrasena} & Contrasena del usuario hasheada. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classsrc_1_1models_1_1token_1_1_token_a2bd63e97694f42d32303c6d563d8c65e}{\index{src\-::models\-::token\-::\-Token@{src\-::models\-::token\-::\-Token}!\-\_\-recuperar\-Token@{\-\_\-recuperar\-Token}}
+\index{\-\_\-recuperar\-Token@{\-\_\-recuperar\-Token}!src::models::token::Token@{src\-::models\-::token\-::\-Token}}
+\subsubsection[{\-\_\-recuperar\-Token}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-models.\-token.\-Token.\-\_\-recuperar\-Token (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{nombre\-Usuario}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}}\label{classsrc_1_1models_1_1token_1_1_token_a2bd63e97694f42d32303c6d563d8c65e}
+
+
+Recupera el token de mongo\-D\-B. 
+
+Devuelve el token o false.
+
+
+\begin{DoxyParams}{Parámetros}
+{\em nombre\-Usuario} & Nombre del usuario. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classsrc_1_1models_1_1token_1_1_token_a4f267817c4ea319c779cbbd77783c08d}{\index{src\-::models\-::token\-::\-Token@{src\-::models\-::token\-::\-Token}!\-\_\-validar\-Token\-Login@{\-\_\-validar\-Token\-Login}}
+\index{\-\_\-validar\-Token\-Login@{\-\_\-validar\-Token\-Login}!src::models::token::Token@{src\-::models\-::token\-::\-Token}}
+\subsubsection[{\-\_\-validar\-Token\-Login}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-models.\-token.\-Token.\-\_\-validar\-Token\-Login (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{nombre\-Usuario, }
+\item[{}]{contrasena, }
+\item[{}]{token}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}}\label{classsrc_1_1models_1_1token_1_1_token_a4f267817c4ea319c779cbbd77783c08d}
+
+
+Desempaqueta el token y valida los campos. 
+
+Devuelve true o false.
+
+
+\begin{DoxyParams}{Parámetros}
+{\em nombre\-Usuario} & Nombre del usuario. \\
+\hline
+{\em contrasena} & Contrasena del usuario hasheada. \\
+\hline
+{\em token} & token a validar. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classsrc_1_1models_1_1token_1_1_token_a6efab07d00f27b0a50478b27ba1fa920}{\index{src\-::models\-::token\-::\-Token@{src\-::models\-::token\-::\-Token}!obtener\-Token@{obtener\-Token}}
+\index{obtener\-Token@{obtener\-Token}!src::models::token::Token@{src\-::models\-::token\-::\-Token}}
+\subsubsection[{obtener\-Token}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-models.\-token.\-Token.\-obtener\-Token (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{I\-D\-Usuario, }
+\item[{}]{tipo\-Usuario, }
+\item[{}]{nombre\-Usuario, }
+\item[{}]{contrasena}
+\end{DoxyParamCaption}
+)}}\label{classsrc_1_1models_1_1token_1_1_token_a6efab07d00f27b0a50478b27ba1fa920}
+
+
+Autentica al usuario una unica vez. 
+
+Si el usuario no tenia un token anterior o expiro se crea uno y se almacena, sino se devuelve el que ya tenia asignado. \hypertarget{classsrc_1_1models_1_1token_1_1_token_aa38dc82b2a162d45ce1f4d492e8bf99c}{\index{src\-::models\-::token\-::\-Token@{src\-::models\-::token\-::\-Token}!validar\-Token@{validar\-Token}}
+\index{validar\-Token@{validar\-Token}!src::models::token::Token@{src\-::models\-::token\-::\-Token}}
+\subsubsection[{validar\-Token}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-models.\-token.\-Token.\-validar\-Token (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{token}
+\end{DoxyParamCaption}
+)}}\label{classsrc_1_1models_1_1token_1_1_token_aa38dc82b2a162d45ce1f4d492e8bf99c}
+
+
+Valida el token. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em token} & \hyperlink{classsrc_1_1models_1_1token_1_1_token}{Token} a validar. \\
+\hline
+\end{DoxyParams}
+
+
+La documentación para esta clase fue generada a partir del siguiente fichero\-:\begin{DoxyCompactItemize}
+\item 
+src/models/token.\-py\end{DoxyCompactItemize}
