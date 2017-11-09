@@ -1,13 +1,15 @@
 # Manual de configuracion e instalacion
 
 ## Instalacion
-Para la instalacion del APP server se deberan seguir los siguientes pasos:
+Para la instalacion del APP server de manera local se deberan seguir los siguientes pasos:
 
 - Realizar un clone del repositorio de la siguiente forma "git clone https://github.com/fiuber/appserver.git" previamente navegando al directorio en el que se quiera clonar el repositorio.
 
 - Correr el script ./lanzar que se encarga hacer el build de la imagen de docker y correrla exponiendo el puerto 5000.
 
 - Ya se pueden realizar request al App Server en la direccion localhost:5000 con el programa postman o similar. 
+
+Si en cambio se desea realizar pruebas al servidor de produccion se pueden enviar requests a la direccion "http://fiuberappserver.herokuapp.com/" donde esta el mismo. 
 
 ## Configuracion
 Se incluye un archivo de configuracion por defecto pero el servidor puede ser configurado a gusto utilizando el archivo "__init__.py" ubicado en el directorio "src/" del App Server en donde se encuentran todos los parametros que se pueden variar del servidor tales como:
