@@ -16,16 +16,16 @@ from response_builder import ResponseBuilder
 from src import app
 from src import mongo
 from src import directionsAPIKey
+from src import URLGoogleDirections
+from src import URLSharedServer
 
 class AgregarPosibleViaje(Resource):
 	"""!@brief Clase para agregar un viaje a la lista de posibles viajes de un chofer."""
 
 
 	def __init__(self):
-		self.URLDirections = "https://maps.googleapis.com/maps/api/directions"
-		self.URL = "http://fiuber-shared.herokuapp.com"
 		self.autenticador = Token() 
-		self.conectividad = Conectividad(self.URL)
+		self.conectividad = Conectividad(URLSharedServer)
 
 	def post(self, IDUsuario):
 		"""!@brief Agrega la informacion del viaje posible."""
@@ -86,7 +86,7 @@ class AgregarPosibleViaje(Resource):
 	def _obtener_costo_viaje(self, IDUsuario, IDPasajero, ruta):
 		"""!@brief le pide al shared server la cotizacion del viaje."""
 
-		self.conectividad.setURL(self.URL)
+		self.conectividad.setURL(URLSharedServer)
 
 		JSON = {"driver": IDUsuario,
 			"passenger": IDPasajero,
@@ -118,7 +118,9 @@ class AgregarPosibleViaje(Resource):
 	def _obtenerJSONViaje(self):
 		"""!@brief Obtiene toda la informacion y crea el JSON de datos del viaje."""
 
+
 		"""Pide la informacion del usuario al Shared Server."""
+		self.conectividad.setURL(URLSharedServer)
 		datosUsuario = self.conectividad.get("users/"+self._get_data_from_request("IDPasajero"))
 		if(not datosUsuario):
 			return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
@@ -216,7 +218,7 @@ class AgregarPosibleViaje(Resource):
 			      "destination": destino,
 			      "key": directionsAPIKey};
 
-		self.conectividad.setURL(self.URLDirections)
+		self.conectividad.setURL(URLGoogleDirections)
 		return self.conectividad.get("json", parametros)
 
 	def _calcular_ruta(self, origen, destino):

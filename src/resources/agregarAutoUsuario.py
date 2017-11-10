@@ -13,15 +13,15 @@ from src.models.conectividad import Conectividad
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 from src import app
+from src import URLSharedServer
 
 class AgregarAutoUsuario(Resource):
 	"""!@brief Clase para agregar un auto a un usuario."""
 
 
 	def __init__(self):
-		self.URL = "http://fiuber-shared.herokuapp.com"
 		self.autenticador = Token() 
-		self.conectividad = Conectividad(self.URL)	
+		self.conectividad = Conectividad(URLSharedServer)	
 
 	def post(self, IDUsuario):
 		"""!@brief Asocia informacion de un nuevo auto a un usuario."""
@@ -37,6 +37,7 @@ class AgregarAutoUsuario(Resource):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 
 			"""Le manda los datos al Shared Server."""
+			self.conectividad.setURL(URLSharedServer)
 			if(not self.conectividad.post("users/"+IDUsuario+"/cars", self._obtenerJSONPropiedadesAuto())):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 

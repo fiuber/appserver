@@ -13,15 +13,15 @@ from src.models.conectividad import Conectividad
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 from src import app
+from src import URLSharedServer
 
 class ModificarAutoUsuario(Resource):
 	"""!@brief Clase para modificar un auto de un usuario."""
 
 
 	def __init__(self):
-		self.URL = "http://fiuber-shared.herokuapp.com"
 		self.autenticador = Token() 
-		self.conectividad = Conectividad(self.URL)	
+		self.conectividad = Conectividad(URLSharedServer)	
 
 
 	def put(self, IDUsuario, IDAuto):
@@ -38,6 +38,7 @@ class ModificarAutoUsuario(Resource):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 
 			"""Le manda los datos al Shared Server."""
+			self.conectividad.setURL(URLSharedServer)
 			URLDestino = "users/"+IDUsuario+"/cars/"+IDAuto
 			res = self.conectividad.put(URLDestino, self._obtenerJSON(IDUsuario, IDAuto))
 			

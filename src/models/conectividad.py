@@ -9,6 +9,7 @@ from flask_restful import Resource
 from flask import Flask, request
 
 from src import URLSharedServer
+from src import mongo
 
 class Conectividad(Resource):
 	"""!@brief Clase para el manejo de las peticiones HTTP. Singleton. 
@@ -68,6 +69,7 @@ class Conectividad(Resource):
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.post(self.URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
 		if(r.status_code < 200 or r.status_code > 210):
+			mongo.db.log.insert({"Tipo": "Error", "Mensaje": "POST: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + self.URL})
 			return False
 		else:
 			try:
@@ -88,6 +90,7 @@ class Conectividad(Resource):
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.get(self.URL+'/'+endpoint, headers=headers, params = diccionarioParametros)
 		if(r.status_code != 200):
+			mongo.db.log.insert({"Tipo": "Error", "Mensaje": "GET: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + self.URL})
 			return False
 		else:
 			try:
@@ -105,6 +108,7 @@ class Conectividad(Resource):
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.put(self.URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
 		if(r.status_code < 200 or r.status_code > 210):
+			mongo.db.log.insert({"Tipo": "Error", "Mensaje": "PUT: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + self.URL})
 			return False
 		else:
 			try:
@@ -122,6 +126,7 @@ class Conectividad(Resource):
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.delete(self.URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
 		if(r.status_code < 200 or r.status_code > 210):
+			mongo.db.log.insert({"Tipo": "Error", "Mensaje":  "DELETE: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + self.URL})
 			return False
 		else:
 			try:

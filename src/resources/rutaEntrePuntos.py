@@ -14,14 +14,14 @@ from response_builder import ResponseBuilder
 from src import app
 from src import mongo
 from src import directionsAPIKey
+from src import URLGoogleDirections
 
 class RutaEntrePuntos(Resource):
 	"""!@brief Clase para la obtencion entre la ruta entre dos posiciones."""
 
 	def __init__(self):
-		self.URL = "https://maps.googleapis.com/maps/api/directions"
 		self.autenticador = Token() 
-		self.conectividad = Conectividad(self.URL)	
+		self.conectividad = Conectividad(URLGoogleDirections)	
 
 	def get(self):
 		"""!@brief Obtiene la ruta entre dos posiciones."""
@@ -40,10 +40,8 @@ class RutaEntrePuntos(Resource):
 			response = ResponseBuilder.build_response(datos, '200')
 
 		except Exception as e:
-			log = mongo.db.log
 			status_code = 403
 			msg = str(e)
-			log.insert({"Tipo": "Error", "Mensaje": msg})
 			response = ErrorHandler.create_error_response(status_code, msg)
 		return response
 
@@ -97,8 +95,10 @@ class RutaEntrePuntos(Resource):
 		parametros = {"origin": origen,
 			      "destination": destino,
 			      "key": directionsAPIKey};
-
-		return self.conectividad.get("json", parametros)
+	
+		self.conectividad.setURL(URLGoogleDirections)
+		aux = self.conectividad.get("json", parametros)
+		return aux
 
 	def _calcular_ruta(self, origen, destino):
 		"""!@Brief Pide el servicio a Google Directions."""

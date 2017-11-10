@@ -20,9 +20,7 @@ class ObtenerPosiblesViajes(Resource):
 
 
 	def __init__(self):
-		self.URL = "http://fiuber-shared.herokuapp.com"
 		self.autenticador = Token() 
-		self.conectividad = Conectividad(self.URL)
 
 	def get(self, IDUsuario):
 		"""!@brief Obtiene la informacion de todos los viajes posibles."""

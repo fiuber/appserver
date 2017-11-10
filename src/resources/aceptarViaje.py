@@ -15,15 +15,14 @@ from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 from src import app
 from src import mongo
+from src import URLSharedServer
 
 class AceptarViaje(Resource):
 	"""!@brief Clase para aceptar un viaje de un chofer."""
 
 
 	def __init__(self):
-		self.URL = "http://fiuber-shared.herokuapp.com"
 		self.autenticador = Token() 
-		self.conectividad = Conectividad(self.URL)
 
 	def post(self, IDUsuario, IDViaje):
 		"""!@brief Acepta un viaje y borra todos los otros."""

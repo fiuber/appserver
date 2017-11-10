@@ -13,11 +13,13 @@ from src.models.conectividad import Conectividad
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 
+from src import URLSharedServer
+
 class Auth(Resource):
 	"""!@brief Clase para autenticacion y creacion del Token."""
 
 	def __init__(self):
-		self.conectividad = Conectividad("http://fiuber-shared.herokuapp.com")
+		self.conectividad = Conectividad(URLSharedServer)
 		self.autenticador = Token() 
 
 	def post(self):
@@ -86,6 +88,7 @@ class Auth(Resource):
 
 		cuerpo = {'username': nombreUsuario, 'password': contrasena}
 
+		self.conectividad.setURL(URLSharedServer)
 		respuesta = self.conectividad.post("users/validate", cuerpo)
 
 		if(respuesta != False):

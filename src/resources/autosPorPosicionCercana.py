@@ -19,9 +19,7 @@ class AutosPorPosicionCercana(Resource):
 	"""!@brief Clase para la busqueda de autos de usuarios."""
 
 	def __init__(self):
-		self.URL = "http://fiuber-shared.herokuapp.com"
 		self.autenticador = Token() 
-		self.conectividad = Conectividad(self.URL)	
 		self.distanciaMaxima = 50000
 
 	def get(self):

@@ -13,6 +13,7 @@ from src.models.conectividad import Conectividad
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 from src import app
+from src import URLSharedServer
 
 class EliminarAutoUsuario(Resource):
 	"""!@brief Clase para eliminar un auto de un usuario."""
@@ -20,9 +21,8 @@ class EliminarAutoUsuario(Resource):
 
 
 	def __init__(self):
-		self.URL = "http://fiuber-shared.herokuapp.com"
 		self.autenticador = Token() 
-		self.conectividad = Conectividad(self.URL)	
+		self.conectividad = Conectividad(URLSharedServer)	
 
 	def delete(self, IDUsuario, IDAuto):
 		"""!@brief Elimina un auto de un usuario determinado."""
@@ -33,6 +33,7 @@ class EliminarAutoUsuario(Resource):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 
 			"""Le manda los datos al Shared Server."""
+			self.conectividad.setURL(URLSharedServer)
 			URLDestino = "users/"+IDUsuario+"/cars/"+IDAuto
 			if(not self.conectividad.delete(URLDestino)):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
