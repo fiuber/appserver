@@ -10,6 +10,7 @@ from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
 from src.models.conectividad import Conectividad
+from geopy.distance import vincenty
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
@@ -18,6 +19,7 @@ from src import mongo
 from src import directionsAPIKey
 from src import URLGoogleDirections
 from src import URLSharedServer
+from src import origen
 
 class AgregarPosibleViaje(Resource):
 	"""!@brief Clase para agregar un viaje a la lista de posibles viajes de un chofer."""
@@ -107,7 +109,7 @@ class AgregarPosibleViaje(Resource):
 					}
 				}
 			},
-			"distance": float(ruta["distancia"])
+			"distance": float(ruta["mongo"]["distancia"])
 		}
 		valor = self.conectividad.post("trips/estimate",JSON)
 		
@@ -142,9 +144,9 @@ class AgregarPosibleViaje(Resource):
 
 		JSON = {"idViaje": str(IDViaje),
 			"datosPasajero": self._acondicionarJSONUsuario(datosUsuario), 
-			"ruta": ruta["ruta"],
-			"origen": ruta["origen"],
-			"destino": ruta["destino"],
+			"ruta": ruta["mongo"]["ruta"],
+			"origen": ruta["mongo"]["origen"],
+			"destino": ruta["mongo"]["destino"],
 			"costo": str(cotizacion)}
 
 
@@ -201,12 +203,21 @@ class AgregarPosibleViaje(Resource):
 		for prop in dato:
 			json[str(i)] = {"inicio": prop["start_location"], "fin": prop["end_location"]}
 			i = i + 1
-		
 
-		JSON = {"ruta": {"ruta": json, "distancia": datos["routes"][0]["legs"][0]["distance"]["value"]},
-			"distancia": datos["routes"][0]["legs"][0]["distance"]["value"],
-			"origen": datos["routes"][0]["legs"][0]["start_location"],
-			"destino": datos["routes"][0]["legs"][0]["end_location"]}
+		"""Convierte a metros"""
+		origenJSON = {"lng": vincenty((0,float(datos["routes"][0]["legs"][0]["start_location"]["lng"])), origen).meters,
+			  "lat": vincenty((float(datos["routes"][0]["legs"][0]["start_location"]["lat"]),0), origen).meters}
+
+		destinoJSON = {"lng": vincenty((0,float(datos["routes"][0]["legs"][0]["end_location"]["lng"])), origen).meters,
+			  "lat": vincenty((float(datos["routes"][0]["legs"][0]["end_location"]["lat"]),0), origen).meters}
+
+		JSON = {"origen": datos["routes"][0]["legs"][0]["start_location"],
+			"destino": datos["routes"][0]["legs"][0]["end_location"],
+				"mongo": {"ruta": {"ruta": json, "distancia": datos["routes"][0]["legs"][0]["distance"]["value"]},
+					  "distancia": datos["routes"][0]["legs"][0]["distance"]["value"],
+					  "origen": origenJSON,
+					  "destino": destinoJSON}
+			}
 
 		return JSON
 

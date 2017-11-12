@@ -9,20 +9,20 @@ from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
 from src.models.conectividad import Conectividad
+from geopy.distance import vincenty
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 from src import app
 from src import mongo
+from src import origen
 
 class UsuarioModificarPosicion(Resource):
 	"""!@brief Clase para actualizar la posicion de un usuario."""
 
 
-	def __init__(self, conductor):
+	def __init__(self):
 		self.autenticador = Token() 
-		self.conductor = conductor
-
 
 	def put(self, IDUsuario):
 		"""!@brief Actualiza los datos de posicion de un usuario."""
@@ -41,7 +41,7 @@ class UsuarioModificarPosicion(Resource):
 			pos = self._get_data_from_request("posicion")
 
 		
-			if(not self._actualizar_posicion_usuario(IDUsuario, pos["x"], pos["y"])):
+			if(not self._actualizar_posicion_usuario(IDUsuario, pos["lng"], pos["lat"])):
 				return ErrorHandler.create_error_response(500, "No se pudo actualizar la posicion.")
 
 		except Exception as e:
@@ -79,6 +79,12 @@ class UsuarioModificarPosicion(Resource):
 		return True
 
 	def _actualizar_posicion_usuario(self, IDUsuario, x, y):
+		
+		"""Convierte a metros"""
+
+		x = vincenty((0,x), origen).meters
+		y = vincenty((y,0), origen).meters
+
 		usuarios = mongo.db.usuarios
 		return usuarios.update({"id" : IDUsuario}, {"$set": {"posicion" : {"lng": x, "lat": y}}}, upsert=True)
 		

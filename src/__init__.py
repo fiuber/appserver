@@ -15,3 +15,4 @@ mongo = PyMongo(app)
 directionsAPIKey = "AIzaSyDvms5q5db1RR0P6d1-lwkO9lEJy_Tv_1U"
 URLSharedServer = "http://fiuber-shared.herokuapp.com"
 URLGoogleDirections = "https://maps.googleapis.com/maps/api/directions"
+origen = (0, 0)

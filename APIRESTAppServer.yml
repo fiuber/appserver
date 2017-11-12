@@ -156,10 +156,10 @@ paths:
               posicion:
                 type: object
                 properties:
-                  x:
-                    type: string
-                  y:
-                    type: string
+                  lng:
+                    type: number
+                  lat:
+                    type: number
                 
       responses:
         '200':
@@ -226,16 +226,16 @@ paths:
                     type: object
                     properties:
                       lat:
-                        type: string
+                        type: number
                       lng:
-                        type: string
+                        type: number
                   destino:
                     type: object
                     properties:
                       lat:
-                        type: string
+                        type: number
                       lng:
-                        type: string   
+                        type: number   
                   datosPasajero:
                     type: object
                     properties:
@@ -338,9 +338,9 @@ paths:
                 type: object
                 properties:
                   lng:
-                    type: string
+                    type: number
                   lat:
-                    type: string
+                    type: number
                 
       responses:
         '200':
@@ -494,13 +494,13 @@ paths:
           in: query
           description: Longitud del usuario al cual obtenerle los autos cercanos.
           required: true
-          type: string
+          type: number
           
         - name: lat
           in: query
           description: Latitud del usuario al cual obtenerle los autos cercanos.
           required: true
-          type: string
+          type: number
       responses:
         '200':
           description: Operacion Exitosa
@@ -516,9 +516,9 @@ paths:
                     type: object
                     properties:
                       lng:
-                        type: string
+                        type: number
                       lat: 
-                        type: string
+                        type: number
               2:
                 properties:
                   perfil:
@@ -527,9 +527,9 @@ paths:
                     type: object
                     properties:
                       lng:
-                        type: string
+                        type: number
                       lat: 
-                        type: string
+                        type: number
               3:
                 properties:
                   perfil:
@@ -538,9 +538,9 @@ paths:
                     type: object
                     properties:
                       lng:
-                        type: string
+                        type: number
                       lat: 
-                        type: string
+                        type: number
         '400':
           description: Token invalido o expirado.
         '404':
@@ -648,16 +648,16 @@ definitions:
                 type: object
                 properties:
                   lat:
-                    type: string
+                    type: number
                   lng:
-                    type: string
+                    type: number
               fin:
                 type: object
                 properties:
                   lat:
-                    type: string
+                    type: number
                   lng:
-                    type: string
+                    type: number
           1:
             type: object
             properties:
@@ -665,16 +665,16 @@ definitions:
                 type: object
                 properties:
                   lat:
-                    type: string
+                    type: number
                   lng:
-                    type: string
+                    type: number
               fin:
                 type: object
                 properties:
                   lat:
-                    type: string
+                    type: number
                   lng:
-                    type: string
+                    type: number
           2:
             type: object
             properties:
@@ -682,16 +682,16 @@ definitions:
                 type: object
                 properties:
                   lat:
-                    type: string
+                    type: number
                   lng:
-                    type: string
+                    type: number
               fin:
                 type: object
                 properties:
                   lat:
-                    type: string
+                    type: number
                   lng:
-                    type: string                    
+                    type: number                 
   transaction:
     properties:
       idTransaccion:

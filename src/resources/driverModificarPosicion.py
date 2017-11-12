@@ -10,18 +10,21 @@ from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
 from src.models.conectividad import Conectividad
+from geopy.distance import vincenty
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 from src import app
 from src import mongo
+from src import origen
 
 class ConductorModificarPosicion(Resource):
 	"""!@brief Clase para actualizar la posicion de un conductor."""
 
 
-	def __init__(self, conductor):
+	def __init__(self):
 		self.autenticador = Token() 
+		self.distanciaMinima = 36**2
 
 
 	def put(self, IDUsuario):
@@ -40,8 +43,7 @@ class ConductorModificarPosicion(Resource):
 			"""Actualiza la posicion."""
 			pos = self._get_data_from_request("posicion")
 
-			
-			if(not self._actualizar_posicion_conductor(IDUsuario, pos["x"], pos["y"])):
+			if(not self._actualizar_posicion_conductor(IDUsuario, pos["lng"], pos["lat"])):
 				return ErrorHandler.create_error_response(500, "No se pudo actualizar la posicion.")
 
 
@@ -108,35 +110,29 @@ class ConductorModificarPosicion(Resource):
 
 		terminoEspera = False
 		terminoViaje = False
+		posicionConductor = {}
 		try:
-			posicionConductor = datosConductor["estado"]["posicion"]
+			posicionConductor = datosConductor["posicion"]
 
-			if(datosConductor["estado"] == recogiendoPasajero):
-				espera = False
+			if(datosConductor["estado"] == "recogiendoPasajero"):
 				posicionPasajero = pasajero["posicion"]
-				distancia = float(posicionConductor["lng"])-float(posicionPasajero["lng"])**2+float(posicionConductor["lat"])-float(posicionPasajero["lat"])**2
-				if(distancia < 36):
+				distancia = (posicionConductor["lng"]-posicionPasajero["lng"])**2+(posicionConductor["lat"]-posicionPasajero["lat"])**2
+				if(distancia < self.distanciaMinima):
 					res = pasajeros.update({"id": pasajero["id"]},{"$set": {"estado": "viajando"}})
 					if(res["nModified"] != 0):
 						conductores.update({"id": datosConductor["id"]},{"$set": {"estado": "viajando"}})
-			else:
+			elif(viaje["timestampFinEspera"] == 0):
 				terminoEspera = True					
 
 
 		except Exception as e:
 			terminoEspera = False
 
-		distanciaDestino = float(posicionConductor["lng"])-float(viaje["destino"]["lng"])**2+float(posicionConductor["lat"])-float(viaje["destino"]["lat"])**2
+		distanciaDestino = (posicionConductor["lng"]-viaje["destino"]["lng"])**2+(posicionConductor["lat"]-viaje["destino"]["lat"])**2
 
-		if(distanciaDestino < 36):
+		if(distanciaDestino < self.distanciaMinima and viaje["timestampFinViaje"] == 0):
 			terminoViaje = True
-			res = pasajeros.update({"id": pasajero["id"]},{"$set": {"estado": "libre"}})
-			if(res["nModified"] != 0):
-				conductores.update({"id": datosConductor["id"]},{"$set": {"estado": "libre"}})
 
-		"""Finalizar viaje con Shared Server."""
-			
-	
 		updateQuery = {"$push": 
 				{"rutaConductor": 
 				  {"lng": x,
@@ -146,18 +142,31 @@ class ConductorModificarPosicion(Resource):
 
 		if(terminoEspera):
 			updateQuery["$set"] = {"timestampFinEspera": time.time()}
-		elif(terminoViaje):		
+		elif(terminoViaje):	
+	
+			res = pasajeros.update({"id": pasajero["id"]},{"$set": {"estado": "libre"}})
+			if(res["nModified"] != 0):
+				conductores.update({"id": datosConductor["id"]},{"$set": {"estado": "libre"}})
+
+			"""Finalizar viaje con Shared Server."""			
+	
 			updateQuery["$set"] = {"timestampFinViaje": time.time()}
 
-		print(updateQuery)
 
-		res = viajes.update({"IDConductor": datosConductor["id"]}, updateQuery)
-		if(res["nModified"] == 0):
-			return False
+		if(viaje["timestampFinViaje"] == 0):
+			res = viajes.update({"IDConductor": datosConductor["id"]}, updateQuery)
+			if(res["nModified"] == 0):
+				return False
+		return True
 		
 
 	def _actualizar_posicion_conductor(self, IDUsuario, x, y):
 		conductores = mongo.db.conductores
+
+		"""Convierte a metros"""
+
+		x = vincenty((0,x), origen).meters
+		y = vincenty((y,0), origen).meters
 
 		datosConductor = conductores.find_and_modify({"id" : IDUsuario}, {"$set": {"posicion" : {"lng": x, "lat": y}}}, upsert=True, new=True)
 		if(not datosConductor):

@@ -9,11 +9,13 @@ from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
 from src.models.conectividad import Conectividad
+from geopy.distance import vincenty
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 from src import app
 from src import mongo
+from src import origen
 
 class AutosPorPosicionCercana(Resource):
 	"""!@brief Clase para la busqueda de autos de usuarios."""
@@ -76,6 +78,10 @@ class AutosPorPosicionCercana(Resource):
 	def _obtener_autos_cercanos(self, x, y):
 		"""!@brief Obtiene los autos cercanos que tenga registrados en mongoDB."""
 
+		"""Convierte a metros"""
+
+		x = vincenty((0,x), origen).meters
+		y = vincenty((y,0), origen).meters
 		
 		conductores = mongo.db.conductores
 		query = "if(this.posicion){if((Math.pow(this.posicion.lng-"+str(x)+",2)+Math.pow(this.posicion.lat-"+str(y)+",2)) <= "+str(self.distanciaMaxima)+") return this}"
@@ -87,10 +93,15 @@ class AutosPorPosicionCercana(Resource):
 
 		@param datos Es el auto a acondicionar."""
 
+		"""Convierte a metros"""
+
+		x = vincenty((0,datos["posicion"]["lng"]), origen).meters
+		y = vincenty((datos["posicion"]["lat"],0), origen).meters
+
 		return {"id": datos["id"],
 			"posicion": {
-				     "lng": datos["posicion"]["lng"],
-				     "lat": datos["posicion"]["lat"]
+				     "lng": x,
+				     "lat": y
 				     }}
 
 	def _acondicionarJSON(self, datos):

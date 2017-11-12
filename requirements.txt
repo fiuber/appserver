@@ -14,3 +14,4 @@ codecov==2.0.9
 pymongo==2.8
 pyjwt==1.4.2
 mock==1.0.1
+geopy
