@@ -12,4 +12,4 @@ install:
   - mkdir shared
 
 script:
-  - exec python src/tests/test_index.py
+  - python src/tests/test_index.py
