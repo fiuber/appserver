@@ -1,3 +1,5 @@
+Build status:   [![Build Status](https://travis-ci.org/fiuber/appserver.svg?branch=master)](https://travis-ci.org/fiuber/appserver)
+
 # Manual de configuracion e instalacion
 
 ## Instalacion
