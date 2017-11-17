@@ -46,7 +46,7 @@ class Conectividad(Resource):
 		body = {
 		  "id": "string",
 		  "_ref": "string",
-		  "createdBy": "Agustincito",
+		  "createdBy": "Fiuber",
 		  "createdTime": 201710101041,
 		  "name": "BestServerEver",
 		  "lastConnection": 0

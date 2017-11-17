@@ -167,6 +167,98 @@ paths:
         '400':
           description: Token expirado o invalido.
           
+  /users/{IDUsuario}/metodopago:
+    put:
+      summary: Modificar metodo de pago de usuario.
+      description: 'Si el metodo de pago no esta agregado se agrega, sino se modifica.'
+      security: 
+        - Token: []
+      parameters:
+        - name: IDUsuario
+          type: string
+          in: path
+          description: El id del usuario
+          required: true
+        - name: body
+          in: body
+          description: Posicion nueva
+          required: true
+          schema:
+            properties:
+              metodo:
+                type: string
+                description: Debe ser 'efectivo' o 'tarjeta'.
+              parametros:
+                type: object
+                properties:
+                  moneda:
+                    type: string
+                    description: Codigo de la moneda usada. Por ahora es 'ARS' o 'USD'.
+                  numero:
+                    type: string
+                    description: Numero de la tarjeta (se ignora si es efectivo).
+                  fecha vencimiento:
+                    type: string
+                    description: Fecha de vencimiento de la tarjeta (se ignora si es efectivo).
+                    example: "12-2018"
+                  cvv:
+                    type: number
+                    description: cvv de la tarjeta (se ignora si es efectivo).
+      responses:
+        '200':
+          description: Operacion Exitosa
+        '400':
+          description: Token expirado o invalido.
+        '500':
+          description: Metodo de pago no valido.
+          
+    delete:
+      summary: Borrar metodo de pago de usuario.
+      description: 'Borra el metodo de pago del usuario.'
+      security: 
+        - Token: []
+      parameters:
+        - name: IDUsuario
+          type: string
+          in: path
+          description: El id del usuario
+          required: true
+        - name: body
+          in: body
+          description: Posicion nueva
+          required: true
+          schema:
+            properties:
+              metodo:
+                type: string
+                description: Debe ser 'efectivo' o 'tarjeta'.
+      responses:
+        '200':
+          description: Operacion Exitosa
+        '400':
+          description: Token expirado o invalido.
+        '500':
+          description: Metodo de pago no valido.
+          
+    get:
+      summary: Obtener metodos pago de usuario.
+      description: 'Obtiene todos los metodos de pago y sus parametros asociados de un usuario.'
+      security: 
+        - Token: []
+      parameters:
+        - name: IDUsuario
+          type: string
+          in: path
+          description: El id del usuario
+          required: true
+      responses:
+        '200':
+          description: Operacion Exitosa
+        '400':
+          description: Token expirado o invalido.
+        '500':
+          description: Metodo de pago no valido.
+          
   /driver/{IDUsuario}/trip:
     post:
       summary: Agrega un posible viaje que podra aceptar el conductor.

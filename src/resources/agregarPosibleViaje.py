@@ -146,7 +146,9 @@ class AgregarPosibleViaje(Resource):
 			"datosPasajero": self._acondicionarJSONUsuario(datosUsuario), 
 			"ruta": ruta["mongo"]["ruta"],
 			"origen": ruta["mongo"]["origen"],
+			"origenGrados": ruta["mongo"]["origenGrados"],
 			"destino": ruta["mongo"]["destino"],
+			"destinoGrados": ruta["mongo"]["destinoGrados"],
 			"costo": str(cotizacion)}
 
 
@@ -216,7 +218,9 @@ class AgregarPosibleViaje(Resource):
 				"mongo": {"ruta": {"ruta": json, "distancia": datos["routes"][0]["legs"][0]["distance"]["value"]},
 					  "distancia": datos["routes"][0]["legs"][0]["distance"]["value"],
 					  "origen": origenJSON,
-					  "destino": destinoJSON}
+					  "destino": destinoJSON,
+					  "origenGrados": datos["routes"][0]["legs"][0]["start_location"],
+					  "destinoGrados": datos["routes"][0]["legs"][0]["end_location"]}
 			}
 
 		return JSON

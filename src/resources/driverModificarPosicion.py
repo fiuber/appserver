@@ -81,7 +81,7 @@ class ConductorModificarPosicion(Resource):
 			return False
 		return True
 
-	def _actualizar_datos_viaje(self, datosConductor, x, y):
+	def _actualizar_datos_viaje(self, datosConductor, x, y, xlon, ylat):
 		"""!@brief Modifica los parametros del viaje en curso si corresponde."""
 
 		if(datosConductor["estado"] == "libre"):
@@ -132,11 +132,22 @@ class ConductorModificarPosicion(Resource):
 
 		if(distanciaDestino < self.distanciaMinima and viaje["timestampFinViaje"] == 0):
 			terminoViaje = True
+		
+		tiempoPosicion = time.time()
+		nuevaPosicionMetros = {"timestamp": tiempoPosicion,
+				    "location": {"lon": xlon,
+				     		 "lat": ylat}
+					}
+
+		nuevaPosicionGrados = {"timestamp": tiempoPosicion,	 
+					  "location": {"lng": x,
+					   	       "lat": y}
+					} 				   
+				 
 
 		updateQuery = {"$push": 
-				{"rutaConductor": 
-				  {"lng": x,
-				   "lat": y}
+				{"rutaConductor": nuevaPosicionGrados,					
+				 "rutaConductorGrados": nuevaPosicionMetros
 				}
 			      }		
 
@@ -148,9 +159,17 @@ class ConductorModificarPosicion(Resource):
 			if(res["nModified"] != 0):
 				conductores.update({"id": datosConductor["id"]},{"$set": {"estado": "libre"}})
 
-			"""Finalizar viaje con Shared Server."""			
-	
-			updateQuery["$set"] = {"timestampFinViaje": time.time()}
+			tiempoFinViaje = time.time()
+
+			"""Finalizar viaje con Shared Server."""	
+
+			viaje["rutaConductor"].append(nuevaPosicionMetros)
+			viaje["rutaConductorGrados"].append(nuevaPosicionGrados)
+		
+			if(not self._finalizar_viaje_shared(viaje, tiempoFinViaje)):
+				return False
+
+			updateQuery["$set"] = {"timestampFinViaje": tiempoFinViaje}
 
 
 		if(viaje["timestampFinViaje"] == 0):
@@ -158,22 +177,50 @@ class ConductorModificarPosicion(Resource):
 			if(res["nModified"] == 0):
 				return False
 		return True
+
+	def calcularDistanciaFinal(self, puntos):
+		listaOrdenada = sorted(puntos, key=lambda punto: punto["timestamp"])
+		distanciaFinal = 0
+
+		for i in range(0, len(listaOrdenada)):
+			distancia = (listaOrdenada[i]["location"]["lng"]-listaOrdenada[i+1]["location"]["lng"])**2 + (listaOrdenada[i]["location"]["lat"]-listaOrdenada[i+1]["location"]["lat"])**2
+			distanciaFinal = distanciaFinal + distancia
+
+		return distanciaFinal
+
+	def _finalizar_viaje_shared(self, viaje, tiempoFinViaje):
+		"""!@brief Agrega el viaje terminado al Shared Server."""
+
+		trip = {"driver": viaje["IDConductor"],
+			"passenger": viaje["IDPasajero"],
+			"start": {"address": {"location": viaje["origenGrados"]},
+				  "timestamp": viaje["timestampInicio"]},
+			"end": {"address": {"location": viaje["destinoGrados"]},
+				  "timestamp": tiempoFinViaje},
+			"totaTime": (tiempoFinViaje - viaje["timestampInicio"]),
+			"waitTime": (viaje["timestampFinEspera"] - viaje["timestampInicio"]),
+			"travelTime": (tiempoFinViaje - viaje["timestampFinEspera"]),
+			"route": viaje["rutaConductorGrados"],
+			"distance": self.calcularDistanciaFinal(viaje["rutaConductor"])}
 		
 
-	def _actualizar_posicion_conductor(self, IDUsuario, x, y):
+		return True
+		
+
+	def _actualizar_posicion_conductor(self, IDUsuario, xlon, ylat):
 		conductores = mongo.db.conductores
 
 		"""Convierte a metros"""
 
-		x = vincenty((0,x), origen).meters
-		y = vincenty((y,0), origen).meters
+		x = vincenty((0,xlon), origen).meters
+		y = vincenty((ylat,0), origen).meters
 
 		datosConductor = conductores.find_and_modify({"id" : IDUsuario}, {"$set": {"posicion" : {"lng": x, "lat": y}}}, upsert=True, new=True)
 		if(not datosConductor):
 			return False
 
 		"""Si esta en un viaje actualiza los datos del mismo."""
-		self._actualizar_datos_viaje(datosConductor, x, y)
+		self._actualizar_datos_viaje(datosConductor, x, y, xlon, ylat)
 
 		return True
 

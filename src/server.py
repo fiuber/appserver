@@ -47,6 +47,10 @@ api.add_resource(AgregarPosibleViaje, '/driver/<IDUsuario>/trip')
 api.add_resource(ObtenerPosiblesViajes, '/driver/<IDUsuario>/trip')
 api.add_resource(AceptarViaje, '/driver/<IDUsuario>/trip/<IDViaje>')
 
+api.add_resource(ModificarMetodoPago, '/users/<IDUsuario>/metodopago')
+api.add_resource(EliminarMetodoPago, '/users/<IDUsuario>/metodopago')
+api.add_resource(ObtenerMetodoPago, '/users/<IDUsuario>/metodopago')
+
 api.add_resource(RutaEntrePuntos, '/direction')
 
 if __name__ == '__main__':
