@@ -188,6 +188,9 @@ paths:
               metodo:
                 type: string
                 description: Debe ser 'efectivo' o 'tarjeta'.
+	      seleccionado:
+                type: bool
+                description: Debe ser true si se pone como metodo a utilizar para pagar el que se esta cargando.
               parametros:
                 type: object
                 properties:
