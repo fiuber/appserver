@@ -188,9 +188,9 @@ paths:
               metodo:
                 type: string
                 description: Debe ser 'efectivo' o 'tarjeta'.
-	      seleccionado:
-                type: bool
-                description: Debe ser true si se pone como metodo a utilizar para pagar el que se esta cargando.
+              seleccionado:
+                type: boolean
+                description: Debe ser true si se pone como metodo a utilizar para pagar el que se esta cargando sino false.
               parametros:
                 type: object
                 properties:
@@ -711,21 +711,6 @@ definitions:
       aireAcondicionado:
         type: string
       musica:
-        type: string
-  passenger:
-    required: ["payMethod"]
-    properties:
-      payMethod:
-        type: string
-      number:
-        type: string
-      type:
-        type: string
-      expirationMonth:
-        type: string
-      expirationYear:
-        type: string
-      ccvv:
         type: string
   user:
     properties:
