@@ -181,7 +181,7 @@ paths:
           required: true
         - name: body
           in: body
-          description: Posicion nueva
+          description: Datos del metodo de pago.
           required: true
           schema:
             properties:
@@ -197,12 +197,12 @@ paths:
                   numero:
                     type: string
                     description: Numero de la tarjeta (se ignora si es efectivo).
-                  fecha vencimiento:
+                  fechaVencimiento:
                     type: string
                     description: Fecha de vencimiento de la tarjeta (se ignora si es efectivo).
                     example: "12-2018"
                   cvv:
-                    type: number
+                    type: string
                     description: cvv de la tarjeta (se ignora si es efectivo).
       responses:
         '200':
@@ -225,7 +225,7 @@ paths:
           required: true
         - name: body
           in: body
-          description: Posicion nueva
+          description: Datos del metodo de pago.
           required: true
           schema:
             properties:
@@ -254,6 +254,33 @@ paths:
       responses:
         '200':
           description: Operacion Exitosa
+          schema:
+            properties:
+              seleccionado:
+                type: string
+                description: Dice que metodo de pago esta seleccionado para usar, por tanto es 'efectivo', 'tarjeta' o null si no esta seleccionado ninguno.
+              tarjeta:
+                type: object
+                description: Solamente esta si el usuario cargo la tarjeta (solo puede tener una cargada maximo).
+                properties:
+                  cvv:
+                    type: string
+                  fechaVencimiento:
+                    type: string
+                    example: "12-2018"
+                  moneda:
+                    type: string
+                    description: Solo puede ser 'ARS' y 'USD' por ahora.
+                  numero:
+                    type: string
+                    description: Numero de la tarjeta de credito.
+              Efectivo:
+                type: object
+                description: Solamente esta si el usuario cargo la opcion de pagar en efectivo.
+                properties:
+                  moneda:
+                    type: string
+                    description: Solo puede ser 'ARS' y 'USD' por ahora.
         '400':
           description: Token expirado o invalido.
         '500':
@@ -784,42 +811,3 @@ definitions:
                     type: number
                   lng:
                     type: number                 
-  transaction:
-    properties:
-      idTransaccion:
-        type: string
-      idContraparte:
-        type: string
-      idViaje:
-        type: string
-      monto:
-        type: integer
-        description: Monto cobrado (valor positivo) o pagado (valor negativo)
-  trip:
-    properties:
-      id:
-        type: string
-      idConductor:
-        type: string
-      idPasajero:
-        type: string
-      origen:
-        type: string
-        description: Direccion de origen
-      destino:
-        type: string
-        description: Direccion de destino
-      tiempoTotal:
-        type: integer
-      tiempoEspera:
-        type: integer
-      tiempoViaje:
-        type: integer
-      distancia:
-        type: integer
-      ruta:
-        type: string
-        description: Deberia ir aca el JSON que devuelva Google Directions
-      costo:
-        type: number
-

@@ -30,6 +30,11 @@ from resources.agregarPosibleViaje import AgregarPosibleViaje
 from resources.obtenerPosiblesViajes import ObtenerPosiblesViajes
 from resources.aceptarViaje import AceptarViaje
 
+from resources.obtenerMetodoPago import ObtenerMetodoPago
+from resources.modificarMetodoPago import ModificarMetodoPago
+from resources.eliminarMetodoPago import EliminarMetodoPago
+
+
 api.add_resource(HelloWorld, '/')
 api.add_resource(Auth, '/token')
 api.add_resource(Register, '/users')
