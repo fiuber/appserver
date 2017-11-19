@@ -14,6 +14,7 @@ from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 
 from src import URLSharedServer
+from src import mongo
 
 class Auth(Resource):
 	"""!@brief Clase para autenticacion y creacion del Token."""
@@ -50,6 +51,9 @@ class Auth(Resource):
 		jsonToken['token'] = token
 		jsonToken["id"] = self.id
 		jsonToken["tipo"] = self.tipo
+
+		if(self.tipo == "driver"):
+			self._guardar_autos_mongo(self.respuesta["user"]["cars"], self.respuesta["user"]["id"])
 
 		response = ResponseBuilder.build_response(jsonToken, '200')
 
@@ -91,8 +95,23 @@ class Auth(Resource):
 		self.conectividad.setURL(URLSharedServer)
 		respuesta = self.conectividad.post("users/validate", cuerpo)
 
+		self.respuesta = respuesta
+
 		if(respuesta != False):
 			self.id = respuesta["user"]["id"]
 			self.tipo = respuesta["user"]["type"]
 
 		return respuesta != False
+
+	def _guardar_autos_mongo(self, autos, IDUsuario):
+		"""!@brief Guarda los id de los auto en mongoDB para futura referencia."""
+		
+		arregloIDS = []
+
+		for x in autos:
+			arregloIDS.append(x["id"])
+
+		if(len(arregloIDS)):
+			mongo.db.conductores.update({"id": IDUsuario}, {"$set": {"autosRegistrados": arregloIDS}}, upsert=True)
+			
+	

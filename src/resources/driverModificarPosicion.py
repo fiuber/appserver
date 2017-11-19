@@ -17,6 +17,7 @@ from response_builder import ResponseBuilder
 from src import app
 from src import mongo
 from src import origen
+from src import URLSharedServer
 
 class ConductorModificarPosicion(Resource):
 	"""!@brief Clase para actualizar la posicion de un conductor."""
@@ -25,6 +26,7 @@ class ConductorModificarPosicion(Resource):
 	def __init__(self):
 		self.autenticador = Token() 
 		self.distanciaMinima = 36**2
+		self.conectividad = Conectividad(URLSharedServer)
 
 
 	def put(self, IDUsuario):
@@ -202,7 +204,46 @@ class ConductorModificarPosicion(Resource):
 			"travelTime": (tiempoFinViaje - viaje["timestampFinEspera"]),
 			"route": viaje["rutaConductorGrados"],
 			"distance": self.calcularDistanciaFinal(viaje["rutaConductor"])}
+
+
+		"""Configura el medio de pago."""
+		usuario = mongo.db.usuarios.find_one({"id": viaje["IDPasajero"]})
+
+		if(not usuario):
+			return False
+
+		metodo = usuario["metodopago"]["seleccionado"]
+		if(metodo == "tarjeta"):
+			metodo = "card"
+		else:
+			metodo = "cash"
+
+		fecha = usuario.get("metodopago").get("tarjeta",{}).get("fechaVencimientos","1-2")
+		fecha = fecha.split("-")
+
+		pago = {}
+		if(metodo == "card"):
+			pago = {"paymethod": metodo,
+				"parameters": {"ccvv": usuario["metodopago"]["tarjeta"]["cvv"],
+					       "expiration_month": fecha[0],
+					       "expiration_year": fecha[1],
+					       "number": usuario["metodopago"]["tarjeta"]["numero"],
+					       "type": usuario["metodopago"]["tarjeta"]["moneda"]
+					      }
+			       } 
+		elif(metodo == "cash"):
+			pago = {"paymethod": metodo,
+				"parameters": {"type": usuario["metodopago"]["tarjeta"]["moneda"]}} 
+
+		self.conectividad.setURL(URLSharedServer)
+
+		if(not self.conectividad.post("trips", {"trip": trip, "paymethod": pago})):
+			return False
 		
+
+
+		"""Envia las notificaciones push"""
+		self._informar_viaje(viaje["IDPasajero"], viaje["IDConductor"])		
 
 		return True
 		
@@ -223,5 +264,33 @@ class ConductorModificarPosicion(Resource):
 		self._actualizar_datos_viaje(datosConductor, x, y, xlon, ylat)
 
 		return True
+
+	def _informar_viaje(self, IDPasajero, IDConductor):
+		"""!@Brief Envia la notificacion push al conductor para avisarle que puede aceptar un viaje."""
+
+		URLPUSH = "https://fcm.googleapis.com/fcm"
+		self.conectividad.setURL(URLPUSH)
+		headers = {"content-type": "application/json",
+			   "Authorization": "key=AAAAIqy7cgs:APA91bFJ1BC7rlvrQKoQNcpubZqxg_jVy1rgSH0pWxGC6Z_yN_RUAmyduc5S9j2xcC7UeLT5fy2L9bm2HGtvzYhn7daWFJgalLBxtz7ID73KprwZhQXBmZcEd05d7k_cXftN_YVifStn"}
+		
+		parametros = {}
+		cuerpo1 = {"to": "/topics/"+IDPasajero,
+			  "notification": {"title": "Termino el viaje!",
+					   "text": "Tu pago ya fue realizado."
+					  }		
+			 }
+		
+		self.conectividad.post("send", cuerpo1, parametros, headers)
+
+		cuerpo2 = {"to": "/topics/"+IDConductor,
+			  "notification": {"title": "Termino el viaje!",
+					   "text": "El cliente ya pago el viaje."
+					  }		
+			 }
+		
+		self.conectividad.post("send", cuerpo2, parametros, headers)
+
+		return True
+	
 
 

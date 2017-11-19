@@ -14,6 +14,7 @@ from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 from src import app
 from src import URLSharedServer
+from src import mongo
 
 class EliminarAutoUsuario(Resource):
 	"""!@brief Clase para eliminar un auto de un usuario."""
@@ -37,6 +38,21 @@ class EliminarAutoUsuario(Resource):
 			URLDestino = "users/"+IDUsuario+"/cars/"+IDAuto
 			if(not self.conectividad.delete(URLDestino)):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
+
+			"""Actualizo la informacion en mongoDB."""
+			res = mongo.db.conductores.find_and_modify({"id": IDUsuario},{"$pull": {"autosRegistrados": IDAuto}}, new=True)
+			if(not res):
+				return ErrorHandler.create_error_response(404, "Imposible comunicarse con MongoDB")
+			
+			"""Si ese auto era el seleccionado se pone otro o se borra el campo."""
+			if(res["autoActivo"] == IDAuto and len(res.get("autosRegistrados", []))):
+				res = mongo.db.conductores.update({"id": IDUsuario},{"$set": {"autoActivo": res["autosRegistrados"][0]}})
+				if(res["nModified"] == 0):
+					return ErrorHandler.create_error_response(404, "Imposible comunicarse con MongoDB")
+			elif(len(res.get("autosRegistrados", [])) == 0):
+				res = mongo.db.conductores.update({"id": IDUsuario},{"$unset": {"autoActivo": ""}})
+				if(res["nModified"] == 0):
+					return ErrorHandler.create_error_response(404, "Imposible comunicarse con MongoDB")
 
 		except Exception as e:
 			status_code = 403

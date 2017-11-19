@@ -16,13 +16,15 @@ from response_builder import ResponseBuilder
 from src import app
 from src import mongo
 from src import origen
+from src import URLSharedServer
 
 class AutosPorPosicionCercana(Resource):
 	"""!@brief Clase para la busqueda de autos de usuarios."""
 
 	def __init__(self):
 		self.autenticador = Token() 
-		self.distanciaMaxima = 50000
+		self.distanciaMaxima = 5000**2
+		self.conectividad = Conectividad(URLSharedServer)
 
 	def get(self):
 		"""!@brief Obtiene los conductores cercanos a un determinado usuario."""
@@ -93,16 +95,36 @@ class AutosPorPosicionCercana(Resource):
 
 		@param datos Es el auto a acondicionar."""
 
-		"""Convierte a metros"""
+		"""Le pide los datos al Shared Server."""
 
-		x = vincenty((0,datos["posicion"]["lng"]), origen).meters
-		y = vincenty((datos["posicion"]["lat"],0), origen).meters
+		autoActivo = mongo.db.conductores.find_one({"id": datos["id"]}, {})
+		if(not autoActivo.get("autoActivo", False)):
+			return False
+		
+		self.conectividad.setURL(URLSharedServer)
+
+		"""Si el usuario no tiene auto activo no se muestra."""
+		if(autoActivo.get("autoActivo",False)):
+			return False
+		
+		URLDestino = "users/"+datos["id"]+"/cars/"+autoActivo["autoActivo"]
+
+		datos = self.conectividad.get(URLDestino)
+		if(not datos):
+			raise Exception("No existe el usuario")
+
+		dato = datos["cars"]["properties"]
+				
+		JSON = {}
+
+		for prop in dato:
+			JSON[prop["name"]] = prop["value"] 
+
 
 		return {"id": datos["id"],
-			"posicion": {
-				     "lng": x,
-				     "lat": y
-				     }}
+			"idAuto": datos["car"]["id"],
+			"perfil": JSON
+	               }
 
 	def _acondicionarJSON(self, datos):
 		"""!@brief Itera en los autos y arma el JSON.
@@ -113,8 +135,10 @@ class AutosPorPosicionCercana(Resource):
 		i=0
 
 		for conductor in datos:
-			json[str(i)] = self._acondicionarAutoJSON(conductor)
-			i += 1
+			auto = self._acondicionarAutoJSON(conductor)
+			if(auto):
+				json[str(i)] = auto
+				i += 1
 
 		return json
 

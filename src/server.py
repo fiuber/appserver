@@ -33,14 +33,14 @@ from resources.aceptarViaje import AceptarViaje
 from resources.obtenerMetodoPago import ObtenerMetodoPago
 from resources.modificarMetodoPago import ModificarMetodoPago
 from resources.eliminarMetodoPago import EliminarMetodoPago
-
+from resources.mandarPost import MandarPost
 
 api.add_resource(HelloWorld, '/')
 api.add_resource(Auth, '/token')
 api.add_resource(Register, '/users')
 api.add_resource(UserController, '/users/<userId>')
 api.add_resource(AgregarAutoUsuario, '/driver/<IDUsuario>/cars')
-api.add_resource(ModificarAutoUsuario, '/driver/<IDUsuario>/cars/<IDAuto>')
+api.add_resource(ModificarAutoUsuario, '/driver/<IDUsuario>/cars/<IDAuto>/<ref>')
 api.add_resource(EliminarAutoUsuario, '/driver/<IDUsuario>/cars/<IDAuto>')
 api.add_resource(AutoPorID, '/driver/<IDUsuario>/cars/<IDAuto>')
 api.add_resource(AutosPorUsuario, '/driver/<IDUsuario>/cars')
@@ -57,6 +57,7 @@ api.add_resource(EliminarMetodoPago, '/users/<IDUsuario>/metodopago')
 api.add_resource(ObtenerMetodoPago, '/users/<IDUsuario>/metodopago')
 
 api.add_resource(RutaEntrePuntos, '/direction')
+api.add_resource(MandarPost, "/mandarPost/<IDUsuario>")
 
 if __name__ == '__main__':
 	port = os.environ.get('PORT', 5000)

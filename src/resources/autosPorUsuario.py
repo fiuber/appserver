@@ -14,6 +14,7 @@ from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 from src import app
 from src import URLSharedServer
+from src import mongo
 
 class AutosPorUsuario(Resource):
 	"""!@brief Clase para la busqueda de autos de un usuario."""
@@ -39,7 +40,9 @@ class AutosPorUsuario(Resource):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 
 			"""Devuelve el JSON acondicionado.""" 
-			datos = self._acondicionarJSON(datos)
+			datos = self._acondicionarJSON(datos, IDUsuario)
+			if(not datos):
+				response = ErrorHandler.create_error_response(500, "No existe el conductor.")
 			response = ResponseBuilder.build_response(datos, '200')
 
 		except Exception as e:
@@ -59,12 +62,14 @@ class AutosPorUsuario(Resource):
 			return False
 		return True
 
-	def _acondicionarAutoJSON(self, datos):
+	def _acondicionarAutoJSON(self, datos, esAutoActivo):
 		"""!@brief Acondiciona un solo auto pasado.
 
 		@param datos Es el auto a acondicionar."""
 
 		json = {}
+
+		json["autoActivo"] = esAutoActivo
 
 		for prop in datos:
 			json[prop["name"]] = prop["value"] 
@@ -72,17 +77,21 @@ class AutosPorUsuario(Resource):
 
 		return json
 
-	def _acondicionarJSON(self, datos):
+	def _acondicionarJSON(self, datos, IDUsuario):
 		"""!@brief Itera en los autos y arma el JSON.
 
 		@param datos La response que se obtuvo del Shared Server."""
+
+		conductor = mongo.db.conductores.find_one({"id": IDUsuario})
+		if(not conductor):
+			return False
 
 		json = {}
 		i=0
 
 		
 		for auto in datos["cars"]:
-			json[i] = self._acondicionarAutoJSON(auto["properties"])
+			json[i] = self._acondicionarAutoJSON(auto["properties"], (conductor.get("autoActivo", False) == auto["id"]))
 			json[i]["_ref"] = auto["_ref"]
 			json[i]["id"] = auto["id"]
 			i += 1

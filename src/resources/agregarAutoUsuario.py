@@ -14,6 +14,7 @@ from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 from src import app
 from src import URLSharedServer
+from src import mongo
 
 class AgregarAutoUsuario(Resource):
 	"""!@brief Clase para agregar un auto a un usuario."""
@@ -36,10 +37,16 @@ class AgregarAutoUsuario(Resource):
 			if(not self._validar_token()):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 
-			"""Le manda los datos al Shared Server."""
+			"""Le manda los datos al Shared Server y guarda en mongoDB."""
 			self.conectividad.setURL(URLSharedServer)
-			if(not self.conectividad.post("users/"+IDUsuario+"/cars", self._obtenerJSONPropiedadesAuto())):
+			res = self.conectividad.post("users/"+IDUsuario+"/cars", self._obtenerJSONPropiedadesAuto())
+			if(not res):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
+			else:
+				dato = mongo.db.conductores.find_and_modify({"id": IDUsuario},{"$push": {"autosRegistrados": res["car"]["id"]}}, new = True)
+				if(not dato.get("autoActivo",{}) or self._get_data_from_request("activo") == True):
+					mongo.db.conductores.update({"id": IDUsuario},{"$set": {"autoActivo": res["car"]["id"]}})				
+			
 
 		except Exception as e:
 			status_code = 403
@@ -47,13 +54,13 @@ class AgregarAutoUsuario(Resource):
 			response = ErrorHandler.create_error_response(status_code, msg)
 		return response
 
-	def _get_data_from_request(self, nombrePropiedad):
+	def _get_data_from_request(self, nombrePropiedad, defecto = False):
 		"""!@brief Obtiene la propiedad del json contenido de la request."""
 		
 		try:
 			return request.get_json()[nombrePropiedad]
 		except Exception as e:
-			return False
+			return defecto
 
 	def _validate_request(self):
 		"""!@brief Valida que haya una request completa (se fija solo algun parametro)."""
@@ -84,7 +91,8 @@ class AgregarAutoUsuario(Resource):
 				{"name" : "anio", "value" : self._get_data_from_request("anio")},
 				{"name" : "estado", "value" : self._get_data_from_request("estado")},
 				{"name" : "aireAcondicionado", "value" : self._get_data_from_request("aireAcondicionado")},
-				{"name" : "musica", "value" : self._get_data_from_request("musica")}]
+				{"name" : "musica", "value" : self._get_data_from_request("musica")},
+				{"name" : "imagen", "value" : self._get_data_from_request("imagen", None)}]
 					
 			}
 

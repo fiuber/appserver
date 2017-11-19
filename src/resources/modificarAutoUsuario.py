@@ -14,6 +14,7 @@ from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 from src import app
 from src import URLSharedServer
+from src import mongo
 
 class ModificarAutoUsuario(Resource):
 	"""!@brief Clase para modificar un auto de un usuario."""
@@ -24,7 +25,7 @@ class ModificarAutoUsuario(Resource):
 		self.conectividad = Conectividad(URLSharedServer)	
 
 
-	def put(self, IDUsuario, IDAuto):
+	def put(self, IDUsuario, IDAuto, ref):
 		"""!@brief Modifica los datos de un auto de un determinado usuario."""
 		response = ResponseBuilder.build_response({}, '200')
 		try:
@@ -40,10 +41,15 @@ class ModificarAutoUsuario(Resource):
 			"""Le manda los datos al Shared Server."""
 			self.conectividad.setURL(URLSharedServer)
 			URLDestino = "users/"+IDUsuario+"/cars/"+IDAuto
-			res = self.conectividad.put(URLDestino, self._obtenerJSON(IDUsuario, IDAuto))
+			res = self.conectividad.put(URLDestino, self._obtenerJSON(IDUsuario, IDAuto, ref))
 			
 			if(not res):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
+			
+			if(self._get_data_from_request("activo") == True):
+				mongo.db.conductores.update({"id": IDUsuario},{"$set": {"autoActivo": res["car"]["id"]}})				
+
+
 			response = ResponseBuilder.build_response({"_ref": res["car"]["_ref"]}, '200')
 
 		except Exception as e:
@@ -52,13 +58,13 @@ class ModificarAutoUsuario(Resource):
 			response = ErrorHandler.create_error_response(status_code, msg)
 		return response
 
-	def _get_data_from_request(self, nombrePropiedad):
+	def _get_data_from_request(self, nombrePropiedad, defecto = False):
 		"""!@brief Obtiene la propiedad del json contenido de la request."""
 
 		try:
 			return request.get_json()[nombrePropiedad]
 		except Exception as e:
-			return False
+			return defecto
 
 	def _validate_request(self):
 		"""!@brief Valida que haya una request completa."""
@@ -87,11 +93,12 @@ class ModificarAutoUsuario(Resource):
 				{"name" : "anio", "value" : self._get_data_from_request("anio")},
 				{"name" : "estado", "value" : self._get_data_from_request("estado")},
 				{"name" : "aireAcondicionado", "value" : self._get_data_from_request("aireAcondicionado")},
-				{"name" : "musica", "value" : self._get_data_from_request("musica")}]
+				{"name" : "musica", "value" : self._get_data_from_request("musica")},
+				{"name" : "imagen", "value" : self._get_data_from_request("imagen", None)}]
 
-	def _obtenerJSON(self, IDUsuario, IDAuto):
+	def _obtenerJSON(self, IDUsuario, IDAuto, ref):
 		return {"id": IDAuto,
-			"_ref": self._get_data_from_request("_ref"),
+			"_ref": ref,
 			"owner": IDUsuario,
 			"properties": self._obtenerJSONPropiedadesAuto()}
 

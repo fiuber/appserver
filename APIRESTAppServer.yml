@@ -515,9 +515,54 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/driver'
+            
+          
       responses:
         '200':
           description: Operacion Exitosa
+        '400':
+          description: Token invalido o expirado.
+        '404':
+          description: Error al comunicarse con Shared Server.
+          
+          
+  /driver/{IDUsuario}/cars/{IDAuto}/{_ref}:
+    put:
+      summary: Modificar auto.
+      description: Modifica un auto de un determinado usuario.
+      produces:
+        - application/json
+      parameters:
+        - name: IDUsuario
+          in: path
+          description: ID del usuario al cual modificarle el auto.
+          required: true
+          type: string
+        - name: IDAuto
+          in: path
+          description: ID del auto a modificar.
+          required: true
+          type: string
+        - name: _ref
+          in: path
+          description: _ref actual del auto a modificar.
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: Datos del auto a modificar
+          required: true
+          schema:
+            $ref: '#/definitions/driver'
+          
+      responses:
+        '200':
+          description: Operacion Exitosa
+          schema:
+            properties:
+              "_ref": 
+                description: Nuevo _ref de modificacion
+                type: string
         '400':
           description: Token invalido o expirado.
         '404':
@@ -545,36 +590,6 @@ paths:
           description: Operacion Exitosa
           schema:
             $ref: '#/definitions/driver'
-        '400':
-          description: Token invalido o expirado.
-        '404':
-          description: Error al comunicarse con Shared Server.
-          
-    put:
-      summary: Modificar auto.
-      description: Modifica un auto de un determinado usuario.
-      produces:
-        - application/json
-      parameters:
-        - name: IDUsuario
-          in: path
-          description: ID del usuario al cual modificarle el auto.
-          required: true
-          type: string
-        - name: IDAuto
-          in: path
-          description: ID del auto a modificar.
-          required: true
-          type: string
-        - name: body
-          in: body
-          description: Datos del auto a modificar
-          required: true
-          schema:
-            $ref: '#/definitions/driver'
-      responses:
-        '200':
-          description: Operacion Exitosa
         '400':
           description: Token invalido o expirado.
         '404':
@@ -634,35 +649,18 @@ paths:
                     $ref: '#/definitions/driver'
                   id:
                     type: string
-                  posicion:
-                    type: object
-                    properties:
-                      lng:
-                        type: number
-                      lat: 
-                        type: number
               2:
                 properties:
                   perfil:
                     $ref: '#/definitions/driver'
-                  posicion:
-                    type: object
-                    properties:
-                      lng:
-                        type: number
-                      lat: 
-                        type: number
+                  id:
+                    type: string
               3:
                 properties:
                   perfil:
                     $ref: '#/definitions/driver'
-                  posicion:
-                    type: object
-                    properties:
-                      lng:
-                        type: number
-                      lat: 
-                        type: number
+                  id:
+                    type: string
         '400':
           description: Token invalido o expirado.
         '404':
@@ -712,6 +710,12 @@ definitions:
         type: string
       musica:
         type: string
+      activo:
+        type: boolean
+        description: Poner a true si el auto a agregar es el que se quiere poner como activo (El que se quiere usar).
+      imagen:
+        type: string
+        description: (Opcional)
   user:
     properties:
       type:
@@ -798,4 +802,4 @@ definitions:
                   lat:
                     type: number
                   lng:
-                    type: number                 
+                    type: number    
