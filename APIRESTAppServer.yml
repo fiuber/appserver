@@ -623,7 +623,7 @@ paths:
   /driver/search:
     get:
       summary: Obtener autos cercanos.
-      description: Devuelve los autos cercanos a un usuario.
+      description: Devuelve los autos cercanos a un usuario. El campo 'activo' no esta presente en el resultado.
       produces:
         - application/json
       parameters:
