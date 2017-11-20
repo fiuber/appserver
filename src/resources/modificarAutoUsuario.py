@@ -42,7 +42,6 @@ class ModificarAutoUsuario(Resource):
 			self.conectividad.setURL(URLSharedServer)
 			URLDestino = "users/"+IDUsuario+"/cars/"+IDAuto
 			res = self.conectividad.put(URLDestino, self._obtenerJSON(IDUsuario, IDAuto, ref))
-			
 			if(not res):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 			

@@ -112,7 +112,7 @@ class Conectividad(Resource):
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.put(self.URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
 		if(r.status_code < 200 or r.status_code > 210):
-			mongo.db.log.insert({"Tipo": "Error", "Mensaje": "PUT: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + self.URL})
+			mongo.db.log.insert({"Tipo": "Error", "Mensaje": "PUT: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + self.URL+ " - " + str(diccionarioCuerpo)})
 			return False
 		else:
 			try:

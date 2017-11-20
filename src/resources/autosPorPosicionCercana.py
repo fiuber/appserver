@@ -97,15 +97,13 @@ class AutosPorPosicionCercana(Resource):
 
 		"""Le pide los datos al Shared Server."""
 
-		autoActivo = mongo.db.conductores.find_one({"id": datos["id"]}, {})
-		if(not autoActivo.get("autoActivo", False)):
-			return False
-		
-		self.conectividad.setURL(URLSharedServer)
+		autoActivo = mongo.db.conductores.find_one({"id": datos["id"]})
 
 		"""Si el usuario no tiene auto activo no se muestra."""
-		if(autoActivo.get("autoActivo",False)):
+		if(not autoActivo.get("autoActivo",False)):
 			return False
+
+		self.conectividad.setURL(URLSharedServer)
 		
 		URLDestino = "users/"+datos["id"]+"/cars/"+autoActivo["autoActivo"]
 
@@ -113,7 +111,7 @@ class AutosPorPosicionCercana(Resource):
 		if(not datos):
 			raise Exception("No existe el usuario")
 
-		dato = datos["cars"]["properties"]
+		dato = datos["car"]["properties"]
 				
 		JSON = {}
 
@@ -121,8 +119,7 @@ class AutosPorPosicionCercana(Resource):
 			JSON[prop["name"]] = prop["value"] 
 
 
-		return {"id": datos["id"],
-			"idAuto": datos["car"]["id"],
+		return {"id": datos["car"]["id"],
 			"perfil": JSON
 	               }
 
