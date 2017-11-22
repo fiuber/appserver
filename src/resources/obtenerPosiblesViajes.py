@@ -36,6 +36,7 @@ class ObtenerPosiblesViajes(Resource):
 			datos = self._obtenerJSONViajes(IDUsuario)
 			response = ResponseBuilder.build_response(datos, '200')
 		except Exception as e:
+			mongo.db.log.insert({"Tipo": "Error", "Mensaje": str(e)})
 			response = ErrorHandler.create_error_response(400, "No existe el conductor.")
 
 		return response
@@ -58,6 +59,9 @@ class ObtenerPosiblesViajes(Resource):
 		
 		if(not conductor):
 			raise Exception("No existe el conductor.")
+
+		if(not conductor.get("viajes",False)):
+			return {}
 
 		JSON = {}
 

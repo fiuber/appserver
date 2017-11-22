@@ -435,7 +435,29 @@ paths:
         '200':
           description: Operacion Exitosa
         '400':
-          description: Token expirado o invalido.  
+          description: Token expirado o invalido. 
+          
+    delete:
+      summary: Rechaza un viaje.
+      description: ''
+      security: 
+        - Token: []
+      parameters:
+        - name: IDUsuario
+          type: string
+          in: path
+          description: El id del conductor
+          required: true
+        - name: IDViaje
+          type: string
+          in: path
+          description: El id del viaje a rechazar
+          required: true
+      responses:
+        '200':
+          description: Operacion Exitosa
+        '400':
+          description: Token expirado o invalido.
           
           
   /driver/{IDUsuario}/position:

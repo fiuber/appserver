@@ -9,6 +9,7 @@ from flask_restful import Resource
 from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
+from src.models.push import enviarNotificacionPush
 from src.models.conectividad import Conectividad
 
 from error_handler import ErrorHandler
@@ -36,6 +37,10 @@ class AceptarViaje(Resource):
 			"""Devuelve los posibles viajes."""
 			datos = self._aceptar_viaje(IDUsuario, IDViaje)
 			if(datos):
+				"""Le avisa al pasajero."""
+				res = enviarNotificacionPush(datos, "Viaje aceptado!", "El conductor se dirige a tu ubicacion.")
+				mongo.db.log.insert({"Type": "Error", "Mensaje": str(res)})
+
   				response = ResponseBuilder.build_response("", '200')
 			else:
 				response = ErrorHandler.create_error_response(400, "No existe el viaje.")
@@ -115,7 +120,7 @@ class AceptarViaje(Resource):
 		
 		conductores.update({"id": IDUsuario},{"$set": {"viajes": []}})		
 
-		return res
+		return viaje["datosPasajero"]["idPasajero"]
 		
 
 

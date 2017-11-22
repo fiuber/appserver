@@ -9,6 +9,7 @@ from flask_restful import Resource
 from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
+from src.models.push import enviarNotificacionPush
 from src.models.conectividad import Conectividad
 from geopy.distance import vincenty
 
@@ -47,7 +48,6 @@ class ConductorModificarPosicion(Resource):
 
 			if(not self._actualizar_posicion_conductor(IDUsuario, pos["lng"], pos["lat"])):
 				return ErrorHandler.create_error_response(500, "No se pudo actualizar la posicion.")
-
 
 		except Exception as e:
 			status_code = 403
@@ -173,11 +173,19 @@ class ConductorModificarPosicion(Resource):
 
 			updateQuery["$set"] = {"timestampFinViaje": tiempoFinViaje}
 
+			"""Le avisa al pasajero y al chofer del fin del viaje."""
+			resPush = enviarNotificacionPush(datosConductor["id"], "Viaje terminado", "El pago se realizara automaticamente")
+			mongo.db.log.insert({"Type": "Error", "Mensaje": str(resPush)})
+
+			resPush = enviarNotificacionPush(viaje["IDPasajero"], "Viaje terminado", "El pago se realizara automaticamente")
+			mongo.db.log.insert({"Type": "Error", "Mensaje": str(resPush)})
+
 
 		if(viaje["timestampFinViaje"] == 0):
 			res = viajes.update({"IDConductor": datosConductor["id"]}, updateQuery)
 			if(res["nModified"] == 0):
 				return False
+
 		return True
 
 	def calcularDistanciaFinal(self, puntos):

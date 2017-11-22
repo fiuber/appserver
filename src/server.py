@@ -29,11 +29,11 @@ from resources.rutaEntrePuntos import RutaEntrePuntos
 from resources.agregarPosibleViaje import AgregarPosibleViaje
 from resources.obtenerPosiblesViajes import ObtenerPosiblesViajes
 from resources.aceptarViaje import AceptarViaje
+from resources.rechazarViaje import RechazarViaje
 
 from resources.obtenerMetodoPago import ObtenerMetodoPago
 from resources.modificarMetodoPago import ModificarMetodoPago
 from resources.eliminarMetodoPago import EliminarMetodoPago
-from resources.mandarPost import MandarPost
 
 api.add_resource(HelloWorld, '/')
 api.add_resource(Auth, '/token')
@@ -51,13 +51,13 @@ api.add_resource(AutosPorPosicionCercana, '/driver/search')
 api.add_resource(AgregarPosibleViaje, '/driver/<IDUsuario>/trip')
 api.add_resource(ObtenerPosiblesViajes, '/driver/<IDUsuario>/trip')
 api.add_resource(AceptarViaje, '/driver/<IDUsuario>/trip/<IDViaje>')
+api.add_resource(RechazarViaje, '/driver/<IDUsuario>/trip/<IDViaje>')
 
 api.add_resource(ModificarMetodoPago, '/users/<IDUsuario>/metodopago')
 api.add_resource(EliminarMetodoPago, '/users/<IDUsuario>/metodopago')
 api.add_resource(ObtenerMetodoPago, '/users/<IDUsuario>/metodopago')
 
 api.add_resource(RutaEntrePuntos, '/direction')
-api.add_resource(MandarPost, "/mandarPost/<IDUsuario>")
 
 if __name__ == '__main__':
 	port = os.environ.get('PORT', 5000)
