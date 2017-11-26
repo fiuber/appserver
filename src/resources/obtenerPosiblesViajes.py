@@ -8,7 +8,6 @@ from flask_restful import Resource
 from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
-from src.models.conectividad import Conectividad
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
@@ -36,7 +35,7 @@ class ObtenerPosiblesViajes(Resource):
 			datos = self._obtenerJSONViajes(IDUsuario)
 			response = ResponseBuilder.build_response(datos, '200')
 		except Exception as e:
-			mongo.db.log.insert({"Tipo": "Error", "Mensaje": str(e)})
+			mongo.db.log.insert({"Tipo": "Error", "Mensaje": "1 - "+str(e)})
 			response = ErrorHandler.create_error_response(400, "No existe el conductor.")
 
 		return response
@@ -57,7 +56,8 @@ class ObtenerPosiblesViajes(Resource):
 		conductores = mongo.db.conductores
 		conductor = conductores.find_one({"id": IDUsuario})
 		
-		if(not conductor):
+		if(not conductor.get("id", False)):
+			mongo.db.log.insert({"Tipo": "Error", "Mensaje": "2 - No existe el "+str(IDUsuario)+" - "+str(conductor)})
 			raise Exception("No existe el conductor.")
 
 		if(not conductor.get("viajes",False)):

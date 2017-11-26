@@ -32,9 +32,8 @@ class AutoPorID(Resource):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 
 			"""Le pide los datos al Shared Server."""
-			self.conectividad.setURL(URLSharedServer)
 			URLDestino = "users/"+IDUsuario+"/cars/"+IDAuto
-			datos = self.conectividad.get(URLDestino)
+			datos = self.conectividad.get(URLSharedServer, URLDestino)
 			if(not datos):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 

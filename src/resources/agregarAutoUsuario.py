@@ -38,14 +38,13 @@ class AgregarAutoUsuario(Resource):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 
 			"""Le manda los datos al Shared Server y guarda en mongoDB."""
-			self.conectividad.setURL(URLSharedServer)
-			res = self.conectividad.post("users/"+IDUsuario+"/cars", self._obtenerJSONPropiedadesAuto())
+			res = self.conectividad.post(URLSharedServer, "users/"+IDUsuario+"/cars", self._obtenerJSONPropiedadesAuto())
 			if(not res):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 			else:
 				dato = mongo.db.conductores.find_and_modify({"id": IDUsuario},{"$push": {"autosRegistrados": res["car"]["id"]}}, new = True)
-				if(not dato.get("autoActivo",{}) or self._get_data_from_request("activo") == True):
-					mongo.db.conductores.update({"id": IDUsuario},{"$set": {"autoActivo": res["car"]["id"]}})				
+				if(not ((self._get_data_from_request("activo") == False) and (dato.get("autoActivo",{}) != {}))):
+					mongo.db.conductores.update({"id": IDUsuario},{"$set": {"autoActivo": res["car"]["id"]}})			
 			
 
 		except Exception as e:

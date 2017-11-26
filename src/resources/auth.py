@@ -92,8 +92,7 @@ class Auth(Resource):
 
 		cuerpo = {'username': nombreUsuario, 'password': contrasena}
 
-		self.conectividad.setURL(URLSharedServer)
-		respuesta = self.conectividad.post("users/validate", cuerpo)
+		respuesta = self.conectividad.post(URLSharedServer, "users/validate", cuerpo)
 
 		self.respuesta = respuesta
 

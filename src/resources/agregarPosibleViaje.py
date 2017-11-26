@@ -33,6 +33,7 @@ class AgregarPosibleViaje(Resource):
 	def post(self, IDUsuario):
 		"""!@brief Agrega la informacion del viaje posible."""
 		response = ResponseBuilder.build_response({}, '200')
+		mongo.db.log.insert({"Tipo": "Error", "Mensaje": "Lo que hay: " + str(request.get_json())})
 		try:
 			"""Valida que este el JSON con los datos del viaje."""
 			valid = self._validate_request()
@@ -53,8 +54,7 @@ class AgregarPosibleViaje(Resource):
 				return ErrorHandler.create_error_response(404, "Imposible guardar datos de viaje.")
 
 			"""Le avisa al chofer."""
-			res = enviarNotificacionPush(IDUsuario, "Nuevo viaje disponible", "Tenes un nuevo viaje para aceptar!")
-			mongo.db.log.insert({"Type": "Error", "Mensaje": str(res)})
+			enviarNotificacionPush(IDUsuario, "Nuevo viaje disponible", "Tenes un nuevo viaje para aceptar!")
 
 		except Exception as e:
 			status_code = 403
@@ -93,8 +93,6 @@ class AgregarPosibleViaje(Resource):
 	def _obtener_costo_viaje(self, IDUsuario, IDPasajero, ruta):
 		"""!@brief le pide al shared server la cotizacion del viaje."""
 
-		self.conectividad.setURL(URLSharedServer)
-
 		JSON = {"driver": IDUsuario,
 			"passenger": IDPasajero,
 			"start":{
@@ -116,7 +114,7 @@ class AgregarPosibleViaje(Resource):
 			},
 			"distance": float(ruta["mongo"]["distancia"])
 		}
-		valor = self.conectividad.post("trips/estimate",JSON)
+		valor = self.conectividad.post(URLSharedServer, "trips/estimate",JSON)
 		
 		if(not valor):
 			raise Exception("Error en el Shared Server.")
@@ -127,8 +125,7 @@ class AgregarPosibleViaje(Resource):
 
 
 		"""Pide la informacion del usuario al Shared Server."""
-		self.conectividad.setURL(URLSharedServer)
-		datosUsuario = self.conectividad.get("users/"+self._get_data_from_request("IDPasajero"))
+		datosUsuario = self.conectividad.get(URLSharedServer, "users/"+self._get_data_from_request("IDPasajero"))
 		if(not datosUsuario):
 			return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 		
@@ -238,8 +235,7 @@ class AgregarPosibleViaje(Resource):
 			      "destination": destino,
 			      "key": directionsAPIKey};
 
-		self.conectividad.setURL(URLGoogleDirections)
-		return self.conectividad.get("json", parametros)
+		return self.conectividad.get(URLGoogleDirections, "json", parametros)
 
 	def _calcular_ruta(self, origen, destino):
 		"""!@Brief Pide el servicio a Google Directions."""

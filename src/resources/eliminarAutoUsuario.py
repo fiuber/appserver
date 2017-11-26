@@ -34,9 +34,8 @@ class EliminarAutoUsuario(Resource):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 
 			"""Le manda los datos al Shared Server."""
-			self.conectividad.setURL(URLSharedServer)
 			URLDestino = "users/"+IDUsuario+"/cars/"+IDAuto
-			if(not self.conectividad.delete(URLDestino)):
+			if(not self.conectividad.delete(URLSharedServer, URLDestino)):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 
 			"""Actualizo la informacion en mongoDB."""

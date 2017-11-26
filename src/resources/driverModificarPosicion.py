@@ -11,6 +11,7 @@ from flask_pymongo import PyMongo
 from src.models.token import Token
 from src.models.push import enviarNotificacionPush
 from src.models.conectividad import Conectividad
+from src.models.log import *
 from geopy.distance import vincenty
 
 from error_handler import ErrorHandler
@@ -136,20 +137,20 @@ class ConductorModificarPosicion(Resource):
 			terminoViaje = True
 		
 		tiempoPosicion = time.time()
-		nuevaPosicionMetros = {"timestamp": tiempoPosicion,
+		nuevaPosicionGrados = {"timestamp": tiempoPosicion,
 				    "location": {"lon": xlon,
 				     		 "lat": ylat}
 					}
 
-		nuevaPosicionGrados = {"timestamp": tiempoPosicion,	 
+		nuevaPosicionMetros = {"timestamp": tiempoPosicion,	 
 					  "location": {"lng": x,
 					   	       "lat": y}
 					} 				   
 				 
 
 		updateQuery = {"$push": 
-				{"rutaConductor": nuevaPosicionGrados,					
-				 "rutaConductorGrados": nuevaPosicionMetros
+				{"rutaConductor": nuevaPosicionMetros,					
+				 "rutaConductorGrados": nuevaPosicionGrados
 				}
 			      }		
 
@@ -174,11 +175,8 @@ class ConductorModificarPosicion(Resource):
 			updateQuery["$set"] = {"timestampFinViaje": tiempoFinViaje}
 
 			"""Le avisa al pasajero y al chofer del fin del viaje."""
-			resPush = enviarNotificacionPush(datosConductor["id"], "Viaje terminado", "El pago se realizara automaticamente")
-			mongo.db.log.insert({"Type": "Error", "Mensaje": str(resPush)})
-
-			resPush = enviarNotificacionPush(viaje["IDPasajero"], "Viaje terminado", "El pago se realizara automaticamente")
-			mongo.db.log.insert({"Type": "Error", "Mensaje": str(resPush)})
+			enviarNotificacionPush(datosConductor["id"], "Viaje terminado", "El pago se realizara automaticamente")
+			enviarNotificacionPush(viaje["IDPasajero"], "Viaje terminado", "El pago se realizara automaticamente")
 
 
 		if(viaje["timestampFinViaje"] == 0):
@@ -192,16 +190,22 @@ class ConductorModificarPosicion(Resource):
 		listaOrdenada = sorted(puntos, key=lambda punto: punto["timestamp"])
 		distanciaFinal = 0
 
-		for i in range(0, len(listaOrdenada)):
+		
+		for i in range(0, len(listaOrdenada)-2):
 			distancia = (listaOrdenada[i]["location"]["lng"]-listaOrdenada[i+1]["location"]["lng"])**2 + (listaOrdenada[i]["location"]["lat"]-listaOrdenada[i+1]["location"]["lat"])**2
 			distanciaFinal = distanciaFinal + distancia
-
 		return distanciaFinal
 
 	def _finalizar_viaje_shared(self, viaje, tiempoFinViaje):
 		"""!@brief Agrega el viaje terminado al Shared Server."""
 
-		trip = {"driver": viaje["IDConductor"],
+		viaje["origenGrados"]["lon"] = viaje["origenGrados"].pop("lng")
+		viaje["destinoGrados"]["lon"] = viaje["destinoGrados"].pop("lng")
+
+		trip = {"id": "",
+			"cost": 0,
+			"applicationOwner": "",
+			"driver": viaje["IDConductor"],
 			"passenger": viaje["IDPasajero"],
 			"start": {"address": {"location": viaje["origenGrados"]},
 				  "timestamp": viaje["timestampInicio"]},
@@ -243,9 +247,10 @@ class ConductorModificarPosicion(Resource):
 			pago = {"paymethod": metodo,
 				"parameters": {"type": usuario["metodopago"]["tarjeta"]["moneda"]}} 
 
-		self.conectividad.setURL(URLSharedServer)
-
-		if(not self.conectividad.post("trips", {"trip": trip, "paymethod": pago})):
+		res = self.conectividad.post(URLSharedServer, "trips", {"trip": trip, "paymethod": pago})
+		if(not res):
+			errorLog(str({"trip": trip, "paymethod": pago}))
+			errorLog(str(res))
 			return False
 		
 
@@ -274,29 +279,10 @@ class ConductorModificarPosicion(Resource):
 		return True
 
 	def _informar_viaje(self, IDPasajero, IDConductor):
-		"""!@Brief Envia la notificacion push al conductor para avisarle que puede aceptar un viaje."""
+		"""!@Brief Envia la notificacion push al conductor y al pasajero para avisarle que puede aceptar un viaje."""
 
-		URLPUSH = "https://fcm.googleapis.com/fcm"
-		self.conectividad.setURL(URLPUSH)
-		headers = {"content-type": "application/json",
-			   "Authorization": "key=AAAAIqy7cgs:APA91bFJ1BC7rlvrQKoQNcpubZqxg_jVy1rgSH0pWxGC6Z_yN_RUAmyduc5S9j2xcC7UeLT5fy2L9bm2HGtvzYhn7daWFJgalLBxtz7ID73KprwZhQXBmZcEd05d7k_cXftN_YVifStn"}
-		
-		parametros = {}
-		cuerpo1 = {"to": "/topics/"+IDPasajero,
-			  "notification": {"title": "Termino el viaje!",
-					   "text": "Tu pago ya fue realizado."
-					  }		
-			 }
-		
-		self.conectividad.post("send", cuerpo1, parametros, headers)
-
-		cuerpo2 = {"to": "/topics/"+IDConductor,
-			  "notification": {"title": "Termino el viaje!",
-					   "text": "El cliente ya pago el viaje."
-					  }		
-			 }
-		
-		self.conectividad.post("send", cuerpo2, parametros, headers)
+		enviarNotificacionPush(IDPasajero, "Termino el viaje!", "Tu pago ya fue realizado.")
+		enviarNotificacionPush(IDPasajero, "Termino el viaje!", "El cliente ya pago el viaje.")
 
 		return True
 	

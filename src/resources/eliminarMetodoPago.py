@@ -8,7 +8,6 @@ from flask_restful import Resource
 from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
-from src.models.conectividad import Conectividad
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder

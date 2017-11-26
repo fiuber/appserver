@@ -15,13 +15,14 @@ from src import app
 from src import mongo
 from src import directionsAPIKey
 from src import URLGoogleDirections
+from src import URLSharedServer
 
 class RutaEntrePuntos(Resource):
 	"""!@brief Clase para la obtencion entre la ruta entre dos posiciones."""
 
 	def __init__(self):
 		self.autenticador = Token() 
-		self.conectividad = Conectividad(URLGoogleDirections)	
+		self.conectividad = Conectividad(URLSharedServer)	
 
 	def get(self):
 		"""!@brief Obtiene la ruta entre dos posiciones."""
@@ -96,8 +97,7 @@ class RutaEntrePuntos(Resource):
 			      "destination": destino,
 			      "key": directionsAPIKey};
 	
-		self.conectividad.setURL(URLGoogleDirections)
-		aux = self.conectividad.get("json", parametros)
+		aux = self.conectividad.get(URLGoogleDirections, "json", parametros)
 		return aux
 
 	def _calcular_ruta(self, origen, destino):

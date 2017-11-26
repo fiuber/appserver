@@ -10,7 +10,6 @@ from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
 from src.models.push import enviarNotificacionPush
-from src.models.conectividad import Conectividad
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
@@ -37,11 +36,11 @@ class RechazarViaje(Resource):
 			"""Devuelve los posibles viajes."""
 			datos = self._quitar_viaje(IDUsuario, IDViaje)
 			if(datos):
+				print(datos)
 				"""Le avisa al pasajero."""
-				res = enviarNotificacionPush(datos, "Tu viaje fue rechazado", "Podes intentarlo con otros conductores cerca tuyo!.")
-				mongo.db.log.insert({"Type": "Error", "Mensaje": str(res)})
+				enviarNotificacionPush(datos, "Tu viaje fue rechazado", "Podes intentarlo con otros conductores cerca tuyo!.")
 
-  				response = ResponseBuilder.build_response("", '200')
+  				response = ResponseBuilder.build_response({}, '200')
 			else:
 				response = ErrorHandler.create_error_response(400, "No existe el viaje.")
 
@@ -65,5 +64,8 @@ class RechazarViaje(Resource):
 		"""!@brief Borra el viaje de la lista."""
 
 		conductores = mongo.db.conductores
-		res = conductores.find_and_modify({"id": IDUsuario},{"$pull": {"viajes": {"id": IDViaje}}})
-		return res["datosPasajero"]["idPasajero"]
+		res = conductores.find_one({"id": IDUsuario},{"viajes": {"$elemMatch": {"idViaje": IDViaje}}})
+		if(not res):
+			return False
+		conductores.update({"id": IDUsuario},{"$pull": {"viajes": {"idViaje": IDViaje}}})
+		return res["viajes"][0]["datosPasajero"]["idPasajero"]

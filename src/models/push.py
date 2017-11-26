@@ -21,7 +21,6 @@ def enviarNotificacionPush(IDUsuario, titulo = "", mensaje = ""):
 
 
 	URLPUSH = "https://fcm.googleapis.com/fcm"
-	conectividad.setURL(URLPUSH)
 	headers = {"content-type": "application/json",
 		   "Authorization": "key=AAAAIqy7cgs:APA91bFJ1BC7rlvrQKoQNcpubZqxg_jVy1rgSH0pWxGC6Z_yN_RUAmyduc5S9j2xcC7UeLT5fy2L9bm2HGtvzYhn7daWFJgalLBxtz7ID73KprwZhQXBmZcEd05d7k_cXftN_YVifStn"}
 	
@@ -32,5 +31,5 @@ def enviarNotificacionPush(IDUsuario, titulo = "", mensaje = ""):
 				  }		
 		 }
 
-	return conectividad.post("send", cuerpo, parametros, headers)
+	return conectividad.post(URLPUSH, "send", cuerpo, parametros, headers)
 	

@@ -54,12 +54,13 @@ class Conectividad(Resource):
 		r = requests.post(URLSharedServer+'/'+secondEndPoint, data = json.dumps(body), headers = headers)
 		res=json.loads(r.text)
 		self.appServerToken = res["server"]["token"]["token"]
+		print(self.appServerToken)
 
 		self.__initialized = True
 
 		
 
-	def post(self, endpoint, diccionarioCuerpo = {}, diccionarioParametros = {}, diccionarioHeader = {}):
+	def post(self, URL, endpoint, diccionarioCuerpo = {}, diccionarioParametros = {}, diccionarioHeader = {}):
 		"""!@brief Permite realizar una peticion POST y obtener el json de respuesta o false si fallo.
 
 		@param endpoint El nombre del endpoint especifico sin la URL base ni el caracter '/'. Ej: 'user'.
@@ -71,9 +72,9 @@ class Conectividad(Resource):
 		else:
 			headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 
-		r = requests.post(self.URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
+		r = requests.post(URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
 		if(r.status_code < 200 or r.status_code > 210):
-			mongo.db.log.insert({"Tipo": "Error", "Mensaje": "POST: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + self.URL})
+			mongo.db.log.insert({"Tipo": "Error", "Mensaje": "POST: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + URL})
 			return False
 		else:
 			try:
@@ -85,16 +86,16 @@ class Conectividad(Resource):
 		self.URL = URL
 		return True
 
-	def get(self, endpoint, diccionarioParametros = {}):
+	def get(self, URL, endpoint, diccionarioParametros = {}):
 		"""!@brief Permite realizar una peticion POST y obtener el json de respuesta o false si fallo.
 
 		@param endpoint El nombre del endpoint especifico sin la URL base ni el caracter '/'. Ej: 'user'.
 		@param diccionarioParametros Los pares clave-valor (en forma de diccionario) a enviar como parametros de la peticion."""
 
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
-		r = requests.get(self.URL+'/'+endpoint, headers=headers, params = diccionarioParametros)
+		r = requests.get(URL+'/'+endpoint, headers=headers, params = diccionarioParametros)
 		if(r.status_code != 200):
-			mongo.db.log.insert({"Tipo": "Error", "Mensaje": "GET: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + self.URL})
+			mongo.db.log.insert({"Tipo": "Error", "Mensaje": "GET: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + URL})
 			return False
 		else:
 			try:
@@ -102,7 +103,7 @@ class Conectividad(Resource):
 			except Exception as e:
 				return False
 
-	def put(self, endpoint, diccionarioCuerpo = {}, diccionarioParametros = {}):
+	def put(self, URL, endpoint, diccionarioCuerpo = {}, diccionarioParametros = {}):
 		"""!@brief Permite realizar una peticion POST y obtener el json de respuesta o false si fallo.
 
 		@param endpoint El nombre del endpoint especifico sin la URL base ni el caracter '/'. Ej: 'user'.
@@ -110,9 +111,9 @@ class Conectividad(Resource):
 		@param diccionarioParametros Los pares clave-valor (en forma de diccionario) a enviar como parametros de la peticion."""
 
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
-		r = requests.put(self.URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
+		r = requests.put(URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
 		if(r.status_code < 200 or r.status_code > 210):
-			mongo.db.log.insert({"Tipo": "Error", "Mensaje": "PUT: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + self.URL+ " - " + str(diccionarioCuerpo)})
+			mongo.db.log.insert({"Tipo": "Error", "Mensaje": "PUT: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + URL+ " - " + str(diccionarioCuerpo)})
 			return False
 		else:
 			try:
@@ -120,7 +121,7 @@ class Conectividad(Resource):
 			except Exception as e:
 				return False
 
-	def delete(self, endpoint, diccionarioCuerpo = {}, diccionarioParametros = {}):
+	def delete(self, URL, endpoint, diccionarioCuerpo = {}, diccionarioParametros = {}):
 		"""!@brief Permite realizar una peticion POST y obtener el json de respuesta o false si fallo.
 
 		@param endpoint El nombre del endpoint especifico sin la URL base ni el caracter '/'. Ej: 'user'.
@@ -128,9 +129,9 @@ class Conectividad(Resource):
 		@param diccionarioParametros Los pares clave-valor (en forma de diccionario) a enviar como parametros de la peticion."""
 
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
-		r = requests.delete(self.URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
+		r = requests.delete(URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
 		if(r.status_code < 200 or r.status_code > 210):
-			mongo.db.log.insert({"Tipo": "Error", "Mensaje":  "DELETE: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + self.URL})
+			mongo.db.log.insert({"Tipo": "Error", "Mensaje":  "DELETE: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + URL})
 			return False
 		else:
 			try:

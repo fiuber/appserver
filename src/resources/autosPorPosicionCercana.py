@@ -102,12 +102,10 @@ class AutosPorPosicionCercana(Resource):
 		"""Si el usuario no tiene auto activo no se muestra."""
 		if(not autoActivo.get("autoActivo",False)):
 			return False
-
-		self.conectividad.setURL(URLSharedServer)
 		
 		URLDestino = "users/"+datos["id"]+"/cars/"+autoActivo["autoActivo"]
 
-		datos = self.conectividad.get(URLDestino)
+		datos = self.conectividad.get(URLSharedServer, URLDestino)
 		if(not datos):
 			raise Exception("No existe el usuario")
 
@@ -119,7 +117,7 @@ class AutosPorPosicionCercana(Resource):
 			JSON[prop["name"]] = prop["value"] 
 
 
-		return {"id": datos["car"]["id"],
+		return {"id": autoActivo["id"],
 			"perfil": JSON
 	               }
 

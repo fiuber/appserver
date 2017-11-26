@@ -7,6 +7,7 @@ from response_builder import ResponseBuilder
 
 from src.models.user import User
 from src.models.conectividad import Conectividad
+from src import URLSharedServer
 
 import json
 
@@ -15,7 +16,7 @@ class Register(Resource):
 	"""!@brief Clase para registro de nuevo usuario. 
 	"""
 	def get(self):
-		connect = Conectividad("https://fiuber-shared.herokuapp.com")
+		connect = Conectividad(URLSharedServer)
 		res = connect.get("users", {})
 		return ResponseBuilder.build_response(res, 200)
 
@@ -42,7 +43,7 @@ class Register(Resource):
 		except Exception as e:
 			return ErrorHandler.create_error_response("400", "Bad Request. Header incorrecto.")
 
-		res = connect.post("users", body, {})
+		res = connect.post(URLSharedServer, "users", body, {})
 
 		return ResponseBuilder.build_response(res, 201)
 
@@ -76,7 +77,7 @@ class UserController(Resource):
 		except Exception as e:
 			return ErrorHandler.create_error_response("400", "Bad Request. Header incorrecto.")
 
-		res = connect.put("users/"+userId, body, {})
+		res = connect.put(URLSharedServer, "users/"+userId, body, {})
 
 		return ResponseBuilder.build_response(res, 200)
 
@@ -85,7 +86,7 @@ class UserController(Resource):
 		"""
 		connect = Conectividad("https://fiuber-shared.herokuapp.com")
 
-		res = connect.get("users/"+userId, {})
+		res = connect.get(URLSharedServer, "users/"+userId, {})
 
 		responseJson = {
 			"_ref": res["user"]["_ref"],
@@ -106,6 +107,6 @@ class UserController(Resource):
 		"""
 		connect = Conectividad("https://fiuber-shared.herokuapp.com")
 
-		res = connect.delete("users/"+userId, {}, {})
+		res = connect.delete(URLSharedServer, "users/"+userId, {}, {})
 
 		return ResponseBuilder.build_response(res, 204)
