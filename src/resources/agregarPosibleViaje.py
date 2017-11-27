@@ -10,8 +10,9 @@ from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
 from src.models.push import enviarNotificacionPush
-from src.models.conectividad import Conectividad
+from src.models.conectividad import *
 from geopy.distance import vincenty
+from src.models.log import *
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
@@ -21,6 +22,7 @@ from src import directionsAPIKey
 from src import URLGoogleDirections
 from src import URLSharedServer
 from src import origen
+from src import PUSHNuevoViaje
 
 class AgregarPosibleViaje(Resource):
 	"""!@brief Clase para agregar un viaje a la lista de posibles viajes de un chofer."""
@@ -28,33 +30,38 @@ class AgregarPosibleViaje(Resource):
 
 	def __init__(self):
 		self.autenticador = Token() 
-		self.conectividad = Conectividad(URLSharedServer)
 
 	def post(self, IDUsuario):
 		"""!@brief Agrega la informacion del viaje posible."""
+		infoLog("Agregar: 1 - "+str(IDUsuario))
 		response = ResponseBuilder.build_response({}, '200')
-		mongo.db.log.insert({"Tipo": "Error", "Mensaje": "Lo que hay: " + str(request.get_json())})
+		infoLog("Agregar: 2")
 		try:
 			"""Valida que este el JSON con los datos del viaje."""
+			infoLog("Agregar: 3")
 			valid = self._validate_request()
 			if(not valid):
 				return ErrorHandler.create_error_response(500, "Faltan parametros.")
+			infoLog("Agregar: 4")
 
 			"""Primero valida el token."""
 			if(not self._validar_token()):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 			self.IDUsuario = IDUsuario
-
+			infoLog("Agregar: 5")
 			"""Guarda el posible viaje en mongoDB."""
 			datos = self._obtenerJSONViaje()
 			if(not datos):
 				return ErrorHandler.create_error_response(404, "Imposible obtener ruta.")
+			infoLog("Agregar: 6")
 
 			if(not self._guardar_viaje_mongo(datos)):
 				return ErrorHandler.create_error_response(404, "Imposible guardar datos de viaje.")
 
+			infoLog("Agregar: 7")
+
 			"""Le avisa al chofer."""
-			enviarNotificacionPush(IDUsuario, "Nuevo viaje disponible", "Tenes un nuevo viaje para aceptar!")
+			enviarNotificacionPush(IDUsuario, "Nuevo viaje disponible", "Tenes un nuevo viaje para aceptar!", PUSHNuevoViaje)
 
 		except Exception as e:
 			status_code = 403
@@ -114,7 +121,7 @@ class AgregarPosibleViaje(Resource):
 			},
 			"distance": float(ruta["mongo"]["distancia"])
 		}
-		valor = self.conectividad.post(URLSharedServer, "trips/estimate",JSON)
+		valor = conectividad.post(URLSharedServer, "trips/estimate",JSON)
 		
 		if(not valor):
 			raise Exception("Error en el Shared Server.")
@@ -125,7 +132,7 @@ class AgregarPosibleViaje(Resource):
 
 
 		"""Pide la informacion del usuario al Shared Server."""
-		datosUsuario = self.conectividad.get(URLSharedServer, "users/"+self._get_data_from_request("IDPasajero"))
+		datosUsuario = conectividad.get(URLSharedServer, "users/"+self._get_data_from_request("IDPasajero"))
 		if(not datosUsuario):
 			return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 		
@@ -235,7 +242,7 @@ class AgregarPosibleViaje(Resource):
 			      "destination": destino,
 			      "key": directionsAPIKey};
 
-		return self.conectividad.get(URLGoogleDirections, "json", parametros)
+		return conectividad.get(URLGoogleDirections, "json", parametros)
 
 	def _calcular_ruta(self, origen, destino):
 		"""!@Brief Pide el servicio a Google Directions."""

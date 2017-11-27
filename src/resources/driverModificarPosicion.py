@@ -10,7 +10,7 @@ from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
 from src.models.push import enviarNotificacionPush
-from src.models.conectividad import Conectividad
+from src.models.conectividad import *
 from src.models.log import *
 from geopy.distance import vincenty
 
@@ -20,6 +20,8 @@ from src import app
 from src import mongo
 from src import origen
 from src import URLSharedServer
+from src import PUSHViajeTerminadoChofer
+from src import PUSHViajeTerminadoPasajero
 
 class ConductorModificarPosicion(Resource):
 	"""!@brief Clase para actualizar la posicion de un conductor."""
@@ -28,8 +30,6 @@ class ConductorModificarPosicion(Resource):
 	def __init__(self):
 		self.autenticador = Token() 
 		self.distanciaMinima = 36**2
-		self.conectividad = Conectividad(URLSharedServer)
-
 
 	def put(self, IDUsuario):
 		"""!@brief Actualiza los datos de posicion de un conductor."""
@@ -203,7 +203,7 @@ class ConductorModificarPosicion(Resource):
 		viaje["destinoGrados"]["lon"] = viaje["destinoGrados"].pop("lng")
 
 		trip = {"id": "",
-			"cost": 0,
+			"cost": {"currency": "ARS", "value": 0},
 			"applicationOwner": "",
 			"driver": viaje["IDConductor"],
 			"passenger": viaje["IDPasajero"],
@@ -211,7 +211,7 @@ class ConductorModificarPosicion(Resource):
 				  "timestamp": viaje["timestampInicio"]},
 			"end": {"address": {"location": viaje["destinoGrados"]},
 				  "timestamp": tiempoFinViaje},
-			"totaTime": (tiempoFinViaje - viaje["timestampInicio"]),
+			"totalTime": (tiempoFinViaje - viaje["timestampInicio"]),
 			"waitTime": (viaje["timestampFinEspera"] - viaje["timestampInicio"]),
 			"travelTime": (tiempoFinViaje - viaje["timestampFinEspera"]),
 			"route": viaje["rutaConductorGrados"],
@@ -247,10 +247,8 @@ class ConductorModificarPosicion(Resource):
 			pago = {"paymethod": metodo,
 				"parameters": {"type": usuario["metodopago"]["tarjeta"]["moneda"]}} 
 
-		res = self.conectividad.post(URLSharedServer, "trips", {"trip": trip, "paymethod": pago})
+		res = conectividad.post(URLSharedServer, "trips", {"trip": trip, "paymethod": pago})
 		if(not res):
-			errorLog(str({"trip": trip, "paymethod": pago}))
-			errorLog(str(res))
 			return False
 		
 
@@ -281,8 +279,8 @@ class ConductorModificarPosicion(Resource):
 	def _informar_viaje(self, IDPasajero, IDConductor):
 		"""!@Brief Envia la notificacion push al conductor y al pasajero para avisarle que puede aceptar un viaje."""
 
-		enviarNotificacionPush(IDPasajero, "Termino el viaje!", "Tu pago ya fue realizado.")
-		enviarNotificacionPush(IDPasajero, "Termino el viaje!", "El cliente ya pago el viaje.")
+		enviarNotificacionPush(IDPasajero, "Termino el viaje!", "Tu pago ya fue realizado.", PUSHViajeTerminadoPasajero)
+		enviarNotificacionPush(IDPasajero, "Termino el viaje!", "El cliente ya pago el viaje.", PUSHViajeTerminadoChofer)
 
 		return True
 	

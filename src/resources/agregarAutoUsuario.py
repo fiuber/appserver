@@ -8,13 +8,14 @@ from flask_restful import Resource
 from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
-from src.models.conectividad import Conectividad
+from src.models.conectividad import *
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 from src import app
 from src import URLSharedServer
 from src import mongo
+from src.resources import conectividad
 
 class AgregarAutoUsuario(Resource):
 	"""!@brief Clase para agregar un auto a un usuario."""
@@ -22,7 +23,6 @@ class AgregarAutoUsuario(Resource):
 
 	def __init__(self):
 		self.autenticador = Token() 
-		self.conectividad = Conectividad(URLSharedServer)	
 
 	def post(self, IDUsuario):
 		"""!@brief Asocia informacion de un nuevo auto a un usuario."""
@@ -38,7 +38,7 @@ class AgregarAutoUsuario(Resource):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 
 			"""Le manda los datos al Shared Server y guarda en mongoDB."""
-			res = self.conectividad.post(URLSharedServer, "users/"+IDUsuario+"/cars", self._obtenerJSONPropiedadesAuto())
+			res = conectividad.post(URLSharedServer, "users/"+IDUsuario+"/cars", self._obtenerJSONPropiedadesAuto())
 			if(not res):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 			else:

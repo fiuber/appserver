@@ -7,7 +7,7 @@ from flask_restful import Resource
 from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
-from src.models.conectividad import Conectividad
+from src.models.conectividad import *
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
@@ -22,7 +22,6 @@ class RutaEntrePuntos(Resource):
 
 	def __init__(self):
 		self.autenticador = Token() 
-		self.conectividad = Conectividad(URLSharedServer)	
 
 	def get(self):
 		"""!@brief Obtiene la ruta entre dos posiciones."""
@@ -97,7 +96,7 @@ class RutaEntrePuntos(Resource):
 			      "destination": destino,
 			      "key": directionsAPIKey};
 	
-		aux = self.conectividad.get(URLGoogleDirections, "json", parametros)
+		aux = conectividad.get(URLGoogleDirections, "json", parametros)
 		return aux
 
 	def _calcular_ruta(self, origen, destino):

@@ -5,7 +5,6 @@ import datetime
 import time
 import json
 
-from src.models.conectividad import Conectividad
 from src import app
 from src import mongo
 

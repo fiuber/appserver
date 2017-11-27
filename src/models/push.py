@@ -5,7 +5,7 @@ import datetime
 import time
 import json
 
-from src.models.conectividad import Conectividad
+from src.models.conectividad import *
 from src import app
 from src import mongo
 from src import directionsAPIKey
@@ -14,10 +14,8 @@ from src import URLSharedServer
 from src import origen
 
 
-def enviarNotificacionPush(IDUsuario, titulo = "", mensaje = ""):
+def enviarNotificacionPush(IDUsuario, titulo = "", mensaje = "", accion = 0):
 	"""!@Brief Envia la notificacion push al usuario indicado."""
-
-	conectividad = Conectividad(URLSharedServer)
 
 
 	URLPUSH = "https://fcm.googleapis.com/fcm"
@@ -26,8 +24,9 @@ def enviarNotificacionPush(IDUsuario, titulo = "", mensaje = ""):
 	
 	parametros = {}
 	cuerpo = {"to":	"/topics/"+IDUsuario,
-		  "notification": {"title": titulo,
-				   "text": mensaje
+		  "data": {        "title": titulo,
+				   "message": mensaje,
+				   "action": accion					
 				  }		
 		 }
 

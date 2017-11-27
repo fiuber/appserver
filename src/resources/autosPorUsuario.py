@@ -8,7 +8,7 @@ from flask_restful import Resource
 from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
-from src.models.conectividad import Conectividad
+from src.models.conectividad import *
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
@@ -21,8 +21,7 @@ class AutosPorUsuario(Resource):
 
 
 	def __init__(self):
-		self.autenticador = Token() 
-		self.conectividad = Conectividad(URLSharedServer)	
+		self.autenticador = Token() 	
 
 	def get(self, IDUsuario):
 		"""!@brief Obtiene los autos de un determinado conductor."""
@@ -34,7 +33,7 @@ class AutosPorUsuario(Resource):
 
 			"""Le pide los datos al Shared Server."""
 			URLDestino = "users/"+IDUsuario+"/cars"
-			datos = self.conectividad.get(URLSharedServer, URLDestino)
+			datos = conectividad.get(URLSharedServer, URLDestino)
 			if(not datos):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 

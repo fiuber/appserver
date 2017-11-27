@@ -8,7 +8,7 @@ from flask_restful import Resource
 from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
-from src.models.conectividad import Conectividad
+from src.models.conectividad import *
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
@@ -21,8 +21,7 @@ class ModificarAutoUsuario(Resource):
 
 
 	def __init__(self):
-		self.autenticador = Token() 
-		self.conectividad = Conectividad(URLSharedServer)	
+		self.autenticador = Token() 	
 
 
 	def put(self, IDUsuario, IDAuto, ref):
@@ -40,7 +39,7 @@ class ModificarAutoUsuario(Resource):
 
 			"""Le manda los datos al Shared Server."""
 			URLDestino = "users/"+IDUsuario+"/cars/"+IDAuto
-			res = self.conectividad.put(URLSharedServer, URLDestino, self._obtenerJSON(IDUsuario, IDAuto, ref))
+			res = conectividad.put(URLSharedServer, URLDestino, self._obtenerJSON(IDUsuario, IDAuto, ref))
 			if(not res):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 			

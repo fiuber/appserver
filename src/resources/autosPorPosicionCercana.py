@@ -8,7 +8,7 @@ from flask_restful import Resource
 from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
-from src.models.conectividad import Conectividad
+from src.models.conectividad import *
 from geopy.distance import vincenty
 
 from error_handler import ErrorHandler
@@ -24,7 +24,6 @@ class AutosPorPosicionCercana(Resource):
 	def __init__(self):
 		self.autenticador = Token() 
 		self.distanciaMaxima = 5000**2
-		self.conectividad = Conectividad(URLSharedServer)
 
 	def get(self):
 		"""!@brief Obtiene los conductores cercanos a un determinado usuario."""
@@ -105,7 +104,7 @@ class AutosPorPosicionCercana(Resource):
 		
 		URLDestino = "users/"+datos["id"]+"/cars/"+autoActivo["autoActivo"]
 
-		datos = self.conectividad.get(URLSharedServer, URLDestino)
+		datos = conectividad.get(URLSharedServer, URLDestino)
 		if(not datos):
 			raise Exception("No existe el usuario")
 

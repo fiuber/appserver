@@ -8,7 +8,7 @@ from flask_restful import Resource
 from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
-from src.models.conectividad import Conectividad
+from src.models.conectividad import *
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
@@ -23,7 +23,6 @@ class EliminarAutoUsuario(Resource):
 
 	def __init__(self):
 		self.autenticador = Token() 
-		self.conectividad = Conectividad(URLSharedServer)	
 
 	def delete(self, IDUsuario, IDAuto):
 		"""!@brief Elimina un auto de un usuario determinado."""
@@ -35,7 +34,7 @@ class EliminarAutoUsuario(Resource):
 
 			"""Le manda los datos al Shared Server."""
 			URLDestino = "users/"+IDUsuario+"/cars/"+IDAuto
-			if(not self.conectividad.delete(URLSharedServer, URLDestino)):
+			if(not conectividad.delete(URLSharedServer, URLDestino)):
 				return ErrorHandler.create_error_response(404, "Imposible comunicarse con Shared Server")
 
 			"""Actualizo la informacion en mongoDB."""

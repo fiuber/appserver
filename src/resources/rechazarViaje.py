@@ -16,6 +16,7 @@ from response_builder import ResponseBuilder
 from src import app
 from src import mongo
 from src import URLSharedServer
+from src import PUSHRechazoViaje
 
 class RechazarViaje(Resource):
 	"""!@brief Clase para rechazar un viaje."""
@@ -38,7 +39,7 @@ class RechazarViaje(Resource):
 			if(datos):
 				print(datos)
 				"""Le avisa al pasajero."""
-				enviarNotificacionPush(datos, "Tu viaje fue rechazado", "Podes intentarlo con otros conductores cerca tuyo!.")
+				enviarNotificacionPush(datos, "Tu viaje fue rechazado", "Podes intentarlo con otros conductores cerca tuyo!.", PUSHRechazoViaje)
 
   				response = ResponseBuilder.build_response({}, '200')
 			else:

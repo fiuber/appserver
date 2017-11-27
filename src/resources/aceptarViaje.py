@@ -10,12 +10,14 @@ from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
 from src.models.push import enviarNotificacionPush
+from src.models.log import *
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 from src import app
 from src import mongo
 from src import URLSharedServer
+from src import PUSHViajeAceptado
 
 class AceptarViaje(Resource):
 	"""!@brief Clase para aceptar un viaje de un chofer."""
@@ -26,25 +28,28 @@ class AceptarViaje(Resource):
 
 	def post(self, IDUsuario, IDViaje):
 		"""!@brief Acepta un viaje y borra todos los otros."""
+		infoLog("Aceptar: 1 - " + str(IDUsuario) + " - " +str(IDViaje))
 		response = ResponseBuilder.build_response({}, '200')
+		infoLog("Aceptar: 2")
 		try:
-
+			infoLog("Aceptar: 3")
 			"""Primero valida el token."""
 			if(not self._validar_token()):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
-
+			infoLog("Aceptar: 4")
 			"""Devuelve los posibles viajes."""
 			datos = self._aceptar_viaje(IDUsuario, IDViaje)
+			infoLog("Aceptar: 5")
 			if(datos):
 				"""Le avisa al pasajero."""
-				res = enviarNotificacionPush(datos, "Viaje aceptado!", "El conductor se dirige a tu ubicacion.")
-				mongo.db.log.insert({"Type": "Error", "Mensaje": str(res)})
+				res = enviarNotificacionPush(datos, "Viaje aceptado!", "El conductor se dirige a tu ubicacion.", PUSHViajeAceptado)
 
   				response = ResponseBuilder.build_response("", '200')
 			else:
 				response = ErrorHandler.create_error_response(400, "No existe el viaje.")
 
 		except Exception as e:
+			infoLog("AceptarError: 6")
 			status_code = 403
 			msg = str(e)
 			response = ErrorHandler.create_error_response(status_code, msg)

@@ -6,8 +6,9 @@ from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 
 from src.models.user import User
-from src.models.conectividad import Conectividad
+from src.models.conectividad import *
 from src import URLSharedServer
+from src import mongo
 
 import json
 
@@ -15,17 +16,20 @@ import json
 class Register(Resource):
 	"""!@brief Clase para registro de nuevo usuario. 
 	"""
+
 	def get(self):
-		connect = Conectividad(URLSharedServer)
-		res = connect.get("users", {})
+		res = self.connectividad.get(URLSharedServer, "users", {})
 		return ResponseBuilder.build_response(res, 200)
 
 	
 	def post(self):
 		"""!@brief Post: agrega un usuario.
 		"""
-		connect = Conectividad("https://fiuber-shared.herokuapp.com")
 		try:
+
+			idFacebook = request.get_json().get("userId", False)
+			tokenFacebook = request.get_json().get("authToken",False)
+
 			body = {
 				"_ref": "907.0558422010005", #mal
 				"type": request.get_json()["type"],
@@ -38,12 +42,22 @@ class Register(Resource):
 				"birthdate": request.get_json()["birthdate"],
 				"images": ["1.png","2.png","3.png"]
 			}
+
+			if(idFacebook):
+				body["fb"] = {"userId": idFacebook, "authToken": tokenFacebook}
 			
 			
 		except Exception as e:
 			return ErrorHandler.create_error_response("400", "Bad Request. Header incorrecto.")
 
-		res = connect.post(URLSharedServer, "users", body, {})
+		res = conectividad.post(URLSharedServer, "users", body, {})
+
+		if(res and idFacebook):
+			"""Guarda usuario y contraseña en mongo"""
+			if(request.get_json()["type"] == "driver"):
+				mongo.db.conductores.insert({"id": res["user"]["id"], "idFacebook": idFacebook, "nombreUsuario": request.get_json()["username"],"contrasena": request.get_json()["password"]})
+			else:
+				mongo.db.usuarios.insert({"id": res["user"]["id"], "idFacebook": idFacebook, "nombreUsuario": request.get_json()["username"],"contrasena": request.get_json()["password"]})
 
 		return ResponseBuilder.build_response(res, 201)
 
@@ -52,10 +66,12 @@ class UserController(Resource):
 	"""!@brief Clase para modificar, eliminar y obtener un usuario. 
 	"""
 
+	def __init__(self):
+		conectividad = Conectividad(URLSharedServer)
+
 	def put(self, userId):
 		"""!@brief Put: modifica un usuario. 
 		"""
-		connect = Conectividad("https://fiuber-shared.herokuapp.com")
 		
 		interResp = self.get(userId)
 		_ref = json.loads(interResp.get_data())["_ref"]
@@ -77,16 +93,22 @@ class UserController(Resource):
 		except Exception as e:
 			return ErrorHandler.create_error_response("400", "Bad Request. Header incorrecto.")
 
-		res = connect.put(URLSharedServer, "users/"+userId, body, {})
+		res = conectividad.put(URLSharedServer, "users/"+userId, body, {})
+
+		if(res and interResp.get("fb",False)):
+			"""Guarda usuario y contraseña en mongo"""
+			if(request.get_json()["type"] == "driver"):
+				mongo.db.conductores.update({"id": userId}, {"$set": {"nombreUsuario": request.get_json()["username"],"contrasena": request.get_json()["password"]}})
+			else:
+				mongo.db.usuarios.update({"id": userId}, {"$set": {"nombreUsuario": request.get_json()["username"],"contrasena": request.get_json()["password"]}})
 
 		return ResponseBuilder.build_response(res, 200)
 
 	def get(self, userId):
 		"""!@brief Get: obtiene info de un usuario.
 		"""
-		connect = Conectividad("https://fiuber-shared.herokuapp.com")
 
-		res = connect.get(URLSharedServer, "users/"+userId, {})
+		res = conectividad.get(URLSharedServer, "users/"+userId, {})
 
 		responseJson = {
 			"_ref": res["user"]["_ref"],
@@ -105,8 +127,12 @@ class UserController(Resource):
 	def delete(self, userId):
 		"""!@brief Delete: elimina un usuario. 
 		"""
-		connect = Conectividad("https://fiuber-shared.herokuapp.com")
 
-		res = connect.delete(URLSharedServer, "users/"+userId, {}, {})
+		res = conectividad.delete(URLSharedServer, "users/"+userId, {}, {})
+
+		if(res):
+			mongo.db.usuarios.remove({"id": userId})
+			mongo.db.conductores.remove({"id": userId})
 
 		return ResponseBuilder.build_response(res, 204)
+
