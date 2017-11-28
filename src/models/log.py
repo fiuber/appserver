@@ -9,30 +9,37 @@ from src import app
 from src import mongo
 
 
-def errorLog(mensaje):
-	"""!@Brief Guarda en el log como error."""
+class Log:
+	"""!@Brief Clase para el manejo de log a mongoDB."""
 
-	mongo.db.log.insert({"Tipo": "Error", "Mensaje": mensaje})
+	@staticmethod
+	def errorLog(mensaje):
+		"""!@Brief Guarda en el log como error."""
 
-	return True
+		mongo.db.log.insert({"Tipo": "Error", "Mensaje": mensaje})
 
-def warningLog(mensaje):
-	"""!@Brief Guarda en el log como warning."""
+		return True
 
-	mongo.db.log.insert({"Tipo": "Warning", "Mensaje": mensaje})
+	@staticmethod
+	def warningLog(mensaje):
+		"""!@Brief Guarda en el log como warning."""
 
-	return True	
+		mongo.db.log.insert({"Tipo": "Warning", "Mensaje": mensaje})
 
-def infoLog(mensaje):
-	"""!@Brief Guarda en el log como info."""
+		return True	
 
-	mongo.db.log.insert({"Tipo": "Info", "Mensaje": mensaje})
+	@staticmethod
+	def infoLog(mensaje):
+		"""!@Brief Guarda en el log como info."""
 
-	return True
+		mongo.db.log.insert({"Tipo": "Info", "Mensaje": mensaje})
 
-def criticalLog(mensaje):
-	"""!@Brief Guarda en el log como critical."""
+		return True
 
-	mongo.db.log.insert({"Tipo": "Critical", "Mensaje": mensaje})
+	@staticmethod
+	def criticalLog(mensaje):
+		"""!@Brief Guarda en el log como critical."""
 
-	return True
+		mongo.db.log.insert({"Tipo": "Critical", "Mensaje": mensaje})
+
+		return True

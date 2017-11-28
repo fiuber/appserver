@@ -12,7 +12,7 @@ from src.models.token import Token
 from src.models.push import enviarNotificacionPush
 from src.resources import conectividad
 from geopy.distance import vincenty
-from src.models.log import *
+from src.models.log import Log
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
@@ -33,32 +33,32 @@ class AgregarPosibleViaje(Resource):
 
 	def post(self, IDUsuario):
 		"""!@brief Agrega la informacion del viaje posible."""
-		infoLog("Agregar: 1 - "+str(IDUsuario))
+		
 		response = ResponseBuilder.build_response({}, '200')
-		infoLog("Agregar: 2")
+		
 		try:
 			"""Valida que este el JSON con los datos del viaje."""
-			infoLog("Agregar: 3")
+			
 			valid = self._validate_request()
 			if(not valid):
 				return ErrorHandler.create_error_response(500, "Faltan parametros.")
-			infoLog("Agregar: 4")
+			
 
 			"""Primero valida el token."""
 			if(not self._validar_token()):
 				return ErrorHandler.create_error_response(400, "Token expirado o incorrecto.")
 			self.IDUsuario = IDUsuario
-			infoLog("Agregar: 5")
+			
 			"""Guarda el posible viaje en mongoDB."""
 			datos = self._obtenerJSONViaje()
 			if(not datos):
 				return ErrorHandler.create_error_response(404, "Imposible obtener ruta.")
-			infoLog("Agregar: 6")
+			
 
 			if(not self._guardar_viaje_mongo(datos)):
 				return ErrorHandler.create_error_response(404, "Imposible guardar datos de viaje.")
 
-			infoLog("Agregar: 7")
+			
 
 			"""Le avisa al chofer."""
 			enviarNotificacionPush(IDUsuario, "Nuevo viaje disponible", "Tenes un nuevo viaje para aceptar!", PUSHNuevoViaje)

@@ -185,7 +185,7 @@ class Auth(Resource):
 	def _obtenerIDFacebook(self, tokenFacebook):		
 		"""!@brief Pide a la URL de la API de facebook el id asociado al token."""
 
-		res = conectividad(URLFacebook,"me",{"access_token": tokenFacebook})
+		res = conectividad.get(URLFacebook,"me",{"access_token": tokenFacebook})
 		if(not res):	
 			return False
 

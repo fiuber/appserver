@@ -9,6 +9,8 @@ import time
 from flask_restful import Resource
 from flask import Flask, request
 
+from src.models.log import Log
+
 from src import URLSharedServer
 from src import mongo
 from src import app
@@ -41,7 +43,7 @@ class Conectividad(Resource):
 
 		r = requests.post(URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
 		if(r.status_code < 200 or r.status_code > 210):
-			mongo.db.log.insert({"Tipo": "Error", "Mensaje": "POST: " + str(r) + " - " + endpoint + " - " + URL + " - " + str(diccionarioCuerpo)})
+			Log.errorLog("POST: " + str(r) + " - " + endpoint + " - " + URL + " - " + str(diccionarioCuerpo))
 			return False
 		else:
 			try:
@@ -60,7 +62,7 @@ class Conectividad(Resource):
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.get(URL+'/'+endpoint, headers=headers, params = diccionarioParametros)
 		if(r.status_code != 200):
-			mongo.db.log.insert({"Tipo": "Error", "Mensaje": "GET: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + URL})
+			Log.errorLog("GET: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + URL)
 			return False
 		else:
 			try:
@@ -80,7 +82,7 @@ class Conectividad(Resource):
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.put(URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
 		if(r.status_code < 200 or r.status_code > 210):
-			mongo.db.log.insert({"Tipo": "Error", "Mensaje": "PUT: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + URL+ " - " + str(diccionarioCuerpo)})
+			Log.errorLog("PUT: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + URL+ " - " + str(diccionarioCuerpo))
 			return False
 		else:
 			try:
@@ -100,7 +102,7 @@ class Conectividad(Resource):
 		headers = {'content-type': 'application/json', 'Authorization': 'api-key '+self.appServerToken}
 		r = requests.delete(URL+'/'+endpoint,data = json.dumps(diccionarioCuerpo), headers=headers, params = diccionarioParametros)
 		if(r.status_code < 200 or r.status_code > 210):
-			mongo.db.log.insert({"Tipo": "Error", "Mensaje":  "DELETE: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + URL + " - " + str(diccionarioCuerpo)})
+			Log.errorLog("DELETE: " + str(r) + " - " + endpoint + " - " + str(diccionarioParametros) + " - " + URL + " - " + str(diccionarioCuerpo))
 			return False
 		else:
 			try:
@@ -111,7 +113,7 @@ class Conectividad(Resource):
 	def renovarToken(self):
 		"""!@brief Renueva el token si pasaron 5 horas."""
 
-		if((self.ultimaVez - time.time()) > 5*60*60):
+		if((time.time() - self.ultimaVez) > 5*60*60):
 			self.ultimaVez = time.time()
 			data = self.post(URLSharedServer, "servers/ping")
 			if(data):

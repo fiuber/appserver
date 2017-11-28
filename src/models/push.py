@@ -23,7 +23,7 @@ def enviarNotificacionPush(IDUsuario, titulo = "", mensaje = "", accion = 0):
 		   "Authorization": "key=AAAAIqy7cgs:APA91bFJ1BC7rlvrQKoQNcpubZqxg_jVy1rgSH0pWxGC6Z_yN_RUAmyduc5S9j2xcC7UeLT5fy2L9bm2HGtvzYhn7daWFJgalLBxtz7ID73KprwZhQXBmZcEd05d7k_cXftN_YVifStn"}
 	
 	parametros = {}
-	cuerpo = {"to":	"/topics/"+IDUsuario,
+	cuerpo = {"to":	"/topics/"+str(IDUsuario),
 		  "data": {        "title": titulo,
 				   "message": mensaje,
 				   "action": accion					
