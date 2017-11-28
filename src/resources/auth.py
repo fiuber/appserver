@@ -8,7 +8,7 @@ from flask_restful import Resource
 from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
-from src.models.conectividad import *
+from src.resources import conectividad
 
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
@@ -26,11 +26,15 @@ class Auth(Resource):
 	def post(self):
 		"""!@brief Autentica al usuario una unica vez."""
 
+		respuesta = None
+
 		"""Si es con facebook sigue otro camino"""
 		if(self._get_data_from_request("tokenFacebook")):
-			self.autenticarConFacebook()
+			respuesta = self.autenticarConFacebook()
 		else:
-			self.autenticarConDatos()
+			respuesta = self.autenticarConDatos()
+
+		return respuesta
 
 
 	def autenticarConFacebook(self):

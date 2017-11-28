@@ -318,6 +318,12 @@ paths:
       responses:
         '200':
           description: Operacion Exitosa
+          schema:
+            properties:
+              idViaje:
+                type: string
+              idConductor:
+                type: string
         '400':
           description: Token expirado o invalido.
           

@@ -5,7 +5,7 @@ import datetime
 import time
 import json
 
-from src.models.conectividad import *
+from src.resources import conectividad
 from src import app
 from src import mongo
 from src import directionsAPIKey

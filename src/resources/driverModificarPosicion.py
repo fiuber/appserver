@@ -10,7 +10,7 @@ from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
 from src.models.push import enviarNotificacionPush
-from src.models.conectividad import *
+from src.resources import conectividad
 from src.models.log import *
 from geopy.distance import vincenty
 

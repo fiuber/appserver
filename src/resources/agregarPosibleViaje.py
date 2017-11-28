@@ -10,7 +10,7 @@ from flask import Flask, request
 from flask_pymongo import PyMongo
 from src.models.token import Token
 from src.models.push import enviarNotificacionPush
-from src.models.conectividad import *
+from src.resources import conectividad
 from geopy.distance import vincenty
 from src.models.log import *
 
@@ -62,6 +62,7 @@ class AgregarPosibleViaje(Resource):
 
 			"""Le avisa al chofer."""
 			enviarNotificacionPush(IDUsuario, "Nuevo viaje disponible", "Tenes un nuevo viaje para aceptar!", PUSHNuevoViaje)
+			return ResponseBuilder.build_response({"idViaje": datos["idViaje"], "idConductor": IDUsuario}, '200') 
 
 		except Exception as e:
 			status_code = 403

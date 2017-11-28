@@ -6,7 +6,7 @@ from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 
 from src.models.user import User
-from src.models.conectividad import *
+from src.resources import conectividad
 from src import URLSharedServer
 from src import mongo
 
@@ -18,7 +18,7 @@ class Register(Resource):
 	"""
 
 	def get(self):
-		res = self.connectividad.get(URLSharedServer, "users", {})
+		res = conectividad.get(URLSharedServer, "users", {})
 		return ResponseBuilder.build_response(res, 200)
 
 	
@@ -65,9 +65,6 @@ class Register(Resource):
 class UserController(Resource):
 	"""!@brief Clase para modificar, eliminar y obtener un usuario. 
 	"""
-
-	def __init__(self):
-		conectividad = Conectividad(URLSharedServer)
 
 	def put(self, userId):
 		"""!@brief Put: modifica un usuario. 
