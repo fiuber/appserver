@@ -42,7 +42,7 @@ class TestEndpointObtenerPosiblesViajes(unittest.TestCase):
 	def setUp(self):
 		src.server.app.testing = True
 		self.app = src.server.app.test_client()
-		self.viajesDisponibles = { "viajes": [{
+		self.viajesDisponibles = { "id": "1","viajes": [{
 			    "idViaje": "14",
 			    "datosPasajero": {
 				"nombreUsuario": "Marcos",
@@ -998,10 +998,10 @@ class TestEndpointObtenerPosiblesViajes(unittest.TestCase):
 				}} 
 
 
-	@patch("src.resources.obtenerPosiblesViajes.Conectividad")
+
 	@patch("src.resources.obtenerPosiblesViajes.mongo")
 	@patch("src.resources.obtenerPosiblesViajes.Token")
-	def test_camino_feliz(self, mockToken, mockPyMongo, mockConectividad):
+	def test_camino_feliz(self, mockToken, mockPyMongo):
 
 		mockFind = MagicMock()
 		mockFind.find_one.return_value = self.viajesDisponibles
@@ -1020,10 +1020,9 @@ class TestEndpointObtenerPosiblesViajes(unittest.TestCase):
 		
 		self.assertTrue(jsonIguales(jsonRV, self.salidaCorrecta))
 
-	@patch("src.resources.obtenerPosiblesViajes.Conectividad")
 	@patch("src.resources.obtenerPosiblesViajes.mongo")
 	@patch("src.resources.obtenerPosiblesViajes.Token")
-	def test_token_invalido(self, mockToken, mockPyMongo, mockConectividad):
+	def test_token_invalido(self, mockToken, mockPyMongo):
 
 		mockFind = MagicMock()
 		mockFind.find_one.return_value = self.viajesDisponibles
@@ -1042,10 +1041,9 @@ class TestEndpointObtenerPosiblesViajes(unittest.TestCase):
 		
 		self.assertEqual(rv.status_code, 400)
 
-	@patch("src.resources.obtenerPosiblesViajes.Conectividad")
 	@patch("src.resources.obtenerPosiblesViajes.mongo")
 	@patch("src.resources.obtenerPosiblesViajes.Token")
-	def test_conductor_inexistente(self, mockToken, mockPyMongo, mockConectividad):
+	def test_conductor_inexistente(self, mockToken, mockPyMongo):
 
 		mockFind = MagicMock()
 		mockFind.find_one.return_value = False

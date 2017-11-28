@@ -84,6 +84,5 @@ class UsuarioModificarPosicion(Resource):
 		x = vincenty((0,x), origen).meters
 		y = vincenty((y,0), origen).meters
 
-		usuarios = mongo.db.usuarios
-		return usuarios.update({"id" : IDUsuario}, {"$set": {"posicion" : {"lng": x, "lat": y}}}, upsert=True)
+		return mongo.db.usuarios.update({"id" : IDUsuario}, {"$set": {"posicion" : {"lng": x, "lat": y}}}, upsert=True)
 		

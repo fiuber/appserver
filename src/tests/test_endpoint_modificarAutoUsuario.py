@@ -18,11 +18,11 @@ class TestEndpointModificarAutoUsuario(unittest.TestCase):
 
 
 
-	@patch("src.resources.modificarAutoUsuario.Conectividad")
+	@patch("src.resources.modificarAutoUsuario.conectividad")
 	@patch("src.resources.modificarAutoUsuario.Token")
 	def test_camino_feliz(self, mockToken, mockConectividad):
 
-		mockConectividad.return_value.put.return_value = {"car": {"_ref": "207.784373473443"}}
+		mockConectividad.put.return_value = {"car": {"_ref": "207.784373473443"}}
 		mockToken.return_value.validarToken.return_value = True
 
 		JSON = {"_ref": "278.2764397976327",
@@ -35,19 +35,20 @@ class TestEndpointModificarAutoUsuario(unittest.TestCase):
 			"musica": "cumbia villera",
 			"patente": "222222"}
 		
-		rv = self.app.put('/driver/3/cars/8', 
+		rv = self.app.put('/driver/3/cars/8/207.784373473443', 
 				  data = json.dumps(JSON),
 				  content_type = "application/json",
 				  headers = {"Authorization": "Bearer jhvbdsfbhjbjfgjbeg43gbfbgfgfb"})
 
+		print(str(rv))
+
 		self.assertEqual(rv.status_code,200)
 
-
-	@patch("src.resources.modificarAutoUsuario.Conectividad")
+	@patch("src.resources.modificarAutoUsuario.conectividad")
 	@patch("src.resources.modificarAutoUsuario.Token")
 	def test_sin_token(self, mockToken, mockConectividad):
 
-		mockConectividad.return_value.put.return_value = True
+		mockConectividad.put.return_value = True
 		mockToken.return_value.validarToken.return_value = True
 
 		JSON = {"modelo": "2001",
@@ -58,29 +59,29 @@ class TestEndpointModificarAutoUsuario(unittest.TestCase):
 			"aireAcondicionado": "ni en pedo",
 			"musica": "cumbia villera"}
 		
-		rv = self.app.put('/driver/3/cars/8', 
+		rv = self.app.put('/driver/3/cars/8/207.784373473443', 
 				  data = json.dumps(JSON),
 				  content_type = "application/json")
 
 		self.assertEqual(rv.status_code,403)
 
-	@patch("src.resources.modificarAutoUsuario.Conectividad")
+	@patch("src.resources.modificarAutoUsuario.conectividad")
 	@patch("src.resources.modificarAutoUsuario.Token")
 	def test_sin_json(self, mockToken, mockConectividad):
 
-		mockConectividad.return_value.put.return_value = True
+		mockConectividad.put.return_value = True
 		mockToken.return_value.validarToken.return_value = True
 
-		rv = self.app.put('/driver/3/cars/8',
+		rv = self.app.put('/driver/3/cars/8/207.784373473443',
 				  headers = {"Authorization": "Bearer jhvbdsfbhjbjfgjbeg43gbfbgfgfb"})
 
 		self.assertEqual(rv.status_code,500)
 
-	@patch("src.resources.modificarAutoUsuario.Conectividad")
+	@patch("src.resources.modificarAutoUsuario.conectividad")
 	@patch("src.resources.modificarAutoUsuario.Token")
 	def test_token_invalido(self, mockToken, mockConectividad):
 
-		mockConectividad.return_value.put.return_value = True
+		mockConectividad.put.return_value = True
 		mockToken.return_value.validarToken.return_value = False
 
 		JSON = {"modelo": "2001",
@@ -91,18 +92,18 @@ class TestEndpointModificarAutoUsuario(unittest.TestCase):
 			"aireAcondicionado": "ni en pedo",
 			"musica": "cumbia villera"}
 		
-		rv = self.app.put('/driver/3/cars/8', 
+		rv = self.app.put('/driver/3/cars/8/207.784373473443', 
 				  data = json.dumps(JSON),
 				  content_type = "application/json",
 				  headers = {"Authorization": "Bearer jhvbdsfbhjbjfgjbeg43gbfbgfgfb"})
 
 		self.assertEqual(rv.status_code, 400)
 
-	@patch("src.resources.modificarAutoUsuario.Conectividad")
+	@patch("src.resources.modificarAutoUsuario.conectividad")
 	@patch("src.resources.modificarAutoUsuario.Token")
 	def test_conexion_fallida(self, mockToken, mockConectividad):
 
-		mockConectividad.return_value.put.return_value = False
+		mockConectividad.put.return_value = False
 		mockToken.return_value.validarToken.return_value = True
 
 		JSON = {"modelo": "2001",
@@ -113,7 +114,7 @@ class TestEndpointModificarAutoUsuario(unittest.TestCase):
 			"aireAcondicionado": "ni en pedo",
 			"musica": "cumbia villera"}
 		
-		rv = self.app.put('/driver/3/cars/8', 
+		rv = self.app.put('/driver/3/cars/8/207.784373473443', 
 				  data = json.dumps(JSON),
 				  content_type = "application/json",
 				  headers = {"Authorization": "Bearer jhvbdsfbhjbjfgjbeg43gbfbgfgfb"})

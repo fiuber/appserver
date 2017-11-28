@@ -34,11 +34,12 @@ class TestEndpointAutoPorID(unittest.TestCase):
 		self.app = src.server.app.test_client()
 
 
-
-	@patch("src.resources.autoPorID.Conectividad")
+	@patch("src.resources.autoPorID.mongo")	
+	@patch("src.resources.autoPorID.conectividad")
 	@patch("src.resources.autoPorID.Token")
-	def test_camino_feliz(self, mockToken, mockConectividad):
+	def test_camino_feliz(self, mockToken, mockConectividad, mockMongo):
 
+		mockMongo.return_value = {"autoActivo": "2"}
 
 		datosAuto = {"car": {
 					"id": "2",
@@ -58,7 +59,7 @@ class TestEndpointAutoPorID(unittest.TestCase):
 				    }
 				}
 
-		mockConectividad.return_value.get.return_value = json.loads(json.dumps(datosAuto))
+		mockConectividad.get.return_value = json.loads(json.dumps(datosAuto))
 		mockToken.return_value.validarToken.return_value = True
 
 		
@@ -69,24 +70,24 @@ class TestEndpointAutoPorID(unittest.TestCase):
 		
 		self.assertTrue(jsonIguales(jsonRV, datosAuto))
 
-
-	@patch("src.resources.autoPorID.Conectividad")
+	@patch("src.resources.autoPorID.mongo")	
+	@patch("src.resources.autoPorID.conectividad")
 	@patch("src.resources.autoPorID.Token")
-	def test_sin_token(self, mockToken, mockConectividad):
+	def test_sin_token(self, mockToken, mockConectividad, mockMongo):
 
-		mockConectividad.return_value.get.return_value = True
+		mockConectividad.get.return_value = True
 		mockToken.return_value.validarToken.return_value = True
 		
 		rv = self.app.get('/driver/3/cars/8')
 
 		self.assertEqual(rv.status_code,403)
 
-	
-	@patch("src.resources.autoPorID.Conectividad")
+	@patch("src.resources.autoPorID.mongo")		
+	@patch("src.resources.autoPorID.conectividad")
 	@patch("src.resources.autoPorID.Token")
-	def test_token_invalido(self, mockToken, mockConectividad):
+	def test_token_invalido(self, mockToken, mockConectividad, mockMongo):
 
-		mockConectividad.return_value.get.return_value = True
+		mockConectividad.get.return_value = True
 		mockToken.return_value.validarToken.return_value = False
 
 		rv = self.app.get('/driver/3/cars/8',
@@ -94,11 +95,12 @@ class TestEndpointAutoPorID(unittest.TestCase):
 
 		self.assertEqual(rv.status_code, 400)
 
-	@patch("src.resources.autoPorID.Conectividad")
+	@patch("src.resources.autoPorID.mongo")	
+	@patch("src.resources.autoPorID.conectividad")
 	@patch("src.resources.autoPorID.Token")
-	def test_conexion_fallida(self, mockToken, mockConectividad):
+	def test_conexion_fallida(self, mockToken, mockConectividad, mockMongo):
 
-		mockConectividad.return_value.get.return_value = False
+		mockConectividad.get.return_value = False
 		mockToken.return_value.validarToken.return_value = True
 
 		

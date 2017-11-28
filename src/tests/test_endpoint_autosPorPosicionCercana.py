@@ -11,9 +11,13 @@ def tirarExcepcion():
 
 def matchean(aux1, aux2):
 	res = True
-	res = res and (aux1["id"] == aux2["id"])
-	res = res and (aux1["posicion"]["lng"] == aux2["posicion"]["lng"])
-	res = res and (aux1["posicion"]["lat"] == aux2["posicion"]["lat"])
+	res = res and (aux1["perfil"]["modelo"] == aux2["perfil"]["modelo"])
+	res = res and (aux1["perfil"]["color"] == aux2["perfil"]["color"])
+	res = res and (aux1["perfil"]["patente"] == aux2["perfil"]["patente"])
+	res = res and (aux1["perfil"]["anio"] == aux2["perfil"]["anio"])
+	res = res and (aux1["perfil"]["estado"] == aux2["perfil"]["estado"])
+	res = res and (aux1["perfil"]["aireAcondicionado"] == aux2["perfil"]["aireAcondicionado"])
+	res = res and (aux1["perfil"]["musica"] == aux2["perfil"]["musica"])
 	return res
 
 def matcheaAlguno(aux1, aux2):
@@ -36,23 +40,43 @@ class TestEndpointAutosPorPosicionCercana(unittest.TestCase):
 		src.server.app.testing = True
 		self.app = src.server.app.test_client()
 
-
+	@patch("src.resources.autosPorPosicionCercana.conectividad")
 	@patch("src.resources.autosPorPosicionCercana.mongo")
 	@patch("src.resources.autosPorPosicionCercana.Token")
-	def test_camino_feliz(self, mockToken, mockPyMongo):
+	def test_camino_feliz(self, mockToken, mockPyMongo, mockConectividad):
+
+		datosAutosShared = {"car": {
+					"id": "4",
+					"_ref": "278.2764397976327",
+					"owner": "7",
+					"properties": [{"name": "modelo","value": "1999"},
+					    {"name": "color","value": "Azul"},
+					    {"name": "patente","value": "222222"},
+					    {"name": "anio","value": "2001"},
+					    {"name": "estado","value": "hecho mierda"},
+					    {"name": "aireAcondicionado","value": "ni en pedo"},
+					    {"name": "musica","value": "cumbia villera"}
+					]
+				    },
+				    "metadata": {
+					"version": "1"
+				    }
+				}
 
 
 		datosAuto1 = {"id": "4",
-			      "posicion":{"lng": "45.876",
-					  "lat": "50.6578"}
+			      "perfil":{"modelo": "1999",
+					"color": "Azul",
+					"patente": "222222",
+					"anio": "2001",
+					"estado": "hecho mierda",
+					"aireAcondicionado": "ni en pedo",
+					"musica": "cumbia villera"}
 			     }
 
-		datosAuto2 = {"id": "5",
-			      "posicion":{"lng": "78.7876",
-					  "lat": "32.6578"}
-			     }
+		mockConectividad.get.return_value = datosAutosShared
 
-		datosAutos = [datosAuto1, datosAuto2]
+		datosAutos = [datosAuto1, datosAuto1]
 		jsonDatosAutos = {"1": datosAutos[0], "2": datosAutos[1]}
 
 		mockFind = MagicMock()
@@ -60,6 +84,8 @@ class TestEndpointAutosPorPosicionCercana(unittest.TestCase):
 
 		p = PropertyMock(return_value = mockFind)
 		type(mockPyMongo.db).conductores = p  	
+
+		mockPyMongo.db.conductores.find_one.return_value = {"autoActivo": "4", "id": "189"}
 
 		mockToken.return_value.validarToken.return_value = True
 
@@ -69,12 +95,14 @@ class TestEndpointAutosPorPosicionCercana(unittest.TestCase):
 				  headers = {"Authorization": "Bearer jhvbdsfbhjbjfgjbeg43gbfbgfgfb"})
 
 		jsonRV = json.loads(rv.data)
+		print(str(rv.data))
 		
 		self.assertTrue(jsonIguales(jsonRV, jsonDatosAutos))
 
+	@patch("src.resources.autosPorPosicionCercana.conectividad")
 	@patch("src.resources.autosPorPosicionCercana.mongo")
 	@patch("src.resources.autosPorPosicionCercana.Token")
-	def test_sin_lat_y_lng(self, mockToken, mockPyMongo):
+	def test_sin_lat_y_lng(self, mockToken, mockPyMongo, mockConectividad):
 
 
 		mockToken.return_value.validarToken.return_value = True
@@ -92,9 +120,10 @@ class TestEndpointAutosPorPosicionCercana(unittest.TestCase):
 		
 		self.assertEqual(rv.status_code, 404)
 
+	@patch("src.resources.autosPorPosicionCercana.conectividad")
 	@patch("src.resources.autosPorPosicionCercana.mongo")
 	@patch("src.resources.autosPorPosicionCercana.Token")
-	def test_sin_token(self, mockToken, mockPyMongo):
+	def test_sin_token(self, mockToken, mockPyMongo, mockConectividad):
 
 		
 		mockToken.return_value.validarToken.return_value = False
@@ -110,10 +139,11 @@ class TestEndpointAutosPorPosicionCercana(unittest.TestCase):
 		
 		self.assertEqual(rv.status_code, 403)
 
-	
+
+	@patch("src.resources.autosPorPosicionCercana.conectividad")	
 	@patch("src.resources.autosPorPosicionCercana.mongo")
 	@patch("src.resources.autosPorPosicionCercana.Token")
-	def test_token_invalido(self, mockToken, mockPyMongo):
+	def test_token_invalido(self, mockToken, mockPyMongo, mockConectividad):
 
 		mockToken.return_value.validarToken.return_value = False
 
@@ -129,9 +159,10 @@ class TestEndpointAutosPorPosicionCercana(unittest.TestCase):
 
 		self.assertEqual(rv.status_code, 400)
 
+	@patch("src.resources.autosPorPosicionCercana.conectividad")
 	@patch("src.resources.autosPorPosicionCercana.mongo")
 	@patch("src.resources.autosPorPosicionCercana.Token")
-	def test_conexion_fallida(self, mockToken, mockPyMongo):
+	def test_conexion_fallida(self, mockToken, mockPyMongo, mockConectividad):
 
 		mockToken.return_value.validarToken.return_value = True
 

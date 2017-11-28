@@ -42,7 +42,7 @@ class TestConectividad(unittest.TestCase):
 	@patch("src.models.conectividad.Log")
 	@patch("src.models.conectividad.requests")
 	@patch("src.models.conectividad.json")
-	def test_post200MalJSON(self, mockJson, mockRequest, mockLog):
+	def test_postMalJSON(self, mockJson, mockRequest, mockLog):
 		mockLog.side_effect = log
 		conectividad = Conectividad()
 
@@ -53,7 +53,7 @@ class TestConectividad(unittest.TestCase):
 		mockRequest.post.return_value = MockAux
 		mockJson.loads.side_effect = tirarExcepcion;
 		
-		self.assertFalse(conectividad.post("http://www.google.com.ar", "users", {"Hola": "Chau"}, {"Hola": "Chau"}))
+		self.assertTrue(conectividad.post("http://www.google.com.ar", "users", {"Hola": "Chau"}, {"Hola": "Chau"}))
 
 	@patch("src.models.conectividad.Log")
 	@patch("src.models.conectividad.requests")
@@ -92,7 +92,7 @@ class TestConectividad(unittest.TestCase):
 	@patch("src.models.conectividad.Log")
 	@patch("src.models.conectividad.requests")
 	@patch("src.models.conectividad.json")
-	def test_get200MalJSON(self, mockJson, mockRequest, mockLog):
+	def test_getMalJSON(self, mockJson, mockRequest, mockLog):
 		conectividad = Conectividad()
 		mockLog.side_effect = log
 
@@ -103,7 +103,7 @@ class TestConectividad(unittest.TestCase):
 		mockRequest.get.return_value = MockAux
 		mockJson.loads.side_effect = tirarExcepcion;
 		
-		self.assertFalse(conectividad.get("http://www.google.com.ar", "users", {"Hola": "Chau"}))
+		self.assertTrue(conectividad.get("http://www.google.com.ar", "users", {"Hola": "Chau"}))
 
 	@patch("src.models.conectividad.Log")
 	@patch("src.models.conectividad.requests")
@@ -142,7 +142,7 @@ class TestConectividad(unittest.TestCase):
 	@patch("src.models.conectividad.Log")
 	@patch("src.models.conectividad.requests")
 	@patch("src.models.conectividad.json")
-	def test_put200MalJSON(self, mockJson, mockRequest, mockLog):
+	def test_putMalJSON(self, mockJson, mockRequest, mockLog):
 		conectividad = Conectividad()
 		mockLog.side_effect = log
 
@@ -153,7 +153,7 @@ class TestConectividad(unittest.TestCase):
 		mockRequest.put.return_value = MockAux
 		mockJson.loads.side_effect = tirarExcepcion;
 		
-		self.assertFalse(conectividad.put("http://www.google.com.ar", "users", {"Hola": "Chau"}, {"Hola": "Chau"}))
+		self.assertTrue(conectividad.put("http://www.google.com.ar", "users", {"Hola": "Chau"}, {"Hola": "Chau"}))
 
 	@patch("src.models.conectividad.Log")
 	@patch("src.models.conectividad.requests")

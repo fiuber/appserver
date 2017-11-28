@@ -76,8 +76,7 @@ class EliminarMetodoPago(Resource):
 	def _eliminar_metodopago_usuario(self, IDUsuario):
 		"""!@brief Elimina el metodo de pago de mongoDB."""
 		
-		usuarios = mongo.db.usuarios
-		usuario = usuarios.find_one({"id" : IDUsuario})
+		usuario = mongo.db.usuarios.find_one({"id" : IDUsuario})
 		if(not usuario):
 			return False
 
@@ -99,7 +98,7 @@ class EliminarMetodoPago(Resource):
 		else:
 			return False
 
-		usuarios.update({"id" : IDUsuario},JSONSet)
+		mongo.db.usuarios.update({"id" : IDUsuario},JSONSet)
 
 
 

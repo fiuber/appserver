@@ -213,6 +213,14 @@ class TestEndpointAceptarViaje(unittest.TestCase):
 			    "origen": {
 				"lat": 42.3598335,
 				"lng": -71.0598776
+			    },
+			    "destinoGrados": {
+				"lat": 42.460387,
+				"lng": -71.3489306
+			    },
+			    "origenGrados": {
+				"lat": 42.3598335,
+				"lng": -71.0598776
 			    }
 			}
 		    ]

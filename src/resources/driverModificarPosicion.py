@@ -11,7 +11,7 @@ from flask_pymongo import PyMongo
 from src.models.token import Token
 from src.models.push import enviarNotificacionPush
 from src.resources import conectividad
-from src.models.log import *
+from src.models.log import Log
 from geopy.distance import vincenty
 
 from error_handler import ErrorHandler
@@ -90,19 +90,19 @@ class ConductorModificarPosicion(Resource):
 		if(datosConductor["estado"] == "libre"):
 			return True
 
-		viajes = mongo.db.viajes
-		conductores = mongo.db.conductores
+		
+		
 		pasajeros = mongo.db.usuarios
 
 
 		pasajero = None
 		viaje = None
 		try:
-			viaje = viajes.find_one({"IDConductor": datosConductor["id"]})
+			viaje = mongo.db.viajes.find_one({"IDConductor": datosConductor["id"]})
 			if(not viaje):
 				return False
 
-			pasajero = pasajeros.find_one({"id": viaje["IDPasajero"]})
+			pasajero = mongo.db.usuarios.find_one({"id": viaje["IDPasajero"]})
 			if(not pasajero):
 				return False
 				
@@ -115,18 +115,17 @@ class ConductorModificarPosicion(Resource):
 		terminoViaje = False
 		posicionConductor = {}
 		try:
-			posicionConductor = datosConductor["posicion"]
+			posicionConductor = {"lng": x,"lat": y}
 
 			if(datosConductor["estado"] == "recogiendoPasajero"):
 				posicionPasajero = pasajero["posicion"]
 				distancia = (posicionConductor["lng"]-posicionPasajero["lng"])**2+(posicionConductor["lat"]-posicionPasajero["lat"])**2
 				if(distancia < self.distanciaMinima):
-					res = pasajeros.update({"id": pasajero["id"]},{"$set": {"estado": "viajando"}})
+					res = mongo.db.usuarios.update({"id": pasajero["id"]},{"$set": {"estado": "viajando"}})
 					if(res["nModified"] != 0):
-						conductores.update({"id": datosConductor["id"]},{"$set": {"estado": "viajando"}})
-			elif(viaje["timestampFinEspera"] == 0):
-				terminoEspera = True					
-
+						res = mongo.db.conductores.find_and_modify({"id": datosConductor["id"]},{"$set": {"estado": "viajando"}}, new = True)
+						if(res):
+							terminoEspera = True
 
 		except Exception as e:
 			terminoEspera = False
@@ -134,6 +133,7 @@ class ConductorModificarPosicion(Resource):
 		distanciaDestino = (posicionConductor["lng"]-viaje["destino"]["lng"])**2+(posicionConductor["lat"]-viaje["destino"]["lat"])**2
 
 		if(distanciaDestino < self.distanciaMinima and viaje["timestampFinViaje"] == 0):
+			Log.infoLog("Termino el viaje!")
 			terminoViaje = True
 		
 		tiempoPosicion = time.time()
@@ -155,16 +155,17 @@ class ConductorModificarPosicion(Resource):
 			      }		
 
 		if(terminoEspera):
+			Log.infoLog("Termino Espera!")
 			updateQuery["$set"] = {"timestampFinEspera": time.time()}
 		elif(terminoViaje):	
-	
-			res = pasajeros.update({"id": pasajero["id"]},{"$set": {"estado": "libre"}})
+			Log.infoLog("Cambiando estados!")
+			res = mongo.db.usuarios.update({"id": pasajero["id"]},{"$set": {"estado": "libre"}})
 			if(res["nModified"] != 0):
-				conductores.update({"id": datosConductor["id"]},{"$set": {"estado": "libre"}})
+				mongo.db.conductores.update({"id": datosConductor["id"]},{"$set": {"estado": "libre"}})
 
 			tiempoFinViaje = time.time()
 
-			"""Finalizar viaje con Shared Server."""	
+			"""Finalizar viaje con Shared Server."""
 
 			viaje["rutaConductor"].append(nuevaPosicionMetros)
 			viaje["rutaConductorGrados"].append(nuevaPosicionGrados)
@@ -180,7 +181,8 @@ class ConductorModificarPosicion(Resource):
 
 
 		if(viaje["timestampFinViaje"] == 0):
-			res = viajes.update({"IDConductor": datosConductor["id"]}, updateQuery)
+			Log.infoLog("Actualizando viaje!")
+			res = mongo.db.viajes.update({"IDConductor": datosConductor["id"]}, updateQuery)
 			if(res["nModified"] == 0):
 				return False
 
@@ -224,13 +226,14 @@ class ConductorModificarPosicion(Resource):
 		if(not usuario):
 			return False
 
-		metodo = usuario["metodopago"]["seleccionado"]
+		"""Si no tiene seleccionado un metodo de pago setea efectivo en pesos como default."""
+		metodo = usuario.get("metodopago",{}).get("seleccionado","efectivo")
 		if(metodo == "tarjeta"):
 			metodo = "card"
 		else:
 			metodo = "cash"
 
-		fecha = usuario.get("metodopago").get("tarjeta",{}).get("fechaVencimientos","1-2")
+		fecha = usuario.get("metodopago",{}).get("tarjeta",{}).get("fechaVencimientos","1-2")
 		fecha = fecha.split("-")
 
 		pago = {}
@@ -245,7 +248,7 @@ class ConductorModificarPosicion(Resource):
 			       } 
 		elif(metodo == "cash"):
 			pago = {"paymethod": metodo,
-				"parameters": {"type": usuario["metodopago"]["tarjeta"]["moneda"]}} 
+				"parameters": {"type": usuario.get("metodopago",{}).get("efectivo",{}).get("moneda","ARS")}} 
 
 		res = conectividad.post(URLSharedServer, "trips", {"trip": trip, "paymethod": pago})
 		if(not res):
@@ -260,14 +263,13 @@ class ConductorModificarPosicion(Resource):
 		
 
 	def _actualizar_posicion_conductor(self, IDUsuario, xlon, ylat):
-		conductores = mongo.db.conductores
 
 		"""Convierte a metros"""
 
 		x = vincenty((0,xlon), origen).meters
 		y = vincenty((ylat,0), origen).meters
 
-		datosConductor = conductores.find_and_modify({"id" : IDUsuario}, {"$set": {"posicion" : {"lng": x, "lat": y}}}, upsert=True, new=True)
+		datosConductor = mongo.db.conductores.find_and_modify({"id" : IDUsuario}, {"$set": {"posicion" : {"lng": x, "lat": y}}}, upsert=True, new=True)
 		if(not datosConductor):
 			return False
 

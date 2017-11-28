@@ -398,31 +398,31 @@ class TestEndpointAgregarPosibleViaje(unittest.TestCase):
 					   "status" : "OK"
 					}
 
-	def getNormal(self, endpoint, nada2 = None):
+	def getNormal(self, URL ,endpoint, nada2 = None):
 		if(endpoint == "users/3"):
 			return self.datosPasajero
 		else:
 			return self.datosDirections
 
-	def getFallidoSegundaExcepcion(self, endpoint, nada2 = None):
+	def getFallidoSegundaExcepcion(self, URL, endpoint, nada2 = None):
 		if(endpoint == "users/3"):
 			return self.datosPasajero
 		else:
 			tirarExcepcion()
 
-	def getFallidoSegundaFalse(self, endpoint, nada2 = None):
+	def getFallidoSegundaFalse(self, URL, endpoint, nada2 = None):
 		if(endpoint == "users/3"):
 			return self.datosPasajero
 		else:
 			return False
 	
-	@patch("src.resources.agregarPosibleViaje.Conectividad")
+	@patch("src.resources.agregarPosibleViaje.conectividad")
 	@patch("src.resources.agregarPosibleViaje.mongo")
 	@patch("src.resources.agregarPosibleViaje.Token")
 	def test_camino_feliz(self, mockToken, mockPyMongo, mockConectividad):
 
-		mockConectividad.return_value.post.return_value = self.estimacion
-		mockConectividad.return_value.get.side_effect = self.getNormal
+		mockConectividad.post.return_value = self.estimacion
+		mockConectividad.get.side_effect = self.getNormal
 
 		mockFind = MagicMock()
 		mockFind.find_and_modify.return_value = {"contadorViajes": 1}
@@ -442,14 +442,14 @@ class TestEndpointAgregarPosibleViaje(unittest.TestCase):
 				  headers = {"Authorization": "Bearer jhvbdsfbhjbjfgjbeg43gbfbgfgfb"})
 		
 		self.assertEqual(rv.status_code,200)
-
-	@patch("src.resources.agregarPosibleViaje.Conectividad")
+	
+	@patch("src.resources.agregarPosibleViaje.conectividad")
 	@patch("src.resources.agregarPosibleViaje.mongo")
 	@patch("src.resources.agregarPosibleViaje.Token")
 	def test_sin_json(self, mockToken, mockPyMongo, mockConectividad):
 
-		mockConectividad.return_value.post.return_value = self.estimacion
-		mockConectividad.return_value.get.side_effect = self.getNormal
+		mockConectividad.post.return_value = self.estimacion
+		mockConectividad.get.side_effect = self.getNormal
 
 		mockFind = MagicMock()
 		mockFind.find_and_modify.return_value = {"contadorViajes": 1}
@@ -466,13 +466,13 @@ class TestEndpointAgregarPosibleViaje(unittest.TestCase):
 		
 		self.assertEqual(rv.status_code,500)
 
-	@patch("src.resources.agregarPosibleViaje.Conectividad")
+	@patch("src.resources.agregarPosibleViaje.conectividad")
 	@patch("src.resources.agregarPosibleViaje.mongo")
 	@patch("src.resources.agregarPosibleViaje.Token")
 	def test_token_invalido(self, mockToken, mockPyMongo, mockConectividad):
 
-		mockConectividad.return_value.post.return_value = self.estimacion
-		mockConectividad.return_value.get.side_effect = self.getNormal
+		mockConectividad.post.return_value = self.estimacion
+		mockConectividad.get.side_effect = self.getNormal
 
 		mockFind = MagicMock()
 		mockFind.find_and_modify.return_value = {"contadorViajes": 1}
@@ -493,7 +493,7 @@ class TestEndpointAgregarPosibleViaje(unittest.TestCase):
 		
 		self.assertEqual(rv.status_code,400)
 
-	@patch("src.resources.agregarPosibleViaje.Conectividad")
+	@patch("src.resources.agregarPosibleViaje.conectividad")
 	@patch("src.resources.agregarPosibleViaje.mongo")
 	@patch("src.resources.agregarPosibleViaje.Token")
 	def test_estimacion_fallida(self, mockToken, mockPyMongo, mockConectividad):
@@ -520,13 +520,13 @@ class TestEndpointAgregarPosibleViaje(unittest.TestCase):
 		
 		self.assertEqual(rv.status_code,200)
 
-	@patch("src.resources.agregarPosibleViaje.Conectividad")
+	@patch("src.resources.agregarPosibleViaje.conectividad")
 	@patch("src.resources.agregarPosibleViaje.mongo")
 	@patch("src.resources.agregarPosibleViaje.Token")
 	def test_pasajero_inexistente(self, mockToken, mockPyMongo, mockConectividad):
 
-		mockConectividad.return_value.post.return_value = self.estimacion
-		mockConectividad.return_value.get.return_value = False
+		mockConectividad.post.return_value = self.estimacion
+		mockConectividad.get.return_value = False
 
 		mockFind = MagicMock()
 		mockFind.find_and_modify.return_value = {"contadorViajes": 1}
@@ -545,15 +545,15 @@ class TestEndpointAgregarPosibleViaje(unittest.TestCase):
 				  content_type = "application/json",
 				  headers = {"Authorization": "Bearer jhvbdsfbhjbjfgjbeg43gbfbgfgfb"})
 		
-		self.assertEqual(rv.status_code,200)
+		self.assertEqual(rv.status_code,403)
 
-	@patch("src.resources.agregarPosibleViaje.Conectividad")
+	@patch("src.resources.agregarPosibleViaje.conectividad")
 	@patch("src.resources.agregarPosibleViaje.mongo")
 	@patch("src.resources.agregarPosibleViaje.Token")
 	def test_fallo_al_guardar_mongodb(self, mockToken, mockPyMongo, mockConectividad):
 
-		mockConectividad.return_value.post.return_value = self.estimacion
-		mockConectividad.return_value.get.side_effect = self.getNormal
+		mockConectividad.post.return_value = self.estimacion
+		mockConectividad.get.side_effect = self.getNormal
 
 		mockFind = MagicMock()
 		mockFind.find_and_modify.return_value = {"contadorViajes": 1}
@@ -572,13 +572,13 @@ class TestEndpointAgregarPosibleViaje(unittest.TestCase):
 				  content_type = "application/json",
 				  headers = {"Authorization": "Bearer jhvbdsfbhjbjfgjbeg43gbfbgfgfb"})
 
-	@patch("src.resources.agregarPosibleViaje.Conectividad")
+	@patch("src.resources.agregarPosibleViaje.conectividad")
 	@patch("src.resources.agregarPosibleViaje.mongo")
 	@patch("src.resources.agregarPosibleViaje.Token")
 	def test_fallo_al_guardar_mongodb_excepcion(self, mockToken, mockPyMongo, mockConectividad):
 
-		mockConectividad.return_value.post.return_value = self.estimacion
-		mockConectividad.return_value.get.side_effect = self.getNormal
+		mockConectividad.post.return_value = self.estimacion
+		mockConectividad.get.side_effect = self.getNormal
 
 		mockFind = MagicMock()
 		mockFind.find_and_modify.return_value = {"contadorViajes": 1}
@@ -600,13 +600,13 @@ class TestEndpointAgregarPosibleViaje(unittest.TestCase):
 		
 		self.assertEqual(rv.status_code,404)
 
-	@patch("src.resources.agregarPosibleViaje.Conectividad")
+	@patch("src.resources.agregarPosibleViaje.conectividad")
 	@patch("src.resources.agregarPosibleViaje.mongo")
 	@patch("src.resources.agregarPosibleViaje.Token")
 	def test_fallo_al_obtener_ruta_excepcion(self, mockToken, mockPyMongo, mockConectividad):
 
-		mockConectividad.return_value.post.return_value = self.estimacion
-		mockConectividad.return_value.get.side_effect = self.getFallidoSegundaExcepcion
+		mockConectividad.post.return_value = self.estimacion
+		mockConectividad.get.side_effect = self.getFallidoSegundaExcepcion
 
 		mockFind = MagicMock()
 		mockFind.find_and_modify.return_value = {"contadorViajes": 1}
@@ -628,13 +628,13 @@ class TestEndpointAgregarPosibleViaje(unittest.TestCase):
 		
 		self.assertEqual(rv.status_code,403)
 
-	@patch("src.resources.agregarPosibleViaje.Conectividad")
+	@patch("src.resources.agregarPosibleViaje.conectividad")
 	@patch("src.resources.agregarPosibleViaje.mongo")
 	@patch("src.resources.agregarPosibleViaje.Token")
 	def test_fallo_al_obtener_ruta_false(self, mockToken, mockPyMongo, mockConectividad):
 
-		mockConectividad.return_value.post.return_value = self.estimacion
-		mockConectividad.return_value.get.side_effect = self.getFallidoSegundaFalse
+		mockConectividad.post.return_value = self.estimacion
+		mockConectividad.get.side_effect = self.getFallidoSegundaFalse
 
 		mockFind = MagicMock()
 		mockFind.find_and_modify.return_value = {"contadorViajes": 1}

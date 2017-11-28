@@ -49,12 +49,13 @@ class TestEndpointAutosPorUsuario(unittest.TestCase):
 
 
 
-	@patch("src.resources.autosPorUsuario.Conectividad")
+	@patch("src.resources.autosPorUsuario.mongo")	
+	@patch("src.resources.autosPorUsuario.conectividad")
 	@patch("src.resources.autosPorUsuario.Token")
-	def test_camino_feliz(self, mockToken, mockConectividad):
+	def test_camino_feliz(self, mockToken, mockConectividad, mockMongo):
 
 
-
+		mockMongo.return_value = {"autoActivo": "3"}
 
 		datosServer = {"cars": [
 					{
@@ -127,7 +128,7 @@ class TestEndpointAutosPorUsuario(unittest.TestCase):
 
 
 
-		mockConectividad.return_value.get.return_value = json.loads(json.dumps(datosServer))
+		mockConectividad.get.return_value = json.loads(json.dumps(datosServer))
 		mockToken.return_value.validarToken.return_value = True
 
 		
@@ -138,11 +139,13 @@ class TestEndpointAutosPorUsuario(unittest.TestCase):
 		
 		self.assertTrue(jsonIguales(jsonRV, loQueEsperoQueDevuelva))
 
-	@patch("src.resources.autosPorUsuario.Conectividad")
+	@patch("src.resources.autosPorUsuario.mongo")	
+	@patch("src.resources.autosPorUsuario.conectividad")
 	@patch("src.resources.autosPorUsuario.Token")
-	def test_sin_token(self, mockToken, mockConectividad):
+	def test_sin_token(self, mockToken, mockConectividad, mockMongo):
 
-		mockConectividad.return_value.get.return_value = True
+		mockMongo.return_value = {"autoActivo": "3"}
+		mockConectividad.get.return_value = True
 		mockToken.return_value.validarToken.return_value = True
 		
 		rv = self.app.get('/driver/3/cars')
@@ -150,11 +153,13 @@ class TestEndpointAutosPorUsuario(unittest.TestCase):
 		self.assertEqual(rv.status_code,403)
 
 	
-	@patch("src.resources.autosPorUsuario.Conectividad")
+	@patch("src.resources.autosPorUsuario.mongo")	
+	@patch("src.resources.autosPorUsuario.conectividad")
 	@patch("src.resources.autosPorUsuario.Token")
-	def test_token_invalido(self, mockToken, mockConectividad):
+	def test_token_invalido(self, mockToken, mockConectividad, mockMongo):
 
-		mockConectividad.return_value.get.return_value = True
+		mockMongo.return_value = {"autoActivo": "3"}
+		mockConectividad.get.return_value = True
 		mockToken.return_value.validarToken.return_value = False
 
 		rv = self.app.get('/driver/3/cars',
@@ -162,11 +167,13 @@ class TestEndpointAutosPorUsuario(unittest.TestCase):
 
 		self.assertEqual(rv.status_code, 400)
 
-	@patch("src.resources.autosPorUsuario.Conectividad")
+	@patch("src.resources.autosPorUsuario.mongo")	
+	@patch("src.resources.autosPorUsuario.conectividad")
 	@patch("src.resources.autosPorUsuario.Token")
-	def test_conexion_fallida(self, mockToken, mockConectividad):
+	def test_conexion_fallida(self, mockToken, mockConectividad, mockMongo):
 
-		mockConectividad.return_value.get.return_value = False
+		mockMongo.return_value = {"autoActivo": "3"}
+		mockConectividad.get.return_value = False
 		mockToken.return_value.validarToken.return_value = True
 
 		

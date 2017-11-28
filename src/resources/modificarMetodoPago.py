@@ -76,9 +76,8 @@ class ModificarMetodoPago(Resource):
 
 	def _actualizar_metodopago_usuario(self, IDUsuario):
 		"""!@brief Actualiza el metodo de pago a mongoDB."""
-		
-		usuarios = mongo.db.usuarios
-		usuario = usuarios.find_one({"id" : IDUsuario})
+		 
+		usuario = mongo.db.usuarios.find_one({"id" : IDUsuario})
 		if(not usuario):
 			return False
 
@@ -98,7 +97,7 @@ class ModificarMetodoPago(Resource):
 		if(haySeleccion or usuario.get("metodopago",{}).get("seleccionado", None) == None):
 			JSONSet["$set"]["metodopago.seleccionado"] = self._get_data_from_request("metodo")
 
-		usuarios.update({"id" : IDUsuario}, JSONSet)
+		mongo.db.usuarios.update({"id" : IDUsuario}, JSONSet)
 
 		return True
 

@@ -49,7 +49,7 @@ class Conectividad(Resource):
 			try:
 				return json.loads(r.text)
 			except Exception as e:
-				return False
+				return True
 
 	def get(self, URL, endpoint, diccionarioParametros = {}):
 		"""!@brief Permite realizar una peticion POST y obtener el json de respuesta o false si fallo.
@@ -68,7 +68,7 @@ class Conectividad(Resource):
 			try:
 				return json.loads(r.text)
 			except Exception as e:
-				return False
+				return True
 
 	def put(self, URL, endpoint, diccionarioCuerpo = {}, diccionarioParametros = {}):
 		"""!@brief Permite realizar una peticion POST y obtener el json de respuesta o false si fallo.
@@ -88,7 +88,7 @@ class Conectividad(Resource):
 			try:
 				return json.loads(r.text)
 			except Exception as e:
-				return False
+				return True
 
 	def delete(self, URL, endpoint, diccionarioCuerpo = {}, diccionarioParametros = {}):
 		"""!@brief Permite realizar una peticion POST y obtener el json de respuesta o false si fallo.

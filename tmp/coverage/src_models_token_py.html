@@ -324,7 +324,7 @@
 <p id="t104" class="pln">                        <span class="key">else</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t105" class="stm mis">                                <span class="nam">base</span> <span class="op">=</span> <span class="nam">mongo</span><span class="op">.</span><span class="nam">db</span><span class="op">.</span><span class="nam">conductores</span><span class="strut">&nbsp;</span></p>
 <p id="t106" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t107" class="stm mis">                        <span class="nam">base</span><span class="op">.</span><span class="nam">update</span><span class="op">(</span><span class="op">{</span><span class="str">"id"</span> <span class="op">:</span> <span class="nam">IDUsuario</span><span class="op">}</span><span class="op">,</span> <span class="op">{</span><span class="str">"id"</span><span class="op">:</span> <span class="nam">IDUsuario</span><span class="op">,</span><span class="str">"nombreUsuario"</span> <span class="op">:</span> <span class="nam">nombreUsuario</span><span class="op">,</span> <span class="str">"token"</span><span class="op">:</span> <span class="nam">token</span><span class="op">,</span> <span class="str">"estado"</span><span class="op">:</span> <span class="str">"libre"</span><span class="op">}</span><span class="op">,</span> <span class="nam">upsert</span><span class="op">=</span><span class="nam">True</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t107" class="stm mis">                        <span class="nam">base</span><span class="op">.</span><span class="nam">update</span><span class="op">(</span><span class="op">{</span><span class="str">"id"</span> <span class="op">:</span> <span class="nam">IDUsuario</span><span class="op">}</span><span class="op">,</span> <span class="op">{</span><span class="str">"$set"</span><span class="op">:</span> <span class="op">{</span><span class="str">"id"</span><span class="op">:</span> <span class="nam">IDUsuario</span><span class="op">,</span><span class="str">"nombreUsuario"</span> <span class="op">:</span> <span class="nam">nombreUsuario</span><span class="op">,</span> <span class="str">"token"</span><span class="op">:</span> <span class="nam">token</span><span class="op">,</span> <span class="str">"estado"</span><span class="op">:</span> <span class="str">"libre"</span><span class="op">}</span><span class="op">}</span><span class="op">,</span> <span class="nam">upsert</span><span class="op">=</span><span class="nam">True</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t108" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t109" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t110" class="stm mis">                <span class="key">except</span> <span class="nam">Exception</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
@@ -374,7 +374,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.4.1</a>,
-            created at 2017-11-28 03:46
+            created at 2017-11-28 23:32
         </p>
     </div>
 </div>

@@ -64,9 +64,8 @@ class RechazarViaje(Resource):
 	def _quitar_viaje(self, IDUsuario, IDViaje):
 		"""!@brief Borra el viaje de la lista."""
 
-		conductores = mongo.db.conductores
-		res = conductores.find_one({"id": IDUsuario},{"viajes": {"$elemMatch": {"idViaje": IDViaje}}})
+		res = mongo.db.conductores.find_one({"id": IDUsuario},{"viajes": {"$elemMatch": {"idViaje": IDViaje}}})
 		if(not res):
 			return False
-		conductores.update({"id": IDUsuario},{"$pull": {"viajes": {"idViaje": IDViaje}}})
+		mongo.db.conductores.update({"id": IDUsuario},{"$pull": {"viajes": {"idViaje": IDViaje}}})
 		return res["viajes"][0]["datosPasajero"]["idPasajero"]

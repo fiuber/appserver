@@ -39,7 +39,7 @@ class AceptarViaje(Resource):
 				"""Le avisa al pasajero."""
 				res = enviarNotificacionPush(datos, "Viaje aceptado!", "El conductor se dirige a tu ubicacion.", PUSHViajeAceptado)
 
-  				response = ResponseBuilder.build_response("", '200')
+  				response = ResponseBuilder.build_response({}, '200')
 			else:
 				response = ErrorHandler.create_error_response(400, "No existe el viaje.")
 

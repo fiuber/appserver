@@ -5,7 +5,6 @@ from flask import Flask, request
 from error_handler import ErrorHandler
 from response_builder import ResponseBuilder
 
-from src.models.user import User
 from src.resources import conectividad
 from src import URLSharedServer
 from src import mongo
@@ -27,34 +26,30 @@ class Register(Resource):
 		"""
 		try:
 
-			idFacebook = request.get_json().get("userId", False)
-			tokenFacebook = request.get_json().get("authToken",False)
+			idFacebook = request.get_json().get("fb",{}).get("userId", False)
+			tokenFacebook = request.get_json().get("fb",{}).get("authToken",False)
 
 			body = {
-				"_ref": "907.0558422010005", #mal
-				"type": request.get_json()["type"],
-				"username": request.get_json()["username"],
-				"password": request.get_json()["password"],
-				"firstName": request.get_json()["firstName"],
-				"lastName": request.get_json()["lastName"],
-				"country": request.get_json()["country"],
-				"email": request.get_json()["email"],
-				"birthdate": request.get_json()["birthdate"],
-				"images": ["1.png","2.png","3.png"]
+				"_ref": "907.0558422010005",
+				"type": request.get_json().get("type","passenger"),
+				"username": request.get_json().get("username","Nada"),
+				"password": request.get_json().get("password","Nada"),
+				"firstName": request.get_json().get("firstName","Nada"),
+				"lastName": request.get_json().get("lastName","Nada"),
+				"country": request.get_json().get("country","Nada"),
+				"email": request.get_json().get("email","Nada"),
+				"birthdate": request.get_json().get("birthdate","Nada"),
+				"images": [request.get_json().get("image","Nada")]
 			}
-
-			if(idFacebook):
-				body["fb"] = {"userId": idFacebook, "authToken": tokenFacebook}
 			
 			
 		except Exception as e:
-			return ErrorHandler.create_error_response("400", "Bad Request. Header incorrecto.")
+			return ErrorHandler.create_error_response("400", "Faltan parametros.")
 
 		res = conectividad.post(URLSharedServer, "users", body, {})
-
 		if(res and idFacebook):
 			"""Guarda usuario y contraseña en mongo"""
-			if(request.get_json()["type"] == "driver"):
+			if(request.get_json().get("type","passenger") == "driver"):
 				mongo.db.conductores.insert({"id": res["user"]["id"], "idFacebook": idFacebook, "nombreUsuario": request.get_json()["username"],"contrasena": request.get_json()["password"]})
 			else:
 				mongo.db.usuarios.insert({"id": res["user"]["id"], "idFacebook": idFacebook, "nombreUsuario": request.get_json()["username"],"contrasena": request.get_json()["password"]})
@@ -71,11 +66,11 @@ class UserController(Resource):
 		"""
 		
 		interResp = self.get(userId)
-		_ref = json.loads(interResp.get_data())["_ref"]
-
+		JSON = json.loads(interResp.get_data())
+		
 		try:
 			body = {
-				"_ref": _ref,  # donde lo deberia tomar?????
+				"_ref": JSON["_ref"],  # donde lo deberia tomar?????
 				"type": request.get_json()["type"],
 				"username": request.get_json()["username"],
 				"password": request.get_json()["password"],
@@ -84,17 +79,17 @@ class UserController(Resource):
 				"country": request.get_json()["country"],
 				"email": request.get_json()["email"],
 				"birthdate": request.get_json()["birthdate"],
-				"images": ["1.png","2.png","3.png"]
+				"images": [request.get_json()["image"]]
 			}
 
 		except Exception as e:
-			return ErrorHandler.create_error_response("400", "Bad Request. Header incorrecto.")
+			return ErrorHandler.create_error_response("400", "Faltan parametros.")
 
 		res = conectividad.put(URLSharedServer, "users/"+userId, body, {})
 
-		if(res and interResp.get("fb",False)):
+		if(res):
 			"""Guarda usuario y contraseña en mongo"""
-			if(request.get_json()["type"] == "driver"):
+			if(request.get_json().get("user",{}).get("type","passenger") == "driver"):
 				mongo.db.conductores.update({"id": userId}, {"$set": {"nombreUsuario": request.get_json()["username"],"contrasena": request.get_json()["password"]}})
 			else:
 				mongo.db.usuarios.update({"id": userId}, {"$set": {"nombreUsuario": request.get_json()["username"],"contrasena": request.get_json()["password"]}})
@@ -115,7 +110,7 @@ class UserController(Resource):
 			"birthdate": res["user"]["birthdate"],
 			"cars": res["user"]["cars"],
 			"country": res["user"]["country"],
-			"username": res["user"]["username"]
+			"username": res["user"]["username"],
 		}
 		
 		return ResponseBuilder.build_response(responseJson, 200)

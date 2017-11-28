@@ -67,7 +67,7 @@ paths:
           description: Cantidad de parametros incorrectos
         '409':
           description: Usuario o mail ya existentes
-  /user/{userId}:
+  /users/{userId}:
     get:
       summary: Obtener los datos de un usuario
       description: ''

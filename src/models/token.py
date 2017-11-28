@@ -104,7 +104,7 @@ class Token(Resource):
 			else:
 				base = mongo.db.conductores
 
-			base.update({"id" : IDUsuario}, {"id": IDUsuario,"nombreUsuario" : nombreUsuario, "token": token, "estado": "libre"}, upsert=True)
+			base.update({"id" : IDUsuario}, {"$set": {"id": IDUsuario,"nombreUsuario" : nombreUsuario, "token": token, "estado": "libre"}}, upsert=True)
 
 
 		except Exception as e:

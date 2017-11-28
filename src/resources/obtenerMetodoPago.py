@@ -56,9 +56,8 @@ class ObtenerMetodoPago(Resource):
 	def _obtener_metodopago_usuario(self, IDUsuario):
 		"""!@brief Obtiene los metodos de pago de mongoDB."""
 		
-		usuarios = mongo.db.usuarios
 
-		resultado = usuarios.find_one({"id" : IDUsuario})
+		resultado = mongo.db.usuarios.find_one({"id" : IDUsuario})
 		if(not resultado):
 			return False
 
