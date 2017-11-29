@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>FIUBER: appserver</title>
+<title>FIUBER: README</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -74,10 +74,31 @@ var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">appserver </div>  </div>
+<div class="title">README </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"></div></div><!-- contents -->
+<div class="textblock"><p>Build status: <a href="https://travis-ci.org/fiuber/appserver">![Build Status](https://travis-ci.org/fiuber/appserver.svg?branch=master)</a></p>
+<h1>Manual de configuracion e instalacion</h1>
+<h2>Instalacion</h2>
+<p>Para la instalacion del APP server de manera local se deberan seguir los siguientes pasos:</p>
+<ul>
+<li>Realizar un clone del repositorio de la siguiente forma "git clone https://github.com/fiuber/appserver.git" previamente navegando al directorio en el que se quiera clonar el repositorio.</li>
+<li>Correr el script ./lanzar que se encarga hacer el build de la imagen de docker y correrla exponiendo el puerto 5000.</li>
+<li>Ya se pueden realizar request al App Server en la direccion localhost:5000 con el programa postman o similar.</li>
+</ul>
+<p>Si en cambio se desea realizar pruebas al servidor de produccion se pueden enviar requests a la direccion "http://fiuberappserver.herokuapp.com/" donde esta el mismo.</p>
+<h2>Configuracion</h2>
+<p>Se incluye un archivo de configuracion por defecto pero el servidor puede ser configurado a gusto utilizando el archivo "__init__.py" ubicado en el directorio "src/" del App Server en donde se encuentran todos los parametros que se pueden variar del servidor tales como:</p>
+<ul>
+<li>"app.config['MONGO_DBNAME']": Es el nombre que tenga la base de datos en mongoDB.</li>
+<li>"app.config['MONGO_URI']": Las credenciales para acceder a la base de datos de mongoDB en formato URI.</li>
+<li>"directionsAPIKey": Es la clave del API de google Directions a utilizar en las request de rutas.</li>
+<li>"URLSharedServer": Direcction URL en la cual esta el Shared Server.</li>
+</ul>
+<h2>Modelo de datos</h2>
+<p>En el siguiente enlace puede verse una descripcion del modelo de datos usado para almacenar la informacion en mongoDB:</p>
+<p><a href="https://github.com/fiuber/appserver/blob/master/documentacion/modelo%20de%20datos%20.pdf">https://github.com/fiuber/appserver/blob/master/documentacion/modelo%20de%20datos%20.pdf</a> </p>
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generado por &#160;<a href="http://www.doxygen.org/index.html">

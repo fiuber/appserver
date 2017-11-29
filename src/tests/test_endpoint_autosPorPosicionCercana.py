@@ -95,7 +95,6 @@ class TestEndpointAutosPorPosicionCercana(unittest.TestCase):
 				  headers = {"Authorization": "Bearer jhvbdsfbhjbjfgjbeg43gbfbgfgfb"})
 
 		jsonRV = json.loads(rv.data)
-		print(str(rv.data))
 		
 		self.assertTrue(jsonIguales(jsonRV, jsonDatosAutos))
 

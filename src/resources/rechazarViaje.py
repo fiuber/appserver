@@ -37,7 +37,7 @@ class RechazarViaje(Resource):
 			"""Devuelve los posibles viajes."""
 			datos = self._quitar_viaje(IDUsuario, IDViaje)
 			if(datos):
-				print(datos)
+
 				"""Le avisa al pasajero."""
 				enviarNotificacionPush(datos, "Tu viaje fue rechazado", "Podes intentarlo con otros conductores cerca tuyo!.", PUSHRechazoViaje)
 

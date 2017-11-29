@@ -19,20 +19,24 @@ Diagrama de herencias de src.\-resources.\-auth.\-Auth\begin{figure}[H]
 
 \item 
 def \hyperlink{classsrc_1_1resources_1_1auth_1_1_auth_a1dc17d25fd4327120f782367cad81b39}{post}
-\begin{DoxyCompactList}\small\item\em Autentica al usuario una unica vez. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Autentica al usuario una unica vez. \end{DoxyCompactList}\item 
+def \hyperlink{classsrc_1_1resources_1_1auth_1_1_auth_aa762d1e74c61ff281bb9a4a9feaf58ed}{autenticar\-Con\-Facebook}
+\begin{DoxyCompactList}\small\item\em Autentica usando el token de facebook. \end{DoxyCompactList}\item 
+def \hyperlink{classsrc_1_1resources_1_1auth_1_1_auth_af2d497f457453709da08bfbf745b16c9}{autenticar\-Con\-Datos}
+\begin{DoxyCompactList}\small\item\em Autentica usando usuario y contrasena. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \subsection*{Atributos públicos}
 \begin{DoxyCompactItemize}
-\item 
-\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_ab31b5b7d3f7117c7030fb0bb13ec3d4e}{{\bfseries conectividad}}\label{classsrc_1_1resources_1_1auth_1_1_auth_ab31b5b7d3f7117c7030fb0bb13ec3d4e}
-
 \item 
 \hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_a6f941c20282acda0048ff950c20b6020}{{\bfseries autenticador}}\label{classsrc_1_1resources_1_1auth_1_1_auth_a6f941c20282acda0048ff950c20b6020}
 
 \item 
-\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_a454d6c5e4da3b215b9067a01b4b653ea}{{\bfseries id}}\label{classsrc_1_1resources_1_1auth_1_1_auth_a454d6c5e4da3b215b9067a01b4b653ea}
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_a494e703175798885c56a25e8a203bba9}{{\bfseries tipo}}\label{classsrc_1_1resources_1_1auth_1_1_auth_a494e703175798885c56a25e8a203bba9}
 
 \item 
-\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_a494e703175798885c56a25e8a203bba9}{{\bfseries tipo}}\label{classsrc_1_1resources_1_1auth_1_1_auth_a494e703175798885c56a25e8a203bba9}
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_a9f13589e7260547a8b11d88d0e746e37}{{\bfseries respuesta}}\label{classsrc_1_1resources_1_1auth_1_1_auth_a9f13589e7260547a8b11d88d0e746e37}
+
+\item 
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_a454d6c5e4da3b215b9067a01b4b653ea}{{\bfseries id}}\label{classsrc_1_1resources_1_1auth_1_1_auth_a454d6c5e4da3b215b9067a01b4b653ea}
 
 \end{DoxyCompactItemize}
 \subsection*{Métodos privados}
@@ -45,7 +49,13 @@ def \hyperlink{classsrc_1_1resources_1_1auth_1_1_auth_a85f8056c2198f62284ada1f9f
 def \hyperlink{classsrc_1_1resources_1_1auth_1_1_auth_acd72657f2bddc8a60a3103f418460d57}{\-\_\-validate\-\_\-request}
 \begin{DoxyCompactList}\small\item\em Valida que haya una request. \end{DoxyCompactList}\item 
 def \hyperlink{classsrc_1_1resources_1_1auth_1_1_auth_ab140f80e50617f4d4f4a58b40391710f}{\-\_\-existe\-\_\-usuario\-\_\-en\-\_\-shared\-Server}
-\begin{DoxyCompactList}\small\item\em Valida al usuario con el shared server. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Valida al usuario con el shared server. \end{DoxyCompactList}\item 
+def \hyperlink{classsrc_1_1resources_1_1auth_1_1_auth_ae28ce0ad34a3827db3783b0e83d967b5}{\-\_\-guardar\-\_\-autos\-\_\-mongo}
+\begin{DoxyCompactList}\small\item\em Guarda los id de los auto en mongo\-D\-B para futura referencia. \end{DoxyCompactList}\item 
+def \hyperlink{classsrc_1_1resources_1_1auth_1_1_auth_ab01ae63d8db493200c7ef0a812d9d7e2}{\-\_\-get\-\_\-data\-\_\-from\-\_\-request}
+\begin{DoxyCompactList}\small\item\em Obtiene la propiedad del json contenido de la request. \end{DoxyCompactList}\item 
+def \hyperlink{classsrc_1_1resources_1_1auth_1_1_auth_ae285136c047a884a24848b3448c5c77b}{\-\_\-obtener\-I\-D\-Facebook}
+\begin{DoxyCompactList}\small\item\em Pide a la U\-R\-L de la A\-P\-I de facebook el id asociado al token. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \subsection{Descripción detallada}
@@ -66,6 +76,18 @@ Clase para autenticacion y creacion del Token.
 
 
 Valida al usuario con el shared server. 
+
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_ab01ae63d8db493200c7ef0a812d9d7e2}{\index{src\-::resources\-::auth\-::\-Auth@{src\-::resources\-::auth\-::\-Auth}!\-\_\-get\-\_\-data\-\_\-from\-\_\-request@{\-\_\-get\-\_\-data\-\_\-from\-\_\-request}}
+\index{\-\_\-get\-\_\-data\-\_\-from\-\_\-request@{\-\_\-get\-\_\-data\-\_\-from\-\_\-request}!src::resources::auth::Auth@{src\-::resources\-::auth\-::\-Auth}}
+\subsubsection[{\-\_\-get\-\_\-data\-\_\-from\-\_\-request}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-resources.\-auth.\-Auth.\-\_\-get\-\_\-data\-\_\-from\-\_\-request (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{nombre\-Propiedad}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}}\label{classsrc_1_1resources_1_1auth_1_1_auth_ab01ae63d8db493200c7ef0a812d9d7e2}
+
+
+Obtiene la propiedad del json contenido de la request. 
 
 \hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_a85f8056c2198f62284ada1f9f40a72f2}{\index{src\-::resources\-::auth\-::\-Auth@{src\-::resources\-::auth\-::\-Auth}!\-\_\-get\-\_\-hash\-Password\-\_\-from\-\_\-request@{\-\_\-get\-\_\-hash\-Password\-\_\-from\-\_\-request}}
 \index{\-\_\-get\-\_\-hash\-Password\-\_\-from\-\_\-request@{\-\_\-get\-\_\-hash\-Password\-\_\-from\-\_\-request}!src::resources::auth::Auth@{src\-::resources\-::auth\-::\-Auth}}
@@ -89,6 +111,31 @@ Obtiene la contrasena de la request.
 
 Obtiene el nombre de usuario de la request. 
 
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_ae28ce0ad34a3827db3783b0e83d967b5}{\index{src\-::resources\-::auth\-::\-Auth@{src\-::resources\-::auth\-::\-Auth}!\-\_\-guardar\-\_\-autos\-\_\-mongo@{\-\_\-guardar\-\_\-autos\-\_\-mongo}}
+\index{\-\_\-guardar\-\_\-autos\-\_\-mongo@{\-\_\-guardar\-\_\-autos\-\_\-mongo}!src::resources::auth::Auth@{src\-::resources\-::auth\-::\-Auth}}
+\subsubsection[{\-\_\-guardar\-\_\-autos\-\_\-mongo}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-resources.\-auth.\-Auth.\-\_\-guardar\-\_\-autos\-\_\-mongo (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{autos, }
+\item[{}]{I\-D\-Usuario}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}}\label{classsrc_1_1resources_1_1auth_1_1_auth_ae28ce0ad34a3827db3783b0e83d967b5}
+
+
+Guarda los id de los auto en mongo\-D\-B para futura referencia. 
+
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_ae285136c047a884a24848b3448c5c77b}{\index{src\-::resources\-::auth\-::\-Auth@{src\-::resources\-::auth\-::\-Auth}!\-\_\-obtener\-I\-D\-Facebook@{\-\_\-obtener\-I\-D\-Facebook}}
+\index{\-\_\-obtener\-I\-D\-Facebook@{\-\_\-obtener\-I\-D\-Facebook}!src::resources::auth::Auth@{src\-::resources\-::auth\-::\-Auth}}
+\subsubsection[{\-\_\-obtener\-I\-D\-Facebook}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-resources.\-auth.\-Auth.\-\_\-obtener\-I\-D\-Facebook (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{token\-Facebook}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}}\label{classsrc_1_1resources_1_1auth_1_1_auth_ae285136c047a884a24848b3448c5c77b}
+
+
+Pide a la U\-R\-L de la A\-P\-I de facebook el id asociado al token. 
+
 \hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_acd72657f2bddc8a60a3103f418460d57}{\index{src\-::resources\-::auth\-::\-Auth@{src\-::resources\-::auth\-::\-Auth}!\-\_\-validate\-\_\-request@{\-\_\-validate\-\_\-request}}
 \index{\-\_\-validate\-\_\-request@{\-\_\-validate\-\_\-request}!src::resources::auth::Auth@{src\-::resources\-::auth\-::\-Auth}}
 \subsubsection[{\-\_\-validate\-\_\-request}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-resources.\-auth.\-Auth.\-\_\-validate\-\_\-request (
@@ -99,6 +146,28 @@ Obtiene el nombre de usuario de la request.
 
 
 Valida que haya una request. 
+
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_af2d497f457453709da08bfbf745b16c9}{\index{src\-::resources\-::auth\-::\-Auth@{src\-::resources\-::auth\-::\-Auth}!autenticar\-Con\-Datos@{autenticar\-Con\-Datos}}
+\index{autenticar\-Con\-Datos@{autenticar\-Con\-Datos}!src::resources::auth::Auth@{src\-::resources\-::auth\-::\-Auth}}
+\subsubsection[{autenticar\-Con\-Datos}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-resources.\-auth.\-Auth.\-autenticar\-Con\-Datos (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classsrc_1_1resources_1_1auth_1_1_auth_af2d497f457453709da08bfbf745b16c9}
+
+
+Autentica usando usuario y contrasena. 
+
+\hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_aa762d1e74c61ff281bb9a4a9feaf58ed}{\index{src\-::resources\-::auth\-::\-Auth@{src\-::resources\-::auth\-::\-Auth}!autenticar\-Con\-Facebook@{autenticar\-Con\-Facebook}}
+\index{autenticar\-Con\-Facebook@{autenticar\-Con\-Facebook}!src::resources::auth::Auth@{src\-::resources\-::auth\-::\-Auth}}
+\subsubsection[{autenticar\-Con\-Facebook}]{\setlength{\rightskip}{0pt plus 5cm}def src.\-resources.\-auth.\-Auth.\-autenticar\-Con\-Facebook (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classsrc_1_1resources_1_1auth_1_1_auth_aa762d1e74c61ff281bb9a4a9feaf58ed}
+
+
+Autentica usando el token de facebook. 
 
 \hypertarget{classsrc_1_1resources_1_1auth_1_1_auth_a1dc17d25fd4327120f782367cad81b39}{\index{src\-::resources\-::auth\-::\-Auth@{src\-::resources\-::auth\-::\-Auth}!post@{post}}
 \index{post@{post}!src::resources::auth::Auth@{src\-::resources\-::auth\-::\-Auth}}

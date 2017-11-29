@@ -18,6 +18,7 @@ from src import app
 from src import mongo
 from src import URLSharedServer
 from src import PUSHViajeAceptado
+from src import PUSHRechazoViaje
 
 class AceptarViaje(Resource):
 	"""!@brief Clase para aceptar un viaje de un chofer."""
@@ -117,6 +118,11 @@ class AceptarViaje(Resource):
 		"""Finalmente borra todos los viajes disponibles del chofer (No puede tomar mas)."""
 		res = True
 		
+		"""Avisa del rechazo de los viajes"""
+		cond = conductores.find_one({"id": IDUsuario})
+		for x in cond.get("viajes",[]):
+			enviarNotificacionPush(x["datosPasajero"]["idPasajero"], "Tu viaje fue rechazado", "Podes intentarlo con otros conductores cerca tuyo!.", PUSHRechazoViaje)
+
 		conductores.update({"id": IDUsuario},{"$set": {"viajes": []}})		
 
 		return viaje["datosPasajero"]["idPasajero"]

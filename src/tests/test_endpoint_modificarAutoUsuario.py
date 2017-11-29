@@ -40,7 +40,6 @@ class TestEndpointModificarAutoUsuario(unittest.TestCase):
 				  content_type = "application/json",
 				  headers = {"Authorization": "Bearer jhvbdsfbhjbjfgjbeg43gbfbgfgfb"})
 
-		print(str(rv))
 
 		self.assertEqual(rv.status_code,200)
 

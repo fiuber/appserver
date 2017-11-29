@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['validartoken',['validarToken',['../classsrc_1_1models_1_1token_1_1_token.html#aa38dc82b2a162d45ce1f4d492e8bf99c',1,'src::models::token::Token']]]
+  ['infolog',['infoLog',['../classsrc_1_1models_1_1log_1_1_log.html#a8d817ce0771f7e69942f3110319bc376',1,'src::models::log::Log']]]
 ];

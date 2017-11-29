@@ -1,0 +1,34 @@
+Build status\-: \href{https://travis-ci.org/fiuber/appserver}{\tt !\mbox{[}Build Status\mbox{]}(https\-://travis-\/ci.\-org/fiuber/appserver.\-svg?branch=master)}
+
+\section*{Manual de configuracion e instalacion}
+
+\subsection*{Instalacion}
+
+Para la instalacion del A\-P\-P server de manera local se deberan seguir los siguientes pasos\-:
+
+
+\begin{DoxyItemize}
+\item Realizar un clone del repositorio de la siguiente forma \char`\"{}git clone https\-://github.\-com/fiuber/appserver.\-git\char`\"{} previamente navegando al directorio en el que se quiera clonar el repositorio.
+\item Correr el script ./lanzar que se encarga hacer el build de la imagen de docker y correrla exponiendo el puerto 5000.
+\item Ya se pueden realizar request al App Server en la direccion localhost\-:5000 con el programa postman o similar.
+\end{DoxyItemize}
+
+Si en cambio se desea realizar pruebas al servidor de produccion se pueden enviar requests a la direccion \char`\"{}http\-://fiuberappserver.\-herokuapp.\-com/\char`\"{} donde esta el mismo.
+
+\subsection*{Configuracion}
+
+Se incluye un archivo de configuracion por defecto pero el servidor puede ser configurado a gusto utilizando el archivo \char`\"{}\-\_\-\-\_\-init\-\_\-\-\_\-.\-py\char`\"{} ubicado en el directorio \char`\"{}src/\char`\"{} del App Server en donde se encuentran todos los parametros que se pueden variar del servidor tales como\-:
+
+
+\begin{DoxyItemize}
+\item \char`\"{}app.\-config\mbox{[}'\-M\-O\-N\-G\-O\-\_\-\-D\-B\-N\-A\-M\-E'\mbox{]}\char`\"{}\-: Es el nombre que tenga la base de datos en mongo\-D\-B.
+\item \char`\"{}app.\-config\mbox{[}'\-M\-O\-N\-G\-O\-\_\-\-U\-R\-I'\mbox{]}\char`\"{}\-: Las credenciales para acceder a la base de datos de mongo\-D\-B en formato U\-R\-I.
+\item \char`\"{}directions\-A\-P\-I\-Key\char`\"{}\-: Es la clave del A\-P\-I de google Directions a utilizar en las request de rutas.
+\item \char`\"{}\-U\-R\-L\-Shared\-Server\char`\"{}\-: Direcction U\-R\-L en la cual esta el Shared Server.
+\end{DoxyItemize}
+
+\subsection*{Modelo de datos}
+
+En el siguiente enlace puede verse una descripcion del modelo de datos usado para almacenar la informacion en mongo\-D\-B\-:
+
+\href{https://github.com/fiuber/appserver/blob/master/documentacion/modelo%20de%20datos%20.pdf}{\tt https\-://github.\-com/fiuber/appserver/blob/master/documentacion/modelo\%20de\%20datos\%20.\-pdf} 

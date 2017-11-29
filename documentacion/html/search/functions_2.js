@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['create_5ferror_5fresponse',['create_error_response',['../classsrc_1_1resources_1_1error__handler_1_1_error_handler.html#a93f481928c27dccb20a627eaa35f6224',1,'src::resources::error_handler::ErrorHandler']]]
+  ['build_5fresponse',['build_response',['../classsrc_1_1resources_1_1response__builder_1_1_response_builder.html#ac0c9842fd66095442c5f60f868d5c69b',1,'src::resources::response_builder::ResponseBuilder']]]
 ];
