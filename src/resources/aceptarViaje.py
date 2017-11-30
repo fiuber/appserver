@@ -121,7 +121,8 @@ class AceptarViaje(Resource):
 		"""Avisa del rechazo de los viajes"""
 		cond = conductores.find_one({"id": IDUsuario})
 		for x in cond.get("viajes",[]):
-			enviarNotificacionPush(x["datosPasajero"]["idPasajero"], "Tu viaje fue rechazado", "Podes intentarlo con otros conductores cerca tuyo!.", PUSHRechazoViaje)
+			if(x["datosPasajero"]["idPasajero"] != viaje["datosPasajero"]["idPasajero"]):
+				enviarNotificacionPush(x["datosPasajero"]["idPasajero"], "Tu viaje fue rechazado", "Podes intentarlo con otros conductores cerca tuyo!.", PUSHRechazoViaje)
 
 		conductores.update({"id": IDUsuario},{"$set": {"viajes": []}})		
 

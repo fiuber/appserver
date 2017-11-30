@@ -90,11 +90,6 @@ class ConductorModificarPosicion(Resource):
 		if(datosConductor["estado"] == "libre"):
 			return True
 
-		
-		
-		pasajeros = mongo.db.usuarios
-
-
 		pasajero = None
 		viaje = None
 		try:
@@ -157,7 +152,8 @@ class ConductorModificarPosicion(Resource):
 		if(terminoEspera):
 			Log.infoLog("Termino Espera!")
 			updateQuery["$set"] = {"timestampFinEspera": time.time()}
-		elif(terminoViaje):	
+
+		if(terminoViaje):	
 			Log.infoLog("Cambiando estados!")
 			res = mongo.db.usuarios.update({"id": pasajero["id"]},{"$set": {"estado": "libre"}})
 			if(res["nModified"] != 0):
@@ -174,10 +170,6 @@ class ConductorModificarPosicion(Resource):
 				return False
 
 			updateQuery["$set"] = {"timestampFinViaje": tiempoFinViaje}
-
-			"""Le avisa al pasajero y al chofer del fin del viaje."""
-			enviarNotificacionPush(datosConductor["id"], "Viaje terminado", "El pago se realizara automaticamente")
-			enviarNotificacionPush(viaje["IDPasajero"], "Viaje terminado", "El pago se realizara automaticamente")
 
 
 		if(viaje["timestampFinViaje"] == 0):
@@ -281,8 +273,8 @@ class ConductorModificarPosicion(Resource):
 	def _informar_viaje(self, IDPasajero, IDConductor):
 		"""!@Brief Envia la notificacion push al conductor y al pasajero para avisarle que puede aceptar un viaje."""
 
-		enviarNotificacionPush(IDPasajero, "Termino el viaje!", "Tu pago ya fue realizado.", PUSHViajeTerminadoPasajero)
-		enviarNotificacionPush(IDPasajero, "Termino el viaje!", "El cliente ya pago el viaje.", PUSHViajeTerminadoChofer)
+		enviarNotificacionPush(IDPasajero, "Termino el viaje!", "Llegaste a destino.", PUSHViajeTerminadoPasajero)
+		enviarNotificacionPush(IDConductor, "Termino el viaje!", "Llegaste a destino.", PUSHViajeTerminadoChofer)
 
 		return True
 	

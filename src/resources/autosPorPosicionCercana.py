@@ -86,7 +86,7 @@ class AutosPorPosicionCercana(Resource):
 		
 		conductores = mongo.db.conductores
 		query = "if(this.posicion){if((Math.pow(this.posicion.lng-"+str(x)+",2)+Math.pow(this.posicion.lat-"+str(y)+",2)) <= "+str(self.distanciaMaxima)+") return this}"
-		return conductores.find({"$where": query})	
+		return conductores.find({"estado": "libre", "$where": query})	
 			
 
 	def _acondicionarAutoJSON(self, datos):
