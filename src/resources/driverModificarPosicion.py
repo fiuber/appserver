@@ -112,17 +112,17 @@ class ConductorModificarPosicion(Resource):
 		try:
 			posicionConductor = {"lng": x,"lat": y}
 
-			if(datosConductor["estado"] == "recogiendoPasajero"):
+			if(viaje["timestampFinEspera"] == 0):
 				posicionPasajero = pasajero["posicion"]
 				distancia = (posicionConductor["lng"]-posicionPasajero["lng"])**2+(posicionConductor["lat"]-posicionPasajero["lat"])**2
 				if(distancia < self.distanciaMinima):
 					if(pasajero["estado"] == "esperandoChofer") :
-						res = mongo.db.usuarios.update({"id": pasajero["id"]},{"$set": {"estado": "libre"}})
+						res = mongo.db.usuarios.update({"id": pasajero["id"]},{"$set": {"estado": "viajando"}})
 						if(res["nModified"] == 0):
 							return False
 
 					if(datosConductor["estado"] == "recogiendoPasajero"):
-						res = mongo.db.conductores.update({"id": datosConductor["id"]},{"$set": {"estado": "libre"}})
+						res = mongo.db.conductores.update({"id": datosConductor["id"]},{"$set": {"estado": "viajando"}})
 						if(res["nModified"] == 0):
 							return False
 						
