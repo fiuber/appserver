@@ -111,6 +111,7 @@ class UserController(Resource):
 			"cars": res["user"]["cars"],
 			"country": res["user"]["country"],
 			"username": res["user"]["username"],
+			"images": res["user"]["images"]
 		}
 		
 		return ResponseBuilder.build_response(responseJson, 200)
