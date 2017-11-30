@@ -116,11 +116,17 @@ class ConductorModificarPosicion(Resource):
 				posicionPasajero = pasajero["posicion"]
 				distancia = (posicionConductor["lng"]-posicionPasajero["lng"])**2+(posicionConductor["lat"]-posicionPasajero["lat"])**2
 				if(distancia < self.distanciaMinima):
-					res = mongo.db.usuarios.update({"id": pasajero["id"]},{"$set": {"estado": "viajando"}})
-					if(res["nModified"] != 0):
-						res = mongo.db.conductores.find_and_modify({"id": datosConductor["id"]},{"$set": {"estado": "viajando"}}, new = True)
-						if(res):
-							terminoEspera = True
+					if(pasajero["estado"] == "esperandoChofer") :
+						res = mongo.db.usuarios.update({"id": pasajero["id"]},{"$set": {"estado": "libre"}})
+						if(res["nModified"] == 0):
+							return False
+
+					if(datosConductor["estado"] == "recogiendoPasajero"):
+						res = mongo.db.conductores.update({"id": datosConductor["id"]},{"$set": {"estado": "libre"}})
+						if(res["nModified"] == 0):
+							return False
+						
+					terminoEspera = True
 
 		except Exception as e:
 			terminoEspera = False
@@ -128,7 +134,6 @@ class ConductorModificarPosicion(Resource):
 		distanciaDestino = (posicionConductor["lng"]-viaje["destino"]["lng"])**2+(posicionConductor["lat"]-viaje["destino"]["lat"])**2
 
 		if(distanciaDestino < self.distanciaMinima and viaje["timestampFinViaje"] == 0):
-			Log.infoLog("Termino el viaje!")
 			terminoViaje = True
 		
 		tiempoPosicion = time.time()
@@ -150,14 +155,17 @@ class ConductorModificarPosicion(Resource):
 			      }		
 
 		if(terminoEspera):
-			Log.infoLog("Termino Espera!")
 			updateQuery["$set"] = {"timestampFinEspera": time.time()}
+		elif(terminoViaje):	
+			if(pasajero["estado"] != "libre"):
+				res = mongo.db.usuarios.update({"id": pasajero["id"]},{"$set": {"estado": "libre"}})
+				if(res["nModified"] == 0):
+					return False
 
-		if(terminoViaje):	
-			Log.infoLog("Cambiando estados!")
-			res = mongo.db.usuarios.update({"id": pasajero["id"]},{"$set": {"estado": "libre"}})
-			if(res["nModified"] != 0):
-				mongo.db.conductores.update({"id": datosConductor["id"]},{"$set": {"estado": "libre"}})
+			if(datosConductor["estado"] != "libre"):
+				res = mongo.db.conductores.update({"id": datosConductor["id"]},{"$set": {"estado": "libre"}})
+				if(res["nModified"] == 0):
+					return False
 
 			tiempoFinViaje = time.time()
 
@@ -173,7 +181,6 @@ class ConductorModificarPosicion(Resource):
 
 
 		if(viaje["timestampFinViaje"] == 0):
-			Log.infoLog("Actualizando viaje!")
 			res = mongo.db.viajes.update({"IDConductor": datosConductor["id"]}, updateQuery)
 			if(res["nModified"] == 0):
 				return False
